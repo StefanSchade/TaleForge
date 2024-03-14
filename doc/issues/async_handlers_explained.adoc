@@ -1,0 +1,70 @@
+= Handling Async Handlers in Actix-web with Rust
+
+When developing asynchronous web applications with Actix-web in Rust, it's crucial to understand the interaction between Rust's ownership system, closure trait requirements (`Fn`, `FnMut`, `FnOnce`), and async handlers. This document explains the issue encountered when implementing an async handler that moves ownership of a use case and how it was resolved.
+
+== The Problem
+
+The initial implementation of the async handler attempted to directly move a use case instance (`MovePlayerUseCase`) into an async block. This approach resulted in a compilation error:
+
+[source,plaintext]
+----
+error[E0525]: expected a closure that implements the `Fn` trait, but this closure only implements `FnOnce`
+----
+
+This error occurs because the closure created by the `move` keyword takes ownership of its environment, making it a `FnOnce`. However, Actix-web requires handlers to be `Fn`, meaning they might be called multiple times.
+
+== Understanding `Fn`, `FnMut`, and `FnOnce`
+
+Rust closures can implement one or more of the traits `Fn`, `FnMut`, and `FnOnce`, which correspond to how the closure captures variables from its environment:
+
+- `FnOnce`: Can be called once. It takes ownership of captured variables.
+- `FnMut`: Can be called multiple times and can mutate captured variables.
+- `Fn`: Can be called multiple times without mutating captured variables.
+
+Since Actix-web handlers could be invoked multiple times for different requests, they need to be `Fn`.
+
+== The Solution: Using `Arc`
+
+To resolve this, we use `Arc` (Atomic Reference Counting), a thread-safe reference-counting pointer. `Arc` allows multiple ownership of the same data, which is perfect for sharing data across async tasks in a web server environment.
+
+Here's how we adjusted the code:
+
+[source,rust]
+----
+use std::sync::Arc;
+use actix_web::{web, App, HttpServer, HttpResponse};
+use crate::application::use_cases::move_player::{MovePlayer, MovePlayerUseCase};
+use crate::port::dto::MovePlayerInput;
+
+pub async fn start_server() -> std::io::Result<()> {
+    let move_player_use_case = Arc::new(MovePlayerUseCase {});
+
+    HttpServer::new(move || {
+        let move_player_use_case = move_player_use_case.clone();
+
+        App::new()
+            .service(
+                web::resource("/move")
+                    .route(web::post().to(move |input: web::Json<MovePlayerInput>| {
+                        let use_case = move_player_use_case.clone();
+                        async move {
+                            let result = use_case.move_player(input.into_inner());
+                            match result {
+                                Ok(output) => HttpResponse::Ok().json(output),
+                                Err(error) => HttpResponse::BadRequest().body(error),
+                            }
+                        }
+                    })),
+            )
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
+}
+----
+
+By wrapping `MovePlayerUseCase` with `Arc` and cloning it before moving it into the async block, we ensure that the closure is `Fn`, not `FnOnce`. This allows the Actix-web server to call the handler multiple times across different threads, sharing the use case instance safely.
+
+== Conclusion
+
+Understanding the nuances of Rust's closure traits and memory safety principles is crucial for developing efficient and correct asynchronous web applications. This solution demonstrates a practical application of `Arc` to share state across async tasks, adhering to Rust's strict ownership rules and Actix-web's requirements.
