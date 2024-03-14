@@ -1,5 +1,13 @@
 use crate::domain::aggregates::{location::Location, passage::Passage};
 use crate::domain::aggregates::player_state::PlayerState;
+use std::sync::Mutex;
+use lazy_static::lazy_static;
+
+// Definition of the TestData struct
+pub struct TestData {
+    pub player_state: PlayerState,
+    // You can add other fields here as needed
+}
 
 pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
     let room1 = Location {
@@ -28,4 +36,19 @@ pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
     let player_state = PlayerState::new(room1.id); // Initializing the player in room 1
 
     (vec![room1, room2], vec![passage_between_rooms], player_state)
+}
+
+impl TestData {
+    pub fn new() -> Self {
+        let (_, _, player_state) = setup_test_domain();
+        TestData {
+            player_state,
+            // Initialize other fields as needed
+        }
+    }
+}
+
+// Using lazy_static to define a globally accessible TestData instance wrapped in a Mutex
+lazy_static! {
+    pub static ref TEST_DATA: Mutex<TestData> = Mutex::new(TestData::new());
 }

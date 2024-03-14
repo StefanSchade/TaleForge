@@ -4,4 +4,5 @@ pub struct Location {
     pub title: String,
     pub description: String,
     pub image_url: Option<String>,
+    pub exits: Vec<i32>,
 }
