@@ -6,8 +6,8 @@ use lazy_static::lazy_static;
 // Definition of the TestData struct
 pub struct TestData {
     pub player_state: PlayerState,
-    pub test_world: (Vec<Location>, Vec<Passage>, PlayerState),
-    // You can add other fields here as needed
+    pub locations: Vec<Location>,
+    pub passages: Vec<Passage>,
 }
 
 pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
@@ -43,11 +43,11 @@ pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
 
 impl TestData {
     pub fn new() -> Self {
-        let (test_, _, player_state) = setup_test_domain();
+        let (locations, passages, player_state) = setup_test_domain();
         TestData {
             player_state,
-            test_world: setup_test_domain(),
-            // Initialize other fields as needed
+            locations,
+            passages,
         }
     }
 }

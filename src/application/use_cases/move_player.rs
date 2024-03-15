@@ -26,13 +26,16 @@ impl MovePlayer for MovePlayerUseCase {
 
         // Construct and return the dynamic output
 
-        let new_location = TEST_DATA.into_inner().unwrap().test_world.0.pop();
+        let new_location = test_data.locations.pop();
 
-        Ok(MovePlayerOutput {
-            room_number: new_location.unwrap().id,
-            title: new_location.unwrap().title.clone(),
-            description: new_location.unwrap().description.clone(),
-            image_url: new_location.unwrap().image_url.clone(),
-        })
+        match new_location {
+            Some(location) => Ok(MovePlayerOutput {
+                room_number: location.id,
+                title: location.title,
+                description: location.description,
+                image_url: location.image_url,
+            }),
+            None => Err("No more locations to pop."),
+        }
     }
 }
