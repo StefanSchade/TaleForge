@@ -1,0 +1,38 @@
+= Issue: Compiling Error with Global State Access in Rust Project
+
+== Problem Description
+The Rust project encountered a compilation error when attempting to access global state managed by a `Mutex` using `into_inner()`. This method was used in an attempt to modify the global state, specifically to pop a location from a vector within the global state. The compiler error was as follows:
+
+[source,bash]
+----
+error[E0507]: cannot move out of dereference of `TEST_DATA`
+   --> src\application\use_cases\move_player.rs:29:28
+    |
+29  |         let new_location = TEST_DATA.into_inner().unwrap().test_world.0.pop();
+    |                            ^^^^^^^^^ ------------ value moved due to this method call
+    |                            |
+    |                            move occurs because value has type `Mutex<TestData>`, which does not implement the `Copy` trait
+    |
+note: `Mutex::<T>::into_inner` takes ownership of the receiver `self`, which moves value
+----
+
+The use of `into_inner()` on a `Mutex<TestData>` was incorrect because it attempts to take ownership of the mutex's contents, which is not allowed due to Rust's ownership rules, especially in the context of shared mutable access.
+
+== Solution Overview
+The solution involved modifying the way the global state is accessed and modified. Instead of using `into_inner()`, the correct approach is to acquire a lock on the `Mutex` and then work with the data through the mutex guard. This ensures thread-safe access to the mutable global state without violating Rust's ownership and borrowing rules.
+
+== Detailed Solution
+The corrected code snippet involves two main changes:
+1. Use `.lock().unwrap()` to safely obtain a mutex guard that provides mutable access to the global state.
+2. Directly modify the global state through the mutex guard without attempting to take ownership of the mutex's content.
+
+[source,rust]
+----
+let mut test_data = TEST_DATA.lock().unwrap(); // Correctly access the mutex-protected data
+let new_location = test_data.locations.pop(); // Modify the locations vector
+----
+
+This approach correctly manages access to the global state in a concurrent environment, allowing for safe modification of the shared data.
+
+== Conclusion
+This issue highlights the importance of understanding Rust's ownership and concurrency models, especially when working with shared mutable state. By correctly using mutexes and adhering to Rust's safety guarantees, it's possible to manage global state in a thread-safe manner.
