@@ -16,7 +16,7 @@ pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
         title: "Entrance Hall".to_string(),
         description: "You are standing in a grand entrance hall. The air is cold and still.".to_string(),
         image_url: None,
-        exits: vec![2], // Assuming room 2 is directly accessible from room 1
+        //exits: vec![2], // Assuming room 2 is directly accessible from room 1
     };
 
     let room2 = Location {
@@ -24,7 +24,7 @@ pub fn setup_test_domain() -> (Vec<Location>, Vec<Passage>, PlayerState) {
         title: "Great Library".to_string(),
         description: "Surrounded by towering shelves of books, the scent of old paper fills the air.".to_string(),
         image_url: None,
-        exits: vec![1], // Assuming room 1 is directly accessible from room 2
+        //exits: vec![1], // Assuming room 1 is directly accessible from room 2
     };
 
     let passage_between_rooms = Passage {

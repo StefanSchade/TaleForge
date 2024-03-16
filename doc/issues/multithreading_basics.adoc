@@ -1,0 +1,73 @@
+= Multithreading with Arc and Mutex in Rust
+
+== Overview
+This document provides an overview of handling multithreading in Rust, focusing on the use of `Arc` (Atomic Reference Counting) and `Mutex` (Mutual Exclusion) to ensure thread-safe access to shared resources.
+
+== Multithreading in Rust
+
+Rust provides powerful primitives for safe concurrency and parallelism, ensuring memory safety without needing a garbage collector. Key to Rust's concurrency model are the `Arc` and `Mutex` types, which help manage shared state across threads.
+
+=== Atomic Reference Counting (Arc)
+
+- `Arc` is a thread-safe reference-counting pointer.
+- Used to share ownership of immutable data across threads.
+- When you need to mutate data shared across threads, `Arc` is often combined with a locking mechanism such as `Mutex` or `RwLock`.
+
+=== Mutual Exclusion (Mutex)
+
+- `Mutex` provides mutual exclusion, allowing only one thread to access the data it protects at a time.
+- When a thread wants to access the mutex's data, it must first lock the mutex. If the mutex is already locked by another thread, the thread will block until the mutex is available.
+- `Mutex` guards against data races but introduces the potential for deadlocks if not used carefully.
+
+== Use Case in Web Applications
+
+In the context of web applications, like those built with Actix, handling requests concurrently is a common requirement. Since each request may potentially modify shared application state, ensuring thread-safe access to this state is crucial.
+
+- **Actix and Multithreading**: Actix web is an asynchronous framework, capable of handling multiple requests across different threads.
+- **Thread Safety for Shared State**: Shared state (e.g., in-memory data stores or repositories) must be accessed in a thread-safe manner. This is where `Arc` and `Mutex` come into play.
+
+== Implementing Thread Safety
+
+To implement thread safety in shared repositories:
+
+. Encapsulate the shared state within a `Mutex` to ensure safe, exclusive access to the data.
+. Wrap the `Mutex` with an `Arc` to share ownership of the mutex across multiple threads.
+
+=== Example: Thread-Safe Repository
+
+[source,rust]
+----
+use std::sync::{Arc, Mutex};
+
+struct Repository {
+    // Shared state protected by a Mutex
+    data: Mutex<HashMap<Key, Value>>,
+}
+
+impl Repository {
+    fn new() -> Self {
+        Repository {
+            data: Mutex::new(HashMap::new()),
+        }
+    }
+
+    fn add(&self, key: Key, value: Value) {
+        let mut data = self.data.lock().unwrap(); // Lock the mutex to access the data
+        data.insert(key, value);
+    }
+
+    // Additional methods for accessing and modifying the data...
+}
+
+// Sharing the repository across threads
+let repo = Arc::new(Repository::new());
+----
+
+== Handling Locking Errors
+
+- **Poisoning**: A mutex can become "poisoned" if a thread panics while holding the lock. Subsequent lock attempts will return an error indicating this state.
+- **Recovering from Poisoning**: Rust allows recovery from poisoning by calling `.into_inner()` on the `Err` returned by a lock attempt, though this should be done with caution.
+
+== Conclusion
+
+Understanding and correctly implementing `Arc` and `Mutex` is crucial for developing safe, concurrent applications in Rust. By adhering to Rust's concurrency model, developers can build highly concurrent applications, like web servers, that are both safe and efficient.

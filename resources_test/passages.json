@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "from_location_id": 1,
+    "to_location_id": 2,
+    "description": "A winding path through the woods leads to the ruins of an ancient castle."
+  },
+  {
+    "id": 2,
+    "from_location_id": 2,
+    "to_location_id": 1,
+    "description": "A narrow trail snakes back into the heart of the Enchanted Forest."
+  }
+]

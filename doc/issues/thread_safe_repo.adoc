@@ -1,0 +1,23 @@
+= Fix Required for Thread-Safe Repository Mutations and Missing Domain Model Field
+
+== Description
+
+Our current implementation of the in-memory repositories lacks thread safety for mutating operations, such as adding new locations or passages. Additionally, our `Location` domain model is missing an `exits` field, which is crucial for defining possible movements within the game world.
+
+== Required Fixes
+
+. *Thread-Safe Repository Mutations*: To ensure our application can safely run in a multi-threaded environment (e.g., handling concurrent requests in a web server context), we need to introduce interior mutability within our repository structs using `Mutex`. This change will allow safe, concurrent modifications to the repository's state even when accessed through shared references like `Arc`.
+
+. *Adding the `exits` Field to the `Location` Model*: The `Location` struct should include an `exits` field, a vector of IDs that represents possible exits to other locations. This addition is necessary for defining the game's navigational logic.
+
+== Proposed Solution
+
+. Update repository structs to encapsulate their internal state within a `Mutex`. This approach provides the necessary interior mutability to safely modify the state across threads.
+
+. Extend the `Location` domain model to include the `exits` field. This field is essential for implementing navigation logic within our game.
+
+== Impact
+
+Implementing these fixes will enhance our application's robustness and concurrency safety. It will also complete our domain model for locations, enabling us to implement more complex game logic related to player movements and interactions within the game world.
+
+

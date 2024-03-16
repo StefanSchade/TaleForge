@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "title": "Enchanted Forest",
+    "description": "A mysterious forest that seems to whisper on the wind. Paths lead in all directions.",
+    "image_url": "resources_test/images/enchanted_forest.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Ancient Castle",
+    "description": "The ruins of an ancient castle loom on the horizon. It holds many secrets waiting to be discovered.",
+    "image_url": "resources_test/images/ancient_castle.jpg"
+  }
+]
