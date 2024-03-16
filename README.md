@@ -35,7 +35,3 @@ The game invites players into a dynamic narrative where they can navigate throug
 ## Contribution
 
 Contributions and feedback are welcome! Whether you're interested in Rust, game development, software architecture, or AI-assisted coding, your insights and contributions can help shape the project's direction.
-
----
-
-This `README.md` provides a comprehensive overview of the project, its goals, and its current state, intended for collaborators, contributors, or anyone interested in the project's development journey.
