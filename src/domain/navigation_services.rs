@@ -15,9 +15,16 @@ impl NavigationService {
     }
 
     // Example method to navigate based on direction
-    pub fn navigate(&self, player_state: i32, direction: &str) -> Result<Location, String> {
-        // Implement the logic to determine the next location based on the current state and direction
-        // This is just a placeholder. Actual implementation will depend on your game's rules and data
-        Err("Not yet implemented".to_string())
+    pub fn navigate(&self, current_location_id: i32, direction: &str) -> Result<(Location, String), String> {
+        if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(current_location_id, direction) {
+            if let Some(target_location) = self.location_repository.get_location_by_id(passage.to_location_id) {
+                let narration = format!("You {} and reach {}.", passage.narration, target_location.title);
+                Ok((target_location, narration))
+            } else {
+                Err("Target location not found.".to_string())
+            }
+        } else {
+            Err("No passage found in that direction.".to_string())
+        }
     }
 }

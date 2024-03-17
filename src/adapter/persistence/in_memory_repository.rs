@@ -77,4 +77,11 @@ impl PassageRepository for InMemoryPassageRepository {
         Ok(())
     }
 
+    fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage> {
+        let passages = self.passages.lock().unwrap();
+        passages.values().find(|&passage|
+            (passage.from_location_id == location_id) && (passage.direction.eq_ignore_ascii_case(direction))
+        ).cloned()
+    }
+
 }

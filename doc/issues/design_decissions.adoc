@@ -56,3 +56,10 @@ If you introduce state to NavigationService that needs to be shared or mutated a
 Shared Ownership: Arc provides shared ownership of the service, allowing multiple parts of your application to hold references to the same instance.
 Thread Safety: Wrapping mutable state in Mutex or RwLock inside an Arc ensures that any access to the state is synchronized across threads, preventing data races.
 Design Considerations
+
+
+
+== use derive_builder
+
+
+== Send and Sync for repos
