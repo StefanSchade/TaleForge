@@ -15,7 +15,7 @@ impl NavigationService {
     }
 
     // Example method to navigate based on direction
-    pub fn navigate(&self, player_state: &PlayerState, direction: &str) -> Result<Location, String> {
+    pub fn navigate(&self, player_state: i32, direction: &str) -> Result<Location, String> {
         // Implement the logic to determine the next location based on the current state and direction
         // This is just a placeholder. Actual implementation will depend on your game's rules and data
         Err("Not yet implemented".to_string())

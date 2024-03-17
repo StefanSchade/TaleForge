@@ -38,9 +38,6 @@ Complex Method Signatures: Each method must include parameters for the repositor
 Reduced Clarity: The service's dependencies are less clear, as they are not explicitly defined in its constructor.
 
 
-
-
-
 == Repositories are injected into serivces on startup
 
 
@@ -48,3 +45,14 @@ Reduced Clarity: The service's dependencies are less clear, as they are not expl
 
 
 == It is accepted that Mutex error cause the program to panic
+
+
+== statefull things (e.g. services)
+
+
+ntroducing State
+If you introduce state to NavigationService that needs to be shared or mutated across threads, then wrapping it in Arc (along with appropriate locking mechanisms like Mutex or RwLock for mutable state) becomes necessary. This is because:
+
+Shared Ownership: Arc provides shared ownership of the service, allowing multiple parts of your application to hold references to the same instance.
+Thread Safety: Wrapping mutable state in Mutex or RwLock inside an Arc ensures that any access to the state is synchronized across threads, preventing data races.
+Design Considerations
