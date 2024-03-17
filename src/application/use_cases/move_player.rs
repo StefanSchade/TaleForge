@@ -25,7 +25,7 @@ impl MovePlayerUseCase {
 
         // Use the NavigationService to determine the new location based on the direction
         match self.navigation_service.navigate(current_location_id, &direction) {
-            Ok(new_location) => {
+            Ok((new_location, narration)) => {
                 // Here, new_location would be an instance of the Location entity
                 // which contains all the necessary details like image_url, description, etc.
                 Ok(MovePlayerOutput {
