@@ -1,0 +1,50 @@
+== Aggregates are distinct modules
+
+
+== Repositories are injected into serivces on startup
+
+
+
+In Domain-Driven Design (DDD), the decision on whether to inject dependencies like repositories directly into services (such as your NavigationService) at instantiation or pass them with each method call depends on several factors, including:
+
+Lifetime and Scope: If the service will operate with the same instances of repositories throughout its lifetime, injecting them at the time of service instantiation simplifies method signatures and aligns with the dependency inversion principle, making the service's dependencies explicit.
+Flexibility for Testing: Injecting dependencies through the constructor (or at instantiation) makes it easier to replace them with mocks or stubs in tests, promoting more straightforward unit testing.
+Consistency: Consistent access to the same repository instance (e.g., a shared cache or a specific database connection) might be necessary for the service's operations, favoring injection at instantiation.
+Domain Model Purity: Passing repositories or other infrastructure services directly in the domain model can sometimes blur the lines between the domain and application layers, potentially complicating the domain model with concerns that are not purely domain-related.
+Given these considerations, let's explore the implications of both approaches in the context of a Rust implementation:
+
+=== Options
+
+==== Injecting Repositories at Service Instantiation
+This approach involves creating fields in your service struct for the repositories and initializing these fields when the service is instantiated. This is a common pattern in many Rust applications, especially when using frameworks or libraries that support dependency injection.
+
+Advantages:
+
+Simplified Method Signatures: Methods in your service do not need to repeatedly specify repository parameters.
+Lifetime Management: The lifetime of repository dependencies is tied to the service instance, simplifying resource management.
+Ease of Testing: Swapping out dependencies for mock objects in unit tests is straightforward.
+
+==== Passing Repositories with Each Call
+
+Alternatively, you might pass repositories as arguments to each service method. This approach is less common in Rust but can be used in scenarios where you need maximum flexibility, such as dynamically choosing repositories based on runtime conditions.
+
+Advantages:
+
+Flexibility: Allows for different repository instances to be used with each method call.
+Statelessness: Makes the service stateless with regard to the repositories, which can be an advantage in specific architectures.
+Considerations:
+
+Complex Method Signatures: Each method must include parameters for the repositories, which can become unwieldy.
+Reduced Clarity: The service's dependencies are less clear, as they are not explicitly defined in its constructor.
+
+
+
+
+
+== Repositories are injected into serivces on startup
+
+
+== Repositories are generally desigend thread safe
+
+
+== It is accepted that Mutex error cause the program to panic

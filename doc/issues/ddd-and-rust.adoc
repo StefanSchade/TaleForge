@@ -3,6 +3,11 @@
 == Introduction
 Domain-Driven Design (DDD) emphasizes the importance of a rich, expressive domain model and clear architectural boundaries. Implementing DDD in Rust offers unique advantages due to Rust's strong type system, ownership model, and trait system. This document focuses on two crucial aspects of applying DDD principles in Rust: defining repositories as traits and utilizing `Arc<dyn Trait>` for sharing services across the application.
 
+== Aggregates as modules
+
+
+
+
 == Repositories as Traits
 
 Repositories in DDD serve as abstractions over the storage mechanism for aggregates. In Rust, defining repositories as traits aligns well with this principle by providing a clear contract for data access without coupling the domain model to a specific storage implementation.
