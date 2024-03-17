@@ -5,42 +5,59 @@ Domain-Driven Design (DDD) emphasizes the importance of a rich, expressive domai
 
 == Repositories as Traits
 
-Repositories play a critical role in DDD by abstracting the persistence mechanism away from the domain model. In Rust, defining repository interfaces as traits allows for a clean separation of concerns and flexibility in the implementation of persistence logic.
-
-=== Why Use Traits for Repositories?
-
-- *Abstraction*: Traits provide a way to define a set of methods that a repository must implement, without specifying how these methods are implemented. This abstraction allows the domain model to interact with the persistence layer through well-defined interfaces.
-- *Swappable Implementations*: By defining repositories as traits, you can easily swap out different implementations (e.g., an in-memory repository for testing and a database-backed repository for production) without changing the domain logic.
-- *Dependency Injection*: Traits can be used to inject dependencies into your domain services or application services, making your system more modular and testable.
-
-=== Defining a Repository Trait
+Repositories in DDD serve as abstractions over the storage mechanism for aggregates. In Rust, defining repositories as traits aligns well with this principle by providing a clear contract for data access without coupling the domain model to a specific storage implementation.
 
 [source,rust]
 ----
 trait LocationRepository {
     fn find_by_id(&self, id: i32) -> Option<Location>;
-    fn save(&mut self, location: &Location);
+    // Other necessary methods...
+}
+
+trait PassageRepository {
+    fn find_by_id(&self, id: i32) -> Option<Passage>;
+    // Other necessary methods...
 }
 ----
 
-== Shared Services Using `Arc<dyn Trait>`
+By defining repository interfaces as traits, we gain the flexibility to swap out implementations. This is particularly useful for testing, where mock implementations can be substituted to test domain logic in isolation from external systems like databases.
 
-In a multi-threaded application, such as a web server, shared services and repositories need to be accessed by multiple threads safely. Rust's `Arc<T>` type provides thread-safe reference counting, and when combined with trait objects (`dyn Trait`), it allows for sharing implementations of traits across threads.
+== Shared Services with `Arc<dyn Trait>`
 
-=== Why Use `Arc<dyn Trait>`?
-
-- *Thread Safety*: `Arc` provides thread-safe reference counting, making it safe to share instances across threads. This is essential for web applications and other multi-threaded contexts.
-- *Dynamic Dispatch*: Using `dyn Trait` with `Arc` enables dynamic dispatch, allowing multiple concrete implementations of a trait to be used at runtime.
-- *Flexibility*: This approach supports the dynamic selection of implementations, which can be particularly useful for loading configuration at runtime or for dependency injection.
-
-=== Example: Sharing a Repository
+In a multi-threaded application, like a web server, sharing service instances across threads safely is crucial. `Arc<dyn Trait>` is Rust's way of achieving this for services that implement traits.
 
 [source,rust]
 ----
-let location_repository: Arc<dyn LocationRepository> = Arc::new(InMemoryLocationRepository::new());
-let service = SomeService::new(location_repository.clone());
+struct NavigationService {
+    location_repository: Arc<dyn LocationRepository>,
+    passage_repository: Arc<dyn PassageRepository>,
+}
+
+impl NavigationService {
+    pub fn new(
+        location_repository: Arc<dyn LocationRepository>,
+        passage_repository: Arc<dyn PassageRepository>,
+    ) -> Self {
+        Self { location_repository, passage_repository }
+    }
+
+    // Example service method
+    pub fn navigate(&self, from: i32, to: i32) -> Result<Path, NavigationError> {
+        // Implementation...
+    }
+}
 ----
 
-== Conclusion
+`Arc<dyn Trait>` enables shared ownership of a service instance with runtime polymorphism, allowing for dynamic dispatch to the trait's methods. This pattern is particularly useful for dependency injection and runtime configuration.
 
-Utilizing traits for repositories and `Arc<dyn Trait>` for shared services are powerful patterns for implementing DDD in Rust. These approaches leverage Rust's type system and concurrency model to build flexible, modular, and scalable applications. By abstracting the persistence layer and enabling dynamic, thread-safe sharing of services, developers can focus on the domain logic, ensuring that the software closely aligns with the domain's complexities and requirements.
+=== Decision: Injecting Repositories
+
+Regarding whether to inject repositories into services at instantiation or pass them with each method call:
+
+- *Instantiation-time Injection*: Simplifies method signatures by not requiring repositories as parameters for each call. It's well-suited when the service consistently uses the same set of repositories, emphasizing a clear dependency relationship.
+
+- *Method-level Injection*: Provides flexibility to pass different repository implementations with each call. While it increases method signature complexity, it allows for greater flexibility, such as using different data sources for specific operations.
+
+Instantiation-time injection is generally preferred for services within the domain layer that maintain a consistent relationship with their dependencies, aligning with the DDD principle of clear, stable interfaces. Method-level injection might be more applicable in boundary layers or scenarios requiring high flexibility.
+
+In most cases, especially within the domain layer, instantiation-time injection (using `Arc<dyn Trait>`) is a practical choice for maintaining clear, concise method signatures and emphasizing the stable relationships between domain services and their dependencies.
