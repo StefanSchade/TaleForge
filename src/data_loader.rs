@@ -12,7 +12,11 @@ pub fn load_data_from_json<R: LocationRepository, P: PassageRepository>(
     passage_repo: Arc<P>,
     location_file_path: &Path,
     passage_file_path: &Path,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), Box<dyn std::error::Error>>
+    where
+        R: LocationRepository + ?Sized,
+        P: PassageRepository + ?Sized,
+{
     // Load and deserialize locations
     let mut file = File::open(location_file_path)?;
     let mut contents = String::new();
