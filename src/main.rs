@@ -28,11 +28,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let location_repository: Arc<dyn LocationRepository> = Arc::new(InMemoryLocationRepository::new());
     let passage_repository: Arc<dyn PassageRepository> = Arc::new(InMemoryPassageRepository::new());
 
-    let app_state = Data::new(Arc::new(AppState::new(
-        location_repository.clone(),
-        passage_repository.clone(),
-    )));
-
     // initialize the repos with data
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
@@ -51,6 +46,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         passage_repository.clone(),
         navigation_service,
     );
+
+    let app_state = Data::new(Arc::new(AppState::new(
+        location_repository.clone(),
+        passage_repository.clone(),
+        move_player_use_case,
+        )));
 
     server::start_server(app_state).await;
 
