@@ -1,14 +1,14 @@
 [
   {
     "id": 1,
-    "title": "Enchanted Forest",
-    "description": "A mysterious forest that seems to whisper on the wind. Paths lead in all directions.",
-    "image_url": "resources_test/images/enchanted_forest.jpg"
+    "title": "Old Bridge",
+    "description": "An ancient stone bridge crossing over a quiet river. Moss covers its sides, and the water below flows gently.",
+    "image_url": "http://example.com/images/old_bridge.png"
   },
   {
     "id": 2,
-    "title": "Ancient Castle",
-    "description": "The ruins of an ancient castle loom on the horizon. It holds many secrets waiting to be discovered.",
-    "image_url": "resources_test/images/ancient_castle.jpg"
+    "title": "Hilltop",
+    "description": "The top of a high hill, offering a panoramic view of the surrounding lands. The wind is stronger here, carrying the scent of distant places.",
+    "image_url": null
   }
 ]

@@ -3,12 +3,16 @@
     "id": 1,
     "from_location_id": 1,
     "to_location_id": 2,
-    "description": "A winding path through the woods leads to the ruins of an ancient castle."
+    "description": "A steep path leading up to the hilltop.",
+    "direction": "north",
+    "narration": "You take a deep breath and start your climb. The path is steep but well-trodden."
   },
   {
     "id": 2,
     "from_location_id": 2,
     "to_location_id": 1,
-    "description": "A narrow trail snakes back into the heart of the Enchanted Forest."
+    "description": "A winding path leading down to the old bridge.",
+    "direction": "south",
+    "narration": "You carefully make your way down the hill, following the winding path as it descends."
   }
 ]
