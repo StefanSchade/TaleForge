@@ -1,41 +1,29 @@
-use actix_web::http::header::LOCATION;
-use serde::__private::ser::serialize_tagged_newtype;
-use crate::domain::aggregates::location::Location;
-use crate::domain::aggregates::player_state;
-use crate::domain::test_data::{TEST_DATA, TestData};
-use crate::domain::navigation_services;
-use crate::domain::navigation_services::NavigationService;
+use std::sync::Arc;
+
 use crate::port::dto::{MovePlayerInput, MovePlayerOutput};
+use crate::port::repository::{LocationRepository, PassageRepository};
 
 pub trait MovePlayer {
     fn move_player(&self, input: MovePlayerInput) -> Result<MovePlayerOutput, &'static str>;
 }
 
-pub struct MovePlayerUseCase;
+pub struct MovePlayerUseCase {
+    location_repository: Arc<dyn LocationRepository>,
+    passage_repository: Arc<dyn PassageRepository>,
+}
 
-impl MovePlayer for MovePlayerUseCase {
-    fn move_player(&self, input: MovePlayerInput) -> Result<MovePlayerOutput, &'static str> {
-        let mut test_data = TEST_DATA.lock().unwrap(); // Access global test data
-        let player_state = &mut test_data.player_state;
+impl MovePlayerUseCase {
+    pub fn new(location_repository: Arc<dyn LocationRepository>, passage_repository: Arc<dyn PassageRepository>) -> Self {
+        Self { location_repository, passage_repository }
+    }
 
-        // Domain logic to update player location based on direction
-        //NavigationService.update_location_based_on_direction(input.direction).map_err(|_| "Invalid move or direction")?;
+    pub fn move_player(&self, player_id: i32, direction: String) -> Result<(), String> {
+        // Example logic:
+        // 1. Retrieve the player's current location using the player ID.
+        // 2. Determine the target location based on the current location and the direction.
+        // 3. Update the player's location in the repository.
 
-        // Fetch updated location details from the domain model
-        player_state.current_location_id();
-
-        // Construct and return the dynamic output
-
-        let new_location = test_data.locations.pop();
-
-        match new_location {
-            Some(location) => Ok(MovePlayerOutput {
-                room_number: location.id,
-                title: location.title,
-                description: location.description,
-                image_url: location.image_url,
-            }),
-            None => Err("No more locations to pop."),
-        }
+        // This is a simplified placeholder. Your actual logic will depend on how you've structured your domain models and data.
+        Ok(())
     }
 }

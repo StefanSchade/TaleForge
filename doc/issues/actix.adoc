@@ -1,0 +1,82 @@
+= Actix-web Setup and Handler Options
+
+== Introduction
+This document outlines the current setup of an Actix-web server in a Rust application and discusses three approaches to organizing request handlers, which serve a similar purpose to controllers in frameworks like Spring Boot.
+
+== Actix-web Setup Overview
+Our Actix-web application is structured to separate concerns clearly, with the server setup encapsulated in `server.rs` and the application state managed via `AppState`. The `AppState` struct, defined in its own module, holds shared application resources, including repositories and services.
+
+=== AppState
+`AppState` is designed to be passed into Actix-web's application data, allowing shared access to application-wide services and data across request handlers.
+
+[source,rust]
+----
+pub struct AppState {
+    pub location_repository: Arc<dyn LocationRepository>,
+    pub passage_repository: Arc<dyn PassageRepository>,
+}
+----
+
+=== Server Initialization
+The server initialization takes place in `server.rs`, where `AppState` is injected into the Actix-web server, enabling its availability in request handlers.
+
+[source,rust]
+----
+pub async fn start_server(app_state: web::Data<AppState>) -> std::io::Result<()> {
+    HttpServer::new(move || {
+        App::new()
+            .app_data(app_state.clone())
+            // Define routes and handlers here
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
+}
+----
+
+== Options for Organizing Handlers
+
+Organizing request handlers in Actix-web can be approached in several ways, each with its own advantages.
+
+=== Option 1: Inline Handlers
+Handlers are defined inline within the `HttpServer::new` or `App::new` closures. This approach is quick and straightforward for simple applications or prototypes.
+
+[source,rust]
+----
+.web::resource("/example")
+.route(web::get().to(|req: HttpRequest| async { /* Inline handler logic */ }))
+----
+
+=== Option 2: Separate Functions
+Handlers are implemented as separate async functions, possibly in the same file as the server setup or in dedicated modules. This approach improves readability and maintainability for applications with more complex logic.
+
+[source,rust]
+----
+async fn example_handler(req: HttpRequest) -> impl Responder {
+    // Handler logic here
+}
+
+// In App::new(), reference the handler by name
+.web::resource("/example").route(web::get().to(example_handler))
+----
+
+=== Option 3: Controllers as Modules
+For larger applications, you can organize related handlers into modules, similar to controllers in Spring Boot. Each module can represent a specific feature or domain area of your application.
+
+[source,rust]
+----
+// src/controllers/example_controller.rs
+pub async fn example_handler(data: web::Data<AppState>) -> impl Responder {
+    // Handler logic accessing AppState
+}
+
+// In server.rs, import the controller module
+App::new()
+    .app_data(app_state.clone())
+    .service(
+        web::resource("/example").route(web::get().to(example_controller::example_handler)),
+    )
+----
+
+== Conclusion
+Choosing the right organization for request handlers in Actix-web depends on the complexity of your application and personal or team preferences. For larger applications, organizing handlers into modules (Option 3) offers the best scalability and maintainability, closely aligning with patterns seen in other web frameworks like Spring Boot.
