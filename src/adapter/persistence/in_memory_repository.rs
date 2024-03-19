@@ -32,9 +32,6 @@ impl InMemoryLocationRepository {
 }
 
 impl LocationRepository for InMemoryLocationRepository {
-    // fn get_location_by_id(&self, id: i32) -> Option<Location> {
-    //     self.locations.get(&id).cloned()
-    // }
 
     fn get_location_by_id(&self, id: i32) -> Option<Location> {
         let locations = self.locations.lock().unwrap(); // Acquire the lock
@@ -105,7 +102,7 @@ impl PlayerStateRepository for InMemoryPlayerStateRepository {
         states.get(&id).cloned()
     }
 
-    fn save(&mut self, player_state: PlayerState) {
+    fn save(&self, player_state: PlayerState) {
         let mut states = self.states.lock().unwrap();
         states.insert(player_state.id.clone(), player_state);
     }

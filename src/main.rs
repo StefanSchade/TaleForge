@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use actix_web::web::Data;
 
@@ -8,6 +8,7 @@ use app_state::AppState;
 
 use crate::adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
 use crate::application::use_cases::move_player::MovePlayerUseCase;
+use crate::domain::aggregates::player_state::PlayerState;
 use crate::domain::navigation_services::NavigationService;
 use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
@@ -32,6 +33,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // initialize the repos with data
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
+
+    // initialize player state for test user 1
+
+    // let mut player_state_repository_mutable = player_state_repository.clone()
+    player_state_repository.save(PlayerState { id: 1, current_location_id: 1 });
+
+
 
     data_loader::load_data_from_json(
         location_repository.clone(), // Assuming your function expects Arc<R> where R: LocationRepository

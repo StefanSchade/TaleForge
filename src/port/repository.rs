@@ -22,6 +22,6 @@ pub trait PassageRepository: Send + Sync {
 
 pub trait PlayerStateRepository: Send + Sync {
     fn find_by_id(&self, id: i32) -> Option<PlayerState>;
-    fn save(&mut self, player_state: PlayerState);
+    fn save(&self, player_state: PlayerState);
     // Define additional methods as needed
 }
