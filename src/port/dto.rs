@@ -1,16 +1,15 @@
 // src/port/dto.rs
 
 // Input DTO for moving a player
-#[derive(serde::Deserialize)]
-pub struct MovePlayerInput {
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+pub struct MovePlayerCommand {
     pub direction: String,
 }
-
-// Output DTO for the move player response
-#[derive(serde::Serialize)]
-pub struct MovePlayerOutput {
-    pub room_number: i32,
-    pub title: String,
-    pub description: String,
-    pub image_url: Option<String>,
+#[derive(Serialize, Deserialize)]
+pub struct MovePlayerResult {
+    pub player_location: i32,
+    pub narration: String,
 }

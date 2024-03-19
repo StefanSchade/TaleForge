@@ -1,6 +1,7 @@
 use std::sync::Arc;
+
 use crate::domain::navigation_services::NavigationService;
-use crate::port::dto::MovePlayerOutput;
+use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
 use crate::port::repository::{LocationRepository, PassageRepository};
 
 pub struct MovePlayerUseCase {
@@ -10,7 +11,6 @@ pub struct MovePlayerUseCase {
 }
 
 impl MovePlayerUseCase {
-    // Adjust the constructor to accept the NavigationService
     pub fn new(
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>,
@@ -19,23 +19,22 @@ impl MovePlayerUseCase {
         Self { location_repository, passage_repository, navigation_service }
     }
 
-    pub fn execute(&self, direction: String) -> Result<MovePlayerOutput, String> {
+    pub fn execute(&self, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
+
         // For simplification, assume a fixed current location (e.g., location ID 1)
         let current_location_id = 1;
 
         // Use the NavigationService to determine the new location based on the direction
-        match self.navigation_service.navigate(current_location_id, &direction) {
+        match self.navigation_service.navigate(current_location_id, input.direction) {
             Ok((new_location, narration)) => {
                 // Here, new_location would be an instance of the Location entity
                 // which contains all the necessary details like image_url, description, etc.
-                Ok(MovePlayerOutput {
-                    room_number: new_location.id,
-                    title: new_location.title,
-                    description: new_location.description,
-                    image_url: new_location.image_url,
+                Ok(MovePlayerResult {
+                    player_location: 1,
+                    narration: "Something is happening".to_string(),
                 })
-            },
-            Err(error) => Err(error),
+            }
+            Err(error) => Err(error.to_string()), // Convert the error to a String
         }
     }
 }

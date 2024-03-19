@@ -1,5 +1,5 @@
-use crate::port::dto::{MovePlayerInput, MovePlayerOutput};
+use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
 
 pub trait GameService {
-    fn move_player(&self, input: MovePlayerInput) -> Result<MovePlayerOutput, &'static str>;
+    fn move_player(&self, input: MovePlayerCommand) -> Result<MovePlayerResult, &'static str>;
 }
