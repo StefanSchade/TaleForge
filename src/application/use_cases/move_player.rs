@@ -2,11 +2,12 @@ use std::sync::Arc;
 
 use crate::domain::navigation_services::NavigationService;
 use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
-use crate::port::repository::{LocationRepository, PassageRepository};
+use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 pub struct MovePlayerUseCase {
     location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
+    player_state_repository: Arc<dyn PlayerStateRepository>,
     navigation_service: NavigationService,
 }
 
@@ -14,9 +15,10 @@ impl MovePlayerUseCase {
     pub fn new(
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>,
+        player_state_repository: Arc<dyn PlayerStateRepository>,
         navigation_service: NavigationService,
     ) -> Self {
-        Self { location_repository, passage_repository, navigation_service }
+        Self { location_repository, passage_repository, player_state_repository, navigation_service }
     }
 
     pub fn execute(&self, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {

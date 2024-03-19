@@ -1,5 +1,6 @@
 use crate::domain::aggregates::location::Location;
 use crate::domain::aggregates::passage::Passage;
+use crate::domain::aggregates::player_state::PlayerState;
 
 // we want to be able to change the implementation of theese repos after compilation, therefore the traits need to be object safe. This implies that they have no method, that returns 'Self'. Compare implmementation of struc AppState
 
@@ -17,4 +18,10 @@ pub trait PassageRepository: Send + Sync {
     // New method to find a passage by direction and current location
     fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage>;
     fn add_passage(&self, passage: Passage) -> Result<(), String>;
+}
+
+pub trait PlayerStateRepository: Send + Sync {
+    fn find_by_id(&self, id: &i32) -> Option<PlayerState>;
+    fn save(&mut self, player_state: PlayerState);
+    // Define additional methods as needed
 }

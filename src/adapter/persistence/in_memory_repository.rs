@@ -1,14 +1,26 @@
-use crate::port::repository::{LocationRepository, PassageRepository};
-use crate::domain::aggregates::location::Location;
-use crate::domain::aggregates::passage::Passage;
 use std::collections::HashMap;
 use std::option::Option;
 use std::sync::Mutex;
 
+use crate::domain::aggregates::location::Location;
+use crate::domain::aggregates::passage::Passage;
+use crate::domain::aggregates::player_state::PlayerState;
+use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 pub struct InMemoryLocationRepository {
     locations: Mutex<HashMap<i32, Location>>,
 }
+
+
+pub struct InMemoryPassageRepository {
+    passages: Mutex<HashMap<i32, Passage>>,
+}
+
+
+pub struct InMemoryPlayerStateRepository {
+    states: Mutex<HashMap<i32, PlayerState>>,
+}
+
 
 impl InMemoryLocationRepository {
     pub fn new() -> Self {
@@ -39,14 +51,7 @@ impl LocationRepository for InMemoryLocationRepository {
         locations.insert(location.id, location);
         Ok(())
     }
-
 }
-
-
-pub struct InMemoryPassageRepository {
-    passages: Mutex<HashMap<i32, Passage>>
-}
-
 
 impl InMemoryPassageRepository {
     pub fn new() -> Self {
@@ -71,12 +76,6 @@ impl PassageRepository for InMemoryPassageRepository {
             .cloned()
             .collect() // Collect filtered and cloned passages into a Vec
     }
-    fn add_passage(&self, passage: Passage) -> Result<(), String> {
-        let mut locations = self.passages.lock().map_err(|_| "Mutex lock failed")?;
-        locations.insert(passage.id, passage);
-        Ok(())
-    }
-
     fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage> {
         let passages = self.passages.lock().unwrap();
         passages.values().find(|&passage|
@@ -84,4 +83,30 @@ impl PassageRepository for InMemoryPassageRepository {
         ).cloned()
     }
 
+    fn add_passage(&self, passage: Passage) -> Result<(), String> {
+        let mut locations = self.passages.lock().map_err(|_| "Mutex lock failed")?;
+        locations.insert(passage.id, passage);
+        Ok(())
+    }
+}
+
+impl InMemoryPlayerStateRepository {
+    pub fn new() -> Self {
+        InMemoryPlayerStateRepository {
+            states: Mutex::new(HashMap::new()),
+        }
+    }
+}
+
+
+impl PlayerStateRepository for InMemoryPlayerStateRepository {
+    fn find_by_id(&self, id: &i32) -> Option<PlayerState> {
+        let states = self.states.lock().unwrap();
+        states.get(id).cloned() // Use cloned to return a copy of the PlayerState if found
+    }
+
+    fn save(&mut self, player_state: PlayerState) {
+        let mut states = self.states.lock().unwrap();
+        states.insert(player_state.id.clone(), player_state);
+    }
 }
