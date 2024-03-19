@@ -1,5 +1,3 @@
-# TaleForge: Text Adventure Logic Engine
-
 ![TaleForge Banner](/README/images/banner_01.webp)
 
 Welcome to **TaleForge**, a creative oasis for enthusiasts of text adventures and role-playing games. Our mission is simple yet ambitious: to empower you to design immersive text adventures without a single line of code. Whether you're a storyteller, a dreamer, or a game designer, TaleForge offers the tools to bring your narratives to life.

@@ -1,0 +1,39 @@
+= Design Decisions Document
+
+== Handling Player ID in the System Architecture
+
+=== Context and Need
+The system requires a mechanism to identify and manage player states effectively, at the moment the need arises for the navigation service.
+This involves passing player-specific information through various layers of the application, from external inputs down to the domain layer.
+
+=== Alternatives Considered
+
+. *Direct Passing of player_id*: Simply pass the `player_id` through function parameters from the controllers down to the domain services.
+* Pros: Straightforward implementation; minimal complexity.
+* Cons: Can become cumbersome with increased parameters; does not scale well with added cross-cutting concerns.
+
+. *Context Object*: Introduce a context-like structure at the boundary of the application to encapsulate `player_id` and potentially other metadata.
+* Pros: Centralizes cross-cutting concerns; easily extensible for future needs; separates domain logic from external concerns.
+* Cons: Introduces additional complexity; requires careful management to avoid coupling.
+
+=== Decision
+After considering the alternatives, the decision is to proceed with the *Context Object* approach for several reasons:
+
+- It provides a scalable way to handle `player_id` and future cross-cutting concerns without polluting the domain logic.
+- It maintains the separation of concerns, keeping the domain model focused on business logic.
+- It offers a flexible foundation that can evolve as the application's requirements grow.
+
+Avoid the following:
+
+- The context should remain outside the domain and not polute it
+- choose use cases as pivot point to change from context to domain objects
+
+=== Implementation Strategy
+1. Establish a repository for player states to abstract the storage mechanism from the domain logic.
+2. Implement a context structure in incoming adapters to encapsulate the `player_id` and other operational data.
+3. Modify the web controller to extract `player_id` from the HTTP header, package it into the context, and pass it to the domain layer.
+4. Design use cases to serve as the coordinators between the external inputs and the domain services, utilizing the context for cross-cutting concerns.
+
+=== Future Considerations
+- Extend the context object to include additional authentication tokens or metadata as needed.
+- Review and adapt the context and repository implementations to ensure they meet the evolving requirements of the application.
