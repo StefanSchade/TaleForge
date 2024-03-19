@@ -27,7 +27,7 @@ Our journey begins with establishing a dynamic world where adventurers can freel
 4. **Continuous Feature Expansion:** Adding new features, including multiplayer options and game designing tools.
 5. **Community and Social Features:** Integrating social media features for sharing and collaboration.
 
-![Watching Dragons](/README/images/watching_dragons.webp)
+<img src="README/images/watching_dragons.webp" width="300"/>
 
 ## Get Involved
 
