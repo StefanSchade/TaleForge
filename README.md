@@ -1,37 +1,50 @@
-# Text-Based Graphic Adventure Game
+# TaleForge: Text Adventure Logic Engine
 
-This repository hosts the development of a text-based graphic adventure game, leveraging modern software architecture and coding practices. The project serves multiple purposes: exploring hexagonal architecture in Rust, experimenting with development support from AI through ChatGPT, and creating an engaging adventure game.
+![TaleForge Banner](/README/resources/banner_02.webp)
 
-## Project Overview
+Welcome to **TaleForge**, a creative oasis for enthusiasts of text adventures and role-playing games. Our mission is simple yet ambitious: to empower you to design immersive text adventures without a single line of code. Whether you're a storyteller, a dreamer, or a game designer, TaleForge offers the tools to bring your narratives to life.
 
-The game invites players into a dynamic narrative where they can navigate through a richly described world, interact with objects and characters, and solve puzzles. Players experience shifting perspectives, transitioning between a vampire and a human state, which affects their abilities, the story's progression, and interactions within the game world.
+## Vision
 
-## Objectives
+TaleForge is more than just a platform; it's a gateway to limitless adventures. Here's what makes TaleForge unique:
 
-- **Showcase Hexagonal Architecture**: Implement and explore the benefits of hexagonal architecture (ports and adapters pattern) in Rust, aiming for a clean separation of concerns, scalability, and maintainability.
-- **Development with ChatGPT Support**: Document the experience and effectiveness of using ChatGPT as a development assistant, capturing insights on leveraging AI for coding assistance, architectural design, and problem-solving.
-- **Create a Fun Adventure Game**: While exploring technical aspects, the primary goal is to develop an enjoyable game that offers players an immersive narrative experience.
+- **No-Code Adventure Design:** Create detailed, engaging text adventures with ease.
+- **Online Access:** Everything is online, accessible through a browser, making it easy to start anywhere, anytime.
+- **Multiplayer Adventures:** Embark on quests with friends or design multiplayer narratives.
+- **Visual Complements:** Enhance your stories with graphics, adding depth to your text adventures.
+- **Community Sharing:** Release your creations to the community, inspiring and being inspired by fellow adventurers.
+- **Future Expansion:** Role-playing features and more on the horizon, expanding what's possible in text adventures.
 
-## Architecture
+As a pet project born out of passion, TaleForge is my journey into learning Rust, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development.
 
-- **Domain**: Contains the core game logic, including entities like players, locations, objects, and NPCs, along with the rules governing interactions and state transitions.
-- **Application**: Encapsulates use cases, orchestrating the flow between the domain logic and external interfaces, ensuring the application logic is kept separate from core business rules.
-- **Port**: Defines abstract interfaces for the application layer, enabling communication with external systems and services, such as data storage and user interfaces.
-- **Adapter**: Implements concrete instances of port interfaces, handling data persistence, API communications, and any technology-specific details.
+## The Road Ahead
 
-## Current Progress
+Our journey begins with establishing a dynamic world where adventurers can freely explore. The roadmap includes:
 
-- Setup an Actix-web server capable of handling game actions.
-- Established a global mutable state for development convenience, recognizing the need for eventual refactoring towards more idiomatic Rust patterns.
-- Began implementing domain logic for player movement and interaction within the game world, with plans to expand the game's narrative and mechanical depth.
+1. **World Navigation:** Setting up the infrastructure to navigate through an adventure world.
+2. **Operational Infrastructure:** Developing a robust foundation for operation and deployment.
+3. **Single Player Adventures:** Crafting immersive experiences for individual explorers.
+4. **Continuous Feature Expansion:** Adding new features, including multiplayer options and game designing tools.
+5. **Community and Social Features:** Integrating social media features for sharing and collaboration.
 
-## Future Directions
+![Watching Dragons](/README/resources/watching_dragons.webp)
 
-- Refine and expand the game's narrative and mechanical features, adding depth to player interactions and the game world.
-- Transition from a global mutable state to a more robust state management solution, potentially integrating a database for persistence.
-- Continue to explore and document the use of hexagonal architecture in a Rust-based project, refining the design as the project evolves.
-- Enhance the development process with AI assistance, capturing best practices and lessons learned.
+## Get Involved
 
-## Contribution
+TaleForge is not just my journey; it's ours. Whether you're a seasoned Rust developer, a game design aficionado, or simply curious about text adventures, your contribution can help shape the future of TaleForge. Here's how you can get involved:
 
-Contributions and feedback are welcome! Whether you're interested in Rust, game development, software architecture, or AI-assisted coding, your insights and contributions can help shape the project's direction.
+- **Contribute:** From code contributions to narrative designs, all forms of contributions are welcome.
+- **Feedback:** Share your thoughts, ideas, and suggestions to make TaleForge even better.
+- **Connect:** Join our community of Rust developers and adventure game enthusiasts.
+
+## Technologies
+
+- **Rust:** Learning and implementing Rust for robust, efficient game logic.
+- **DDD & Hexagonal Architecture:** Employing modern architectural principles for scalable, maintainable code.
+- **AI in Coding:** Experimenting with AI as a tool to enhance coding efficiency and creativity.
+
+## Let's Forge Tales Together
+
+Embark on this journey with us. Together, we can build a world of adventures, stories, and connections. Whether you're here to create, play, or contribute, you're a vital part of TaleForge.
+
+**[Contribute to TaleForge](#)** | **[Join Our Community](#)** | **[Follow Our Progress](#)**
