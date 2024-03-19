@@ -1,6 +1,6 @@
 # TaleForge: Text Adventure Logic Engine
 
-![TaleForge Banner](/README/resources/banner_02.webp)
+![TaleForge Banner](/README/images/banner_02.webp)
 
 Welcome to **TaleForge**, a creative oasis for enthusiasts of text adventures and role-playing games. Our mission is simple yet ambitious: to empower you to design immersive text adventures without a single line of code. Whether you're a storyteller, a dreamer, or a game designer, TaleForge offers the tools to bring your narratives to life.
 
@@ -27,7 +27,7 @@ Our journey begins with establishing a dynamic world where adventurers can freel
 4. **Continuous Feature Expansion:** Adding new features, including multiplayer options and game designing tools.
 5. **Community and Social Features:** Integrating social media features for sharing and collaboration.
 
-![Watching Dragons](/README/resources/watching_dragons.webp)
+![Watching Dragons](/README/images/watching_dragons.webp)
 
 ## Get Involved
 
