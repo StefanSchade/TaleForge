@@ -25,15 +25,17 @@ impl MovePlayerUseCase {
     pub fn execute(&self, input: MovePlayerCommand, context: RequestContext) -> Result<MovePlayerResult, String> {
 
         if let Some(player_id) = context.player_id {
-            let player_state = match self.player_state_repository.find_by_id(player_id) {
+            let mut player_state = match self.player_state_repository.find_by_id(player_id) {
                 Some(state) => state,
                 None => return Err("Player state not found".to_string()),
             };
 
-            let (new_location, narration) = self.navigation_service.navigate(player_state, input.direction)?;
+            let (new_location, narration) = self.navigation_service.navigate(player_state.clone(), input.direction)?;
 
-            // Optionally, update the player's state with the new location
-            // self.player_state_repository.save(updated_player_state)?;
+            // update player state
+
+            player_state.current_location_id = new_location.id;
+            self.player_state_repository.save(player_state);
 
             Ok(MovePlayerResult {
                 player_location: new_location.id,
