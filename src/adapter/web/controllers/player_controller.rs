@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use actix_web::{HttpResponse, Responder, web};
 use serde::{Deserialize, Serialize};
+use crate::port::context::RequestContext;
 
 use crate::app_state::AppState;
 use crate::port::dto::MovePlayerCommand;
@@ -18,8 +19,12 @@ pub struct WebMovePlayerOutput {
 }
 
 pub async fn move_player(data: web::Data<Arc<AppState>>, web_input: web::Json<WebMovePlayerInput>) -> impl Responder {
+
+    let extracted_player_id=1;
+
     let command = MovePlayerCommand::from(web_input.into_inner());
-    let result = data.move_player_use_case.execute(command);
+    let context = RequestContext::new(Some(extracted_player_id));
+    let result = data.move_player_use_case.execute(command, context);
 
     match result {
         Ok(response) => {

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::domain::navigation_services::NavigationService;
+use crate::port::context::RequestContext;
 use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
 use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
@@ -21,7 +22,7 @@ impl MovePlayerUseCase {
         Self { location_repository, passage_repository, player_state_repository, navigation_service }
     }
 
-    pub fn execute(&self, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
+    pub fn execute(&self, input: MovePlayerCommand, context: RequestContext) -> Result<MovePlayerResult, String> {
 
         // For simplification, assume a fixed current location (e.g., location ID 1)
         let current_location_id = 1;
