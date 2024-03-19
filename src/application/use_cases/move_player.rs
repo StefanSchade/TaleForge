@@ -30,14 +30,14 @@ impl MovePlayerUseCase {
                 None => return Err("Player state not found".to_string()),
             };
 
-            let new_location = self.navigation_service.navigate(player_state, input.direction)?;
+            let (new_location, narration) = self.navigation_service.navigate(player_state, input.direction)?;
 
             // Optionally, update the player's state with the new location
             // self.player_state_repository.save(updated_player_state)?;
 
             Ok(MovePlayerResult {
-                player_location: 1,
-                narration: "Something is happening".to_string(),
+                player_location: new_location.id,
+                narration: narration,
             })
         } else {
             Err("Player ID not found in context".to_string())
