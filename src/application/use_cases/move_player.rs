@@ -24,20 +24,24 @@ impl MovePlayerUseCase {
 
     pub fn execute(&self, input: MovePlayerCommand, context: RequestContext) -> Result<MovePlayerResult, String> {
 
-        // For simplification, assume a fixed current location (e.g., location ID 1)
-        let current_location_id = 1;
+        if let Some(player_id) = context.player_id {
+            let player_state = match self.player_state_repository.find_by_id(player_id) {
+                Some(state) => state,
+                None => return Err("Player state not found".to_string()),
+            };
 
-        // Use the NavigationService to determine the new location based on the direction
-        match self.navigation_service.navigate(current_location_id, input.direction) {
-            Ok((new_location, narration)) => {
-                // Here, new_location would be an instance of the Location entity
-                // which contains all the necessary details like image_url, description, etc.
-                Ok(MovePlayerResult {
-                    player_location: 1,
-                    narration: "Something is happening".to_string(),
-                })
-            }
-            Err(error) => Err(error.to_string()), // Convert the error to a String
+            let new_location = self.navigation_service.navigate(player_state, input.direction)?;
+
+            // Optionally, update the player's state with the new location
+            // self.player_state_repository.save(updated_player_state)?;
+
+            Ok(MovePlayerResult {
+                player_location: 1,
+                narration: "Something is happening".to_string(),
+            })
+        } else {
+            Err("Player ID not found in context".to_string())
         }
     }
+
 }

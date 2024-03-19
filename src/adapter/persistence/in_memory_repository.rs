@@ -100,9 +100,9 @@ impl InMemoryPlayerStateRepository {
 
 
 impl PlayerStateRepository for InMemoryPlayerStateRepository {
-    fn find_by_id(&self, id: &i32) -> Option<PlayerState> {
+    fn find_by_id(&self, id: i32) -> Option<PlayerState> {
         let states = self.states.lock().unwrap();
-        states.get(id).cloned() // Use cloned to return a copy of the PlayerState if found
+        states.get(&id).cloned()
     }
 
     fn save(&mut self, player_state: PlayerState) {
