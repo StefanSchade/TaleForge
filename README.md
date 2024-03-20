@@ -1,31 +1,35 @@
 ![TaleForge Banner](/README/images/banner_01.webp)
 
-Welcome to **TaleForge**, a creative oasis for enthusiasts of text adventures and role-playing games. Our mission is simple yet ambitious: to empower you to design immersive text adventures without a single line of code. Whether you're a storyteller, a dreamer, or a game designer, TaleForge offers the tools to bring your narratives to life.
+# Welcome to TaleForge, the Text Adventure Logic Engine to forge your own adventure with! 
+
+Welcome enthusiasts of text adventures, role-playing games and programming! Our mission is simple yet ambitious: Empower storytellers to design immersive text adventures without a single line of code by bringing their dreams to life. 
 
 ## Vision
 
-TaleForge is more than just a platform; it's a gateway to limitless adventures. Here's what makes TaleForge unique:
+I dream of TaleForge to become a gateway to limitless adventures, where users can create, share and enjoy text based graphics adventures:
 
-- **No-Code Adventure Design:** Create detailed, engaging text adventures with ease.
+- **No-Code Adventure Design:** Create detailed, engaging text adventures without having to program.
 - **Online Access:** Everything is online, accessible through a browser, making it easy to start anywhere, anytime.
 - **Multiplayer Adventures:** Embark on quests with friends or design multiplayer narratives.
 - **Visual Complements:** Enhance your stories with graphics, adding depth to your text adventures.
 - **Community Sharing:** Release your creations to the community, inspiring and being inspired by fellow adventurers.
 - **Future Expansion:** Role-playing features and more on the horizon, expanding what's possible in text adventures.
 
-As a pet project born out of passion, TaleForge is my journey into learning Rust, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development.
+As a pet project born out of passion, TaleForge is also my journey into learning Rust and ReactJS, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development.
+
+<img src="README/images/visions.webp" width="300"/>
 
 ## The Road Ahead
 
 Our journey begins with establishing a dynamic world where adventurers can freely explore. The roadmap includes:
 
-1. **World Navigation:** Setting up the infrastructure to navigate through an adventure world.
-2. **Operational Infrastructure:** Developing a robust foundation for operation and deployment.
+1. **World Navigation:** Setting up an application that allows to navigate through an adventure world - for the moment without much interaction. This will be our MVP (Minimum Viable Product) to build upon. 
+2. **Operational Infrastructure:** After developing the MVP on the application side, we need to reach a similar point for operation and deployment as a robust foundation for our future Journey.
 3. **Single Player Adventures:** Crafting immersive experiences for individual explorers.
 4. **Continuous Feature Expansion:** Adding new features, including multiplayer options and game designing tools.
 5. **Community and Social Features:** Integrating social media features for sharing and collaboration.
 
-<img src="README/images/watching_dragons.webp" width="300"/>
+<img src="README/images/road_ahead.webp" width="300"/>
 
 ## Get Involved
 
@@ -37,12 +41,15 @@ TaleForge is not just my journey; it's ours. Whether you're a seasoned Rust deve
 
 ## Technologies
 
-- **Rust:** Learning and implementing Rust for robust, efficient game logic.
+- **Rust:** Rust will serve as the backend technology. Its high efficiency and small resource footprint will make hosting possible even for a hobby project.
+- **ReactJS:** As a frontend technology I plan on using ReactJS. 
 - **DDD & Hexagonal Architecture:** Employing modern architectural principles for scalable, maintainable code.
 - **AI in Coding:** Experimenting with AI as a tool to enhance coding efficiency and creativity.
 
 ## Let's Forge Tales Together
 
 Embark on this journey with us. Together, we can build a world of adventures, stories, and connections. Whether you're here to create, play, or contribute, you're a vital part of TaleForge.
+
+<img src="README/images/embark_journey.webp" width="300"/>
 
 **[Contribute to TaleForge](#)** | **[Join Our Community](#)** | **[Follow Our Progress](#)**
