@@ -1,0 +1,63 @@
+= Developer Guide
+
+Welcome to the developer guide for our project. This guide serves as a comprehensive resource for developers working on this project, outlining best practices, coding standards, and our approach to software development and testing.
+
+== Introduction
+
+This project aims to deliver high-quality software that meets the needs of our users while maintaining a codebase that is clean, maintainable, and adaptable to change. Our development practices are designed to support this goal, emphasizing testing, continuous integration, and clear documentation.
+
+== Getting Started
+
+=== Setting Up Your Development Environment
+
+// TODO: Instructions for setting up the development environment, including required tools, software, and any initial configuration steps.
+
+=== Building and Running the Project
+
+// TODO: Steps to build and run the project locally, including any necessary commands and expected output.
+
+== Coding Standards
+
+// TODO: Outline the coding standards and conventions used in this project. This could include language-specific conventions, naming conventions, and code formatting guidelines.
+
+== Testing Strategy
+
+Our testing strategy is designed to ensure that our software is reliable, behaves as expected, and remains resilient against future changes. We adopt a layered approach to testing, reflecting the architecture of our application.
+
+=== Domain Layer Testing
+
+The domain layer encapsulates our core business logic, free from external dependencies. We leverage Rust's powerful type system and traits to write expressive and comprehensive unit tests for this layer.
+
+* Use the Builder pattern for test data to simplify the setup of complex domain objects.
+* Focus on behavior-driven development (BDD) principles, ensuring that tests reflect real-world use cases and business requirements.
+
+=== Application Layer Testing
+
+Application services, or use cases, orchestrate high-level business processes. Testing at this layer involves ensuring that these processes execute correctly, integrating various components of the system.
+
+* Utilize in-memory repositories to test use cases in isolation from external data sources.
+* Apply feature flags or conditional compilation to swap between in-memory and persistent repositories based on the testing context.
+
+=== Adapter Layer Testing
+
+Adapters connect our application with external systems and frameworks. Due to their dependency on external technologies, testing adapters requires careful isolation.
+
+* Employ mocking and test doubles for external dependencies to test adapters in isolation.
+* Structure code to depend on abstractions (traits), facilitating the substitution of mock implementations.
+
+=== Integration and End-to-End Testing
+
+While the primary focus is currently on unit and integration testing within the Rust codebase, comprehensive integration and end-to-end tests will be essential as the project evolves, especially to test interactions with the frontend and external APIs.
+
+* Integration tests should cover critical paths through the application, ensuring that components work together as expected.
+* End-to-end tests will be considered in future phases of the project, particularly after the integration of OpenAPI/Swagger for API documentation.
+
+== Continuous Integration and Deployment
+
+// TODO: Describe the CI/CD pipeline, including how tests are integrated into the build process, any automated code quality checks, and the strategy for deploying releases.
+
+== Contributing to the Project
+
+// TODO: Provide guidelines for contributing to the project, including how to submit pull requests, the code review process, and any criteria for acceptance.
+
+We hope this guide helps you contribute effectively to our project. Your feedback and suggestions for improving this guide are always welcome.
