@@ -67,8 +67,6 @@ mod tests {
             }
         }
 
-
-    // Mocking the LocationRepository
     mock! {
         LocationRepository {}
 
@@ -79,7 +77,6 @@ mod tests {
         }
     }
 
-    // Mocking the PassageRepository
     mock! {
         PassageRepository {}
 
@@ -91,7 +88,6 @@ mod tests {
         }
     }
 
-    // Mocking the PlayerStateRepo
     mock! {
         PlayerStateRepository {}
 
@@ -100,7 +96,6 @@ mod tests {
              fn save(&self, player_state: PlayerState);
         }
     }
-
 
     #[test]
     fn test_move_player_success() {
