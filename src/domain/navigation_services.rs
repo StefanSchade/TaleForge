@@ -62,16 +62,15 @@ mod tests {
         }
     }
 
-
     #[test]
     fn navigate_to_passage_success() {
         let mut mock_passage_repo = MockPassageRepository::new();
-        let mock_location_repo = MockLocationRepository::new(); // Not used in this test, but required for NavigationService instantiation
+        let mut mock_location_repo = MockLocationRepository::new(); // Changed to mutable to allow setting expectations
 
-        // Setting up the mock to expect a call with specific parameters and to return a specific result
+        // Setup for find_passage_by_direction_and_location
         mock_passage_repo.expect_find_passage_by_direction_and_location()
             .with(eq(1), eq("north"))
-            .times(1) // Expect it to be called exactly once
+            .times(1)
             .returning(|_, _| Some(PassageBuilder::default()
                 .id(1)
                 .from_location_id(1)
@@ -82,21 +81,26 @@ mod tests {
                 .build()
                 .unwrap()));
 
+        // Setting up expectation for get_location_by_id
+        mock_location_repo.expect_get_location_by_id()
+            .with(eq(2)) // Assuming `to_location_id` is 2 as set in the PassageBuilder
+            .times(1)
+            .returning(|_| Some(Location {
+                id: 2,
+                title: "Target Location".into(),
+                description: "Description of the target location.".into(),
+                image_url: None,
+            }));
+
         let navigation_service = NavigationService::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo));
 
-        let player_state_instance = PlayerState::new(1,1);
+        let player_state_instance = PlayerState::new(1, 1);
 
         let result = navigation_service.navigate(player_state_instance, "north".into());
         assert!(result.is_ok());
-        let (resultloc, resultstr) = result.unwrap();
+        let (location, narration) = result.unwrap();
 
-        println!("location is {}", resultloc.id);
-        println!("string is {}", resultstr);
-
-//        assert_eq!(resultloc.id, 2);
-//        assert_eq!(resultstr, "You go north");
+        assert_eq!(location.id, 2); // Verifying the location ID matches the expected target location
+        assert_eq!(narration, "You go north and reach Target Location."); // Verifying the narration matches expected output
     }
-
-    // Add more tests here, such as `navigate_to_passage_failure` to test the behavior when no passage is found.
 }
-
