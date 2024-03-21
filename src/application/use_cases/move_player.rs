@@ -112,17 +112,6 @@ mod tests {
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_navigation_service = MockNavigationService::new();
 
-        // Setup expectations and return values for the mocks
-        // Example: Expect to fetch the current location of the player
-        mock_location_repo.expect_get_location_by_id()
-            .with(eq(1)) // Assuming '1' is the current location ID for simplicity
-            .times(1)
-            .returning(|_| Some(Location {
-                id: 1,
-                title: "Starting Point".into(),
-                description: "You are here.".into(),
-                image_url: None,
-            }));
 
         // If NavigationService is used, setup expectations for navigating
         mock_navigation_service.expect_navigate()
@@ -142,6 +131,11 @@ mod tests {
                 id: 1,
                 current_location_id: 1,
             }));
+
+        mock_player_state_repo.expect_save()
+            .withf(|ps| ps.id == 1) // Ensure the `PlayerState` has `id == 1`
+            .times(1)
+            .returning(|_| ());
 
 
         // Instantiate the MovePlayerUseCase with the mocked dependencies
