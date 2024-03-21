@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct PlayerState {
     pub id: i32,
     pub current_location_id: i32,

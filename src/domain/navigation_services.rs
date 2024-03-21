@@ -4,6 +4,12 @@ use crate::domain::aggregates::location::Location;
 use crate::domain::aggregates::player_state::PlayerState;
 use crate::port::repository::{LocationRepository, PassageRepository};
 
+// Wrap Service in a Trait to allow mocking for tests
+// Send + Sync traits for threads safely
+pub trait NavigationServiceTrait: Send + Sync {
+fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
+}
+
 pub struct NavigationService {
     location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
@@ -13,9 +19,12 @@ impl NavigationService {
     pub fn new(location_repository: Arc<dyn LocationRepository>, passage_repository: Arc<dyn PassageRepository>) -> Self {
         NavigationService { location_repository, passage_repository }
     }
+}
 
+
+impl NavigationServiceTrait for NavigationService {
     // Example method to navigate based on direction
-    pub fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String> {
+    fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String> {
         if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(player_state.current_location_id, &*direction) {
             if let Some(target_location) = self.location_repository.get_location_by_id(passage.to_location_id) {
                 let narration = format!("{} and reach {}.", passage.narration, target_location.title);
@@ -37,7 +46,8 @@ mod tests {
     use mockall::predicate::*;
 
     use super::*;
-    use super::super::aggregates::passage::{PassageBuilder, Passage};
+    use super::super::aggregates::passage::PassageBuilder;
+    use super::super::aggregates::passage::Passage;
 
     // Mocking the LocationRepository
     mock! {
@@ -64,8 +74,10 @@ mod tests {
 
     #[test]
     fn navigate_to_passage_success() {
+
+
         let mut mock_passage_repo = MockPassageRepository::new();
-        let mut mock_location_repo = MockLocationRepository::new(); // Changed to mutable to allow setting expectations
+        let mut mock_location_repo = MockLocationRepository::new();
 
         // Setup for find_passage_by_direction_and_location
         mock_passage_repo.expect_find_passage_by_direction_and_location()
@@ -91,6 +103,7 @@ mod tests {
                 description: "Description of the target location.".into(),
                 image_url: None,
             }));
+
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo));
 

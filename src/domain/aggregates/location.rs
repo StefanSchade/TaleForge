@@ -2,7 +2,7 @@
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
-#[derive(Builder, Clone, Debug, Deserialize, Serialize)]
+#[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Location {
     pub id: i32,
     pub title: String,
