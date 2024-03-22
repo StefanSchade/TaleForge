@@ -1,7 +1,7 @@
 #[derive(PartialEq, Debug, Clone)]
 pub struct PlayerState {
     pub player_id: i32,
-    pub current_location_id: i32,
+    current_location_id: i32,
 }
 
 impl PlayerState {

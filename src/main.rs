@@ -37,8 +37,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // initialize player state for test user 1
 
     // let mut player_state_repository_mutable = player_state_repository.clone()
-    player_state_repository.save(PlayerState { player_id: 1, current_location_id: 1 });
 
+    player_state_repository.save(PlayerState::new(1,1));
 
     data_loader::load_data_from_json(
         location_repository.clone(), // Assuming your function expects Arc<R> where R: LocationRepository

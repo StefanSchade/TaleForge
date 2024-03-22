@@ -35,7 +35,7 @@ impl MovePlayerUseCase {
 
             // update player state
 
-            player_state.current_location_id = new_location.id;
+            player_state.set_current_location_id(new_location.id);
             self.player_state_repository.save(player_state);
 
             Ok(MovePlayerResult {
@@ -123,10 +123,7 @@ mod tests {
         mock_player_state_repo.expect_find_by_id()
             .with(eq(1)) // Expect it to be called with an ID of 1
             .times(1)    // Expect it to be called exactly once
-            .returning(|_| Some(PlayerState {
-                player_id: 1,
-                current_location_id: 1,
-            }));
+            .returning(|_| Some(PlayerState::new(1,1)));
 
         mock_player_state_repo.expect_save()
             .withf(|ps| ps.player_id == 1) // Ensure the `PlayerState` has `id == 1`
