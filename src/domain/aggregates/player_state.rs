@@ -1,6 +1,6 @@
 #[derive(PartialEq, Debug, Clone)]
 pub struct PlayerState {
-    pub player_id: i32,
+    player_id: i32,
     current_location_id: i32,
 }
 
@@ -16,4 +16,6 @@ impl PlayerState {
     pub fn set_current_location_id(&mut self, location_id: i32) {
         self.current_location_id = location_id;
     }
+
+    pub fn get_player_id(&self) -> i32 {self.player_id}
 }

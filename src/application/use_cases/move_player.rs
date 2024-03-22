@@ -124,7 +124,7 @@ mod tests {
             .returning(|_| Some(PlayerState::new(1,1)));
 
         mock_player_state_repo.expect_save()
-            .withf(|ps| ps.player_id == 1) // Ensure the `PlayerState` has `id == 1`
+            .withf(|ps| ps.get_player_id() == 1) // Ensure the `PlayerState` has `id == 1`
             .times(1)
             .returning(|_| ());
 
