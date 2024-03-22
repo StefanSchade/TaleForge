@@ -3,12 +3,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Passage {
-    pub id: i32,
-    pub from_location_id: i32,
-    pub to_location_id: i32,
-    pub description: String,
-    pub direction: String, // New field for navigation direction
-    pub narration: String, // New field for descriptive narration
+    pub (crate) aggregate_root: i32,
+    pub (crate) from_location_id: i32,
+    pub (crate) to_location_id: i32,
+    pub (crate) description: String,
+    pub (crate) direction: String,
+    pub (crate) narration: String,
 }
 
 #[cfg(test)]
@@ -27,7 +27,7 @@ mod tests {
             .build()
             .unwrap();
 
-        assert_eq!(passage.id, 1);
+        assert_eq!(passage.aggregate_root, 1);
         assert_eq!(passage.description, "Description");
         assert_eq!(passage.direction, "north");
         assert_eq!(passage.narration, "Narration");

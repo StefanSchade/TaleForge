@@ -82,7 +82,7 @@ impl PassageRepository for InMemoryPassageRepository {
 
     fn add_passage(&self, passage: Passage) -> Result<(), String> {
         let mut locations = self.passages.lock().map_err(|_| "Mutex lock failed")?;
-        locations.insert(passage.id, passage);
+        locations.insert(passage.aggregate_root, passage);
         Ok(())
     }
 }
