@@ -129,7 +129,7 @@ mod tests {
             });
 
         mock_player_state_repo.expect_find_by_id()
-            .with(eq(1))
+            .with(eq(expected_player_id))
             .times(1)
             .returning(move |_| Some(PlayerState::new(expected_player_id,1)));
 
@@ -150,7 +150,7 @@ mod tests {
                 Arc::new(mock_navigation_service));
 
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
-        let context = RequestContext { player_id: Some(1) };
+        let context = RequestContext { player_id: Some(expected_player_id) };
 
         let result = use_case.execute(command, context);
 
