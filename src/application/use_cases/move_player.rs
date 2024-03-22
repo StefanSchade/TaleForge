@@ -106,38 +106,46 @@ mod tests {
     #[test]
     fn test_move_player_success() {
 
+        // magic numbers relevant to the test
+        let expected_destination_location_id: i32 = 99;
+        let expected_passage_narration_text: &str = "You've moved north.";
+        let expected_direction_instruction: &str = "north";
+        let expected_player_id: i32 = 42;
+
         let mock_passage_repo = MockPassageRepository::new();
         let mock_location_repo = MockLocationRepository::new();
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_navigation_service = MockNavigationService::new();
 
-        let expected_location = Arc::new(LocationBuilder::default()
-            .aggregate_id(2)
-            .title("Destination".into())
-            .description("You've moved north.".into())
+
+        // We need to pass `expected_location` to the closure `.returning()`, but since this closure might
+        // be called multiple times we have to clone it first. Wrapping it into Arc reduces the overhead.
+        // We thus guarantee immutability and just have to clone the reference, but not the struct itself.
+        let expected_destination_location = Arc::new(LocationBuilder::default()
+            .aggregate_id(expected_destination_location_id)
+            .title("Destination - This could be anything".into())
+            .description("Destinatinon Decription - This could be anything".into())
             .build()
             .unwrap());
 
-
-        // If NavigationService is used, setup expectations for navigating
+        // setup expectations for navigating
         mock_navigation_service.expect_navigate()
-            .with(eq(PlayerState::new(1,1)), eq(String::from("north")))
+            .with(eq(PlayerState::new(expected_player_id,1)), eq(expected_direction_instruction.to_string()))
             .times(1)
             .returning(move |_, _| {
-                let loc = expected_location.clone();
-                Ok(((*loc).clone(), "You move north.".into()))
+                let loc = expected_destination_location.clone();
+                Ok(((*loc).clone(), expected_passage_narration_text.to_string()))
             });
 
         mock_player_state_repo.expect_find_by_id()
-            .with(eq(1)) // Expect it to be called with an ID of 1
-            .times(1)    // Expect it to be called exactly once
-            .returning(|_| Some(PlayerState::new(1,1)));
+            .with(eq(1))
+            .times(1)
+            .returning(move |_| Some(PlayerState::new(expected_player_id,1)));
 
         mock_player_state_repo.expect_save()
-            .withf(|ps| ps.get_player_id() == 1) // Ensure the `PlayerState` has `id == 1`
+            .withf(move |ps| ps.get_player_id() == expected_player_id)
             .times(1)
             .returning(|_| ());
-
 
         // Instantiate the MovePlayerUseCase with the mocked dependencies
         let use_case = MovePlayerUseCase::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo),Arc::new(mock_player_state_repo), Arc::new(mock_navigation_service));
@@ -145,8 +153,8 @@ mod tests {
         // Execute the use case and assert the expected outcome
 
 // Assume `command` and `context` are already properly initialized
-    let command = MovePlayerCommand { direction: "north".to_string() };
-    let context = RequestContext { /* fields as necessary */ player_id: Some(1) };
+    let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
+    let context = RequestContext { player_id: Some(1) };
 
         let result = use_case.execute(command, context);
 
@@ -157,7 +165,7 @@ mod tests {
         let move_result = result.unwrap();
 
 // Now, assert the values within MovePlayerResult
-        assert_eq!(move_result.player_location, 2); // Assuming '2' is the expected location ID
-        assert_eq!(move_result.narration, "You move north.");
+        assert_eq!(move_result.player_location, expected_destination_location_id);
+        assert_eq!(move_result.narration, expected_passage_narration_text.to_string());
     }
 }
