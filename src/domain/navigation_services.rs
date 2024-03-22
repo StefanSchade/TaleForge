@@ -112,5 +112,6 @@ mod tests {
 
         assert_eq!(location.get_aggregate_id(), 2); // Verifying the location ID matches the expected target location
         assert_eq!(narration, "You go north and reach Target Location."); // Verifying the narration matches expected output
+
     }
 }
