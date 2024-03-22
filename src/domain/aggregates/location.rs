@@ -2,13 +2,15 @@
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
+// visibilty set to crate to allow access to the builder
+// todo: carve out the domain as a crate, so the visibility is actually restricted
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Location {
     pub(crate) aggregate_id: i32,
-    pub title: String,
-    pub description: String,
+    pub(crate) title: String,
+    pub(crate) description: String,
     #[builder(default)]
-    pub image_url: Option<String>,
+    pub(crate) image_url: Option<String>,
 }
 
 impl Location {
@@ -16,7 +18,6 @@ impl Location {
         self.aggregate_id
     }
 }
-
 
 #[cfg(test)]
 mod tests {
