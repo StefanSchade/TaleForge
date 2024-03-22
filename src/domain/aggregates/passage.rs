@@ -54,7 +54,7 @@ mod tests {
     #[test]
     fn test_passage_builder() {
         let passage = PassageBuilder::default()
-            .id(1)
+            .aggregate_id(1)
             .from_location_id(1)
             .to_location_id(1)
             .description("Description".into())
@@ -63,7 +63,7 @@ mod tests {
             .build()
             .unwrap();
 
-        assert_eq!(passage.aggregate_root, 1);
+        assert_eq!(passage.aggregate_id, 1);
         assert_eq!(passage.description, "Description");
         assert_eq!(passage.direction, "north");
         assert_eq!(passage.narration, "Narration");

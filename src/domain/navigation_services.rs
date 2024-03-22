@@ -27,7 +27,7 @@ impl NavigationServiceTrait for NavigationService {
     fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String> {
         if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(player_state.current_location_id(), &*direction) {
             if let Some(target_location) = self.location_repository.get_location_by_id(passage.get_to_location()) {
-                let narration = format!("{} and reach {}.", passage.get_narration_reference(), target_location.title);
+                let narration = format!("{} and reach {}.", passage.get_narration_reference(), target_location.get_title_reference());
                 Ok((target_location, narration))
             } else {
                 Err("Target location not found.".to_string())
@@ -84,7 +84,7 @@ mod tests {
             .with(eq(1), eq("north"))
             .times(1)
             .returning(|_, _| Some(PassageBuilder::default()
-                .id(1)
+                .aggregate_id(1)
                 .from_location_id(1)
                 .to_location_id(2)
                 .description("A passage".into())
