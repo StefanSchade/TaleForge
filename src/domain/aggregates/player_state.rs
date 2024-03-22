@@ -1,6 +1,6 @@
 #[derive(PartialEq, Debug, Clone)]
 pub struct PlayerState {
-    player_id: i32,
+    player_id: i32, //aggregate id and foreign kez (once I have established a user)
     current_location_id: i32,
 }
 

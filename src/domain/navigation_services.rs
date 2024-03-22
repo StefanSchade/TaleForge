@@ -98,7 +98,7 @@ mod tests {
             .with(eq(2)) // Assuming `to_location_id` is 2 as set in the PassageBuilder
             .times(1)
             .returning(|_| Some(Location {
-                id: 2,
+                aggregate_id: 2,
                 title: "Target Location".into(),
                 description: "Description of the target location.".into(),
                 image_url: None,
@@ -113,7 +113,7 @@ mod tests {
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
 
-        assert_eq!(location.id, 2); // Verifying the location ID matches the expected target location
+        assert_eq!(location.get_aggregate_id(), 2); // Verifying the location ID matches the expected target location
         assert_eq!(narration, "You go north and reach Target Location."); // Verifying the narration matches expected output
     }
 }

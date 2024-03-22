@@ -45,7 +45,7 @@ impl LocationRepository for InMemoryLocationRepository {
 
     fn add_location(&self, location: Location) -> Result<(), String> {
         let mut locations = self.locations.lock().map_err(|_| "Mutex lock failed")?;
-        locations.insert(location.id, location);
+        locations.insert(location.get_aggregate_id(), location);
         Ok(())
     }
 }
@@ -105,6 +105,6 @@ impl PlayerStateRepository for InMemoryPlayerStateRepository {
     fn save(&self, player_state: PlayerState) {
         let mut states = self.states.lock().unwrap();
         println!("Updating InMemoryRepositoryPlayerState with {:?}", &player_state);
-        states.insert(i32::from(player_state.get_player_id()), player_state);
+        states.insert(player_state.get_player_id(), player_state);
     }
 }

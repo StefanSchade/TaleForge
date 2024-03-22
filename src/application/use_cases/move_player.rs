@@ -35,12 +35,17 @@ impl MovePlayerUseCase {
 
             // update player state
 
-            player_state.set_current_location_id(new_location.id);
+            player_state.set_current_location_id(new_location.get_aggregate_id());
             self.player_state_repository.save(player_state);
 
+
+
             Ok(MovePlayerResult {
-                player_location: new_location.id,
+                player_location: new_location.get_aggregate_id(),
                 narration: narration,
+
+
+
             })
         } else {
             Err("Player ID not found in context".to_string())
@@ -53,7 +58,7 @@ mod tests {
     use mockall::predicate::eq;
     use mockall::{mock, predicate::*};
 
-    use crate::domain::aggregates::location::Location;
+    use crate::domain::aggregates::location::{Location, LocationBuilder};
     use crate::domain::aggregates::passage::Passage;
     use crate::domain::aggregates::player_state::PlayerState;
     use crate::domain::navigation_services::NavigationServiceTrait;
@@ -106,17 +111,22 @@ mod tests {
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_navigation_service = MockNavigationService::new();
 
+        let expected_location = Arc::new(LocationBuilder::default()
+            .aggregate_id(2)
+            .title("Destination".into())
+            .description("You've moved north.".into())
+            .build()
+            .unwrap());
+
 
         // If NavigationService is used, setup expectations for navigating
         mock_navigation_service.expect_navigate()
             .with(eq(PlayerState::new(1,1)), eq(String::from("north")))
             .times(1)
-            .returning(|_, _| Ok((Location {
-                id: 2,
-                title: "Destination".into(),
-                description: "You've moved north.".into(),
-                image_url: None,
-            }, "You move north.".into())));
+            .returning(move |_, _| {
+                let loc = expected_location.clone();
+                Ok(((*loc).clone(), "You move north.".into()))
+            });
 
         mock_player_state_repo.expect_find_by_id()
             .with(eq(1)) // Expect it to be called with an ID of 1
