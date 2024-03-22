@@ -69,20 +69,20 @@ impl PassageRepository for InMemoryPassageRepository {
     fn get_passages_for_location(&self, location_id: i32) -> Vec<Passage> {
         let passages_lock = self.passages.lock().unwrap(); // Acquire the lock
         passages_lock.values()
-            .filter(|passage| passage.from_location_id == location_id || passage.to_location_id == location_id)
+            .filter(|passage| passage.get_from_location() == location_id || passage.get_to_location() == location_id)
             .cloned()
             .collect() // Collect filtered and cloned passages into a Vec
     }
     fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage> {
         let passages = self.passages.lock().unwrap();
         passages.values().find(|&passage|
-            (passage.from_location_id == location_id) && (passage.direction.eq_ignore_ascii_case(direction))
+            (passage.get_from_location() == location_id) && (passage.get_direction_reference().eq_ignore_ascii_case(direction))
         ).cloned()
     }
 
     fn add_passage(&self, passage: Passage) -> Result<(), String> {
         let mut locations = self.passages.lock().map_err(|_| "Mutex lock failed")?;
-        locations.insert(passage.aggregate_root, passage);
+        locations.insert(passage.get_aggregate_id(), passage);
         Ok(())
     }
 }

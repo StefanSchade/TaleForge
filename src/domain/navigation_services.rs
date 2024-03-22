@@ -26,8 +26,8 @@ impl NavigationServiceTrait for NavigationService {
     // Example method to navigate based on direction
     fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String> {
         if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(player_state.current_location_id(), &*direction) {
-            if let Some(target_location) = self.location_repository.get_location_by_id(passage.to_location_id) {
-                let narration = format!("{} and reach {}.", passage.narration, target_location.title);
+            if let Some(target_location) = self.location_repository.get_location_by_id(passage.get_to_location()) {
+                let narration = format!("{} and reach {}.", passage.get_narration_reference(), target_location.title);
                 Ok((target_location, narration))
             } else {
                 Err("Target location not found.".to_string())
