@@ -44,6 +44,7 @@ mod tests {
 
     use mockall::*;
     use mockall::predicate::*;
+    use crate::domain::aggregates::location::LocationBuilder;
 
     use super::*;
     use super::super::aggregates::passage::PassageBuilder;
@@ -74,12 +75,9 @@ mod tests {
 
     #[test]
     fn navigate_to_passage_success() {
-
-
         let mut mock_passage_repo = MockPassageRepository::new();
         let mut mock_location_repo = MockLocationRepository::new();
 
-        // Setup for find_passage_by_direction_and_location
         mock_passage_repo.expect_find_passage_by_direction_and_location()
             .with(eq(1), eq("north"))
             .times(1)
@@ -93,17 +91,16 @@ mod tests {
                 .build()
                 .unwrap()));
 
-        // Setting up expectation for get_location_by_id
         mock_location_repo.expect_get_location_by_id()
             .with(eq(2)) // Assuming `to_location_id` is 2 as set in the PassageBuilder
             .times(1)
-            .returning(|_| Some(Location {
-                aggregate_id: 2,
-                title: "Target Location".into(),
-                description: "Description of the target location.".into(),
-                image_url: None,
-            }));
-
+            .returning(|_| Some(LocationBuilder::default()
+                .aggregate_id(2)
+                .title("Target Location".into())
+                .description("abc".into())
+                .image_url(None)
+                .build()
+                .unwrap()));
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo));
 
