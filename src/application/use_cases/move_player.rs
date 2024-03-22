@@ -33,19 +33,12 @@ impl MovePlayerUseCase {
 
             let (new_location, narration) = self.navigation_service.navigate(player_state.clone(), input.direction)?;
 
-            // update player state
-
             player_state.set_current_location_id(new_location.get_aggregate_id());
             self.player_state_repository.save(player_state);
-
-
 
             Ok(MovePlayerResult {
                 player_location: new_location.get_aggregate_id(),
                 narration: narration,
-
-
-
             })
         } else {
             Err("Player ID not found in context".to_string())
@@ -117,7 +110,6 @@ mod tests {
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_navigation_service = MockNavigationService::new();
 
-
         // We need to pass `expected_location` to the closure `.returning()`, but since this closure might
         // be called multiple times we have to clone it first. Wrapping it into Arc reduces the overhead.
         // We thus guarantee immutability and just have to clone the reference, but not the struct itself.
@@ -128,7 +120,6 @@ mod tests {
             .build()
             .unwrap());
 
-        // setup expectations for navigating
         mock_navigation_service.expect_navigate()
             .with(eq(PlayerState::new(expected_player_id,1)), eq(expected_direction_instruction.to_string()))
             .times(1)
@@ -142,30 +133,32 @@ mod tests {
             .times(1)
             .returning(move |_| Some(PlayerState::new(expected_player_id,1)));
 
+        // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of
+        // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`
+        // However doing so results in an [E0373], so we apply what we would do with non-Copy data and move
+        // ownership explicitly to the closure.
         mock_player_state_repo.expect_save()
             .withf(move |ps| ps.get_player_id() == expected_player_id)
             .times(1)
             .returning(|_| ());
 
-        // Instantiate the MovePlayerUseCase with the mocked dependencies
-        let use_case = MovePlayerUseCase::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo),Arc::new(mock_player_state_repo), Arc::new(mock_navigation_service));
+        let use_case =
+            MovePlayerUseCase::new(
+                Arc::new(mock_location_repo),
+                Arc::new(mock_passage_repo),
+                Arc::new(mock_player_state_repo),
+                Arc::new(mock_navigation_service));
 
-        // Execute the use case and assert the expected outcome
-
-// Assume `command` and `context` are already properly initialized
-    let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
-    let context = RequestContext { player_id: Some(1) };
+        let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
+        let context = RequestContext { player_id: Some(1) };
 
         let result = use_case.execute(command, context);
 
-// It's a good practice to assert the result is Ok before unwrapping
         assert!(result.is_ok());
 
-// Unwrap the result after checking it is Ok to extract the MovePlayerResult
-        let move_result = result.unwrap();
+        let move_player_result = result.unwrap();
 
-// Now, assert the values within MovePlayerResult
-        assert_eq!(move_result.player_location, expected_destination_location_id);
-        assert_eq!(move_result.narration, expected_passage_narration_text.to_string());
+        assert_eq!(move_player_result.player_location, expected_destination_location_id);
+        assert_eq!(move_player_result.narration, expected_passage_narration_text.to_string());
     }
 }
