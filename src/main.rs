@@ -9,7 +9,7 @@ use app_state::AppState;
 use crate::adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
 use crate::application::use_cases::move_player::MovePlayerUseCase;
 use crate::domain::aggregates::player_state::PlayerState;
-use crate::domain::navigation_services::NavigationService;
+use crate::domain::navigation_services::{NavigationService, NavigationServiceTrait};
 use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 // src/main.rs
@@ -50,12 +50,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let navigation_service = NavigationService::new(location_repository.clone(),
                                                     passage_repository.clone());
+    let navigatin_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
 
     let move_player_use_case = MovePlayerUseCase::new(
         location_repository.clone(),
         passage_repository.clone(),
         player_state_repository.clone(),
-        navigation_service,
+        navigatin_service_trait_object.clone(),
     );
 
     let app_state = Data::new(Arc::new(AppState::new(

@@ -1,0 +1,11 @@
+== Builders in Testing
+
+Builders are handy for instantiating complex structures consistently which can be a challenge especially when testing. By leveraging derive_builder::Builder, we can reduce bolier plate code.
+
+key points:
+
+* *Field Initialization:* The `#[builder(default)]` attribute on a field specifies that it should be None by default, unless explicitly set. This is useful for optional fields.
+
+* *Optional Fields:* For optional fields, the builder pattern is particularly useful as it allows for fields to be set or left as their defaults without cumbersome Some(...) wrappers.
+
+* *Error Handling:* When calling `.build()`, the builder pattern can result in an `Err` if required fields are not set. This necessitates handling the `Result`, typically with `.unwrap()` in tests where you're confident the build won't fail. For production code, you might want to handle errors more gracefully.
