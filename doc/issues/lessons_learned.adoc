@@ -1,0 +1,31 @@
+= Rust Development Learnings
+
+We encountered several issues during the development and testing of a Rust project. Here's a summary of the challenges and the solutions we applied:
+
+* Compilation and Testing Warnings
+** Unused imports and variables can clutter the code and should be removed or prefixed with an underscore to suppress warnings.
+** For unused fields in structs that will be used later, apply `#[allow(dead_code)]` above the struct definition to suppress warnings.
+** Use correct syntax for attributes in Rust, which is `#[attribute]`, not `[attribute]`.
+
+* Mocking and Testing
+** Implementing mocks for testing requires careful attention to the syntax and structure of the mocks.
+** Ensure the mock's expected calls match the actual use in tests to avoid panic errors at runtime.
+** Use the `mock!` macro correctly and update to the latest syntax if warnings about deprecation arise.
+
+* Working with Traits and Dependency Injection
+** For dynamic dispatch, use `Arc<dyn Trait>` to pass trait objects around. This approach is useful for dependency injection in tests.
+** When defining traits for use as dependencies, make sure the methods are defined in a way that they can be easily mocked or replaced in tests.
+
+* Error Handling
+** For methods that return a `Result` type, ensure you handle the `Ok` and `Err` cases appropriately or use `let _ =` to explicitly ignore the result.
+** Implementing the `PartialEq` trait for custom types allows for comparison in tests, which is essential for asserting conditions.
+
+* Code Structure and Readability
+** Applying `#[derive]` attributes like `Debug`, `Clone`, `PartialEq`, etc., to custom types enhances their usability and testability.
+** Structuring code with readability and maintainability in mind helps in the long term, especially when it comes to expanding functionality or refactoring.
+
+* General Rust Practices
+** Leverage Rust's powerful type system and compiler checks to catch issues early in the development process.
+** Regularly run `cargo build` and `cargo test` to ensure your code compiles and passes all tests, keeping an eye out for any warnings or errors to fix.
+
+This journey highlighted the importance of good coding practices, proper error handling, and the benefits of Rust's type system and compiler in building reliable and maintainable software.
