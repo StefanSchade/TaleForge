@@ -14,7 +14,6 @@ pub struct Passage {
 #[cfg(test)]
 mod tests {
     use crate::domain::aggregates::passage::PassageBuilder;
-    use super::*;
 
     #[test]
     fn test_passage_builder() {

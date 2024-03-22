@@ -53,7 +53,7 @@ mod tests {
     mock! {
         LocationRepository {}
 
-        trait LocationRepository{
+        impl LocationRepository for LocationRepository{
             fn get_location_by_id(&self, id: i32) -> Option<Location>;
             fn get_all_locations(&self) -> Vec<Location>;
             fn add_location(&self, location: Location) -> Result<(), String>;
@@ -64,7 +64,7 @@ mod tests {
     mock! {
         PassageRepository {}
 
-         trait PassageRepository {
+         impl PassageRepository for PassageRepository {
             fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage>;
             fn get_passage_by_id(&self, id: i32) -> Option<Passage>;
             fn get_passages_for_location(&self, location_id: i32) -> Vec<Passage>;
