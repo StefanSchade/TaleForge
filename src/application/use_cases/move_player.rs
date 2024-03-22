@@ -100,11 +100,9 @@ mod tests {
 
     #[test]
     fn test_move_player_success() {
-        let player_state_instance = PlayerState::new(1, 1);
-        let direction = "north";
 
-        let mut mock_passage_repo = MockPassageRepository::new();
-        let mut mock_location_repo = MockLocationRepository::new();
+        let mock_passage_repo = MockPassageRepository::new();
+        let mock_location_repo = MockLocationRepository::new();
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_navigation_service = MockNavigationService::new();
 
