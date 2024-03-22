@@ -132,7 +132,7 @@ mod tests {
 
 
         // Instantiate the MovePlayerUseCase with the mocked dependencies
-        let use_case = MovePlayerUseCase::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo),Arc::new((mock_player_state_repo)), Arc::new(mock_navigation_service));
+        let use_case = MovePlayerUseCase::new(Arc::new(mock_location_repo), Arc::new(mock_passage_repo),Arc::new(mock_player_state_repo), Arc::new(mock_navigation_service));
 
         // Execute the use case and assert the expected outcome
 

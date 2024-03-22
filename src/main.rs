@@ -65,7 +65,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         move_player_use_case,
     )));
 
-    server::start_server(app_state).await;
+    if let Err(e) = server::start_server(app_state).await {
+        eprintln!("Server failed to start: {}", e);
+    }
 
     Ok(())
 }
