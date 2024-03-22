@@ -105,6 +105,6 @@ impl PlayerStateRepository for InMemoryPlayerStateRepository {
     fn save(&self, player_state: PlayerState) {
         let mut states = self.states.lock().unwrap();
         println!("{:?}", &player_state);
-        states.insert(player_state.id.clone(), player_state);
+        states.insert(player_state.player_id.clone(), player_state);
     }
 }

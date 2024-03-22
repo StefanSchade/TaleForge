@@ -6,6 +6,7 @@ use crate::port::context::RequestContext;
 use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
 use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
+#[allow(dead_code)] // unused repositories will be used at a later point
 pub struct MovePlayerUseCase {
     location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
@@ -123,12 +124,12 @@ mod tests {
             .with(eq(1)) // Expect it to be called with an ID of 1
             .times(1)    // Expect it to be called exactly once
             .returning(|_| Some(PlayerState {
-                id: 1,
+                player_id: 1,
                 current_location_id: 1,
             }));
 
         mock_player_state_repo.expect_save()
-            .withf(|ps| ps.id == 1) // Ensure the `PlayerState` has `id == 1`
+            .withf(|ps| ps.player_id == 1) // Ensure the `PlayerState` has `id == 1`
             .times(1)
             .returning(|_| ());
 

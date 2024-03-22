@@ -1,12 +1,12 @@
 #[derive(PartialEq, Debug, Clone)]
 pub struct PlayerState {
-    pub id: i32,
+    pub player_id: i32,
     pub current_location_id: i32,
 }
 
 impl PlayerState {
     pub fn new(new_player_id: i32, start_location_id: i32) -> Self {
-        PlayerState { id: new_player_id, current_location_id: start_location_id }
+        PlayerState { player_id: new_player_id, current_location_id: start_location_id }
     }
 
     pub fn current_location_id(&self) -> i32 {
