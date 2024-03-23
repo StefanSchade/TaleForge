@@ -1,0 +1,11 @@
+[package]
+name = "entry_point"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+port = { path = "../port" }
+domain = { path = "../domain" }
+adapter = { path = "../adapter" }
+application = { path = "../application" }

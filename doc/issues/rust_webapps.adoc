@@ -1,0 +1,67 @@
+= Understanding AppState in Rust Web Applications
+
+== Overview
+
+In the development of web applications with Rust, particularly when using frameworks like Actix-web, managing shared state across different parts of the application is a common requirement. `AppState` is a pattern that facilitates this by encapsulating shared data and services in a single, globally accessible structure. This document outlines the reasons for introducing `AppState` and describes how it is used within a Rust web application.
+
+== Why AppState?
+
+The primary motivation for introducing an `AppState` is to manage shared resources such as database connections, configurations, and custom application services (e.g., use cases, domain services) in a thread-safe manner. This is especially important in asynchronous web applications that handle multiple requests concurrently.
+
+=== Key Benefits
+
+* *Centralized State Management*: `AppState` provides a central place to manage shared state, making it easier to pass around global configurations and services.
+* *Thread Safety*: By leveraging Rust's ownership and concurrency features (such as `Arc`), `AppState` ensures that shared state is accessed in a thread-safe way.
+* *Decoupling*: `AppState` helps decouple the application's components by providing a unified interface to shared resources, thus following the principles of clean architecture.
+
+== How AppState is Used
+
+In practice, `AppState` is typically a struct that contains shared resources. It is then wrapped in an `Arc` (Atomic Reference Counting) pointer to allow safe sharing across threads. Here's a simplified example:
+
+[source,rust]
+----
+struct AppState {
+    db_pool: Pool<Postgres>, // Example of a database connection pool
+    use_case: Arc<SomeUseCase>, // Example of an application service
+}
+
+impl AppState {
+    pub fn new(db_pool: Pool<Postgres>, use_case: Arc<SomeUseCase>) -> Self {
+        AppState { db_pool, use_case }
+    }
+}
+----
+
+=== Integrating AppState with Actix-web
+
+When using Actix-web, `AppState` is registered with the application server during setup and then accessed from request handlers via Actix-web's `Data` extractor. This approach ensures that each handler can access the shared state in a type-safe and thread-safe manner.
+
+[source,rust]
+----
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    let db_pool = create_db_pool(); // Hypothetical function to create a DB pool
+    let use_case = Arc::new(SomeUseCase::new());
+
+    let app_state = Arc::new(AppState::new(db_pool, use_case));
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(Data::new(app_state.clone())) // Register AppState
+            .service(
+                web::resource("/some_endpoint").to(some_handler),
+            )
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
+}
+
+async fn some_handler(data: web::Data<Arc<AppState>>) -> impl Responder {
+    // Use AppState in your handler...
+}
+----
+
+== Conclusion
+
+`AppState` is a powerful pattern for managing shared resources and state in Rust web applications. By centralizing state management, it facilitates thread-safe access to shared resources, supports the principles of clean architecture, and aids in decoupling the application's components. Its integration with Actix-web demonstrates Rust's capability to build robust, concurrent web applications.
