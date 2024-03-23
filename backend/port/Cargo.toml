@@ -5,3 +5,6 @@ edition = "2021"
 
 
 [dependencies]
+domain = { path = "../domain" }
+
+serde = { version = "1.0", features = ["derive"] }

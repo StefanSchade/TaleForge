@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use crate::domain::aggregates::location::Location;
-use crate::domain::aggregates::player_state::PlayerState;
-use crate::port::repository::{LocationRepository, PassageRepository};
+use domain::aggregates::location::Location;
+use domain::aggregates::player_state::PlayerState;
+use port::repository::{LocationRepository, PassageRepository};
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely

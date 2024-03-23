@@ -7,3 +7,6 @@ edition = "2021"
 [dependencies]
 port = { path = "../port" }
 domain = { path = "../domain" }
+
+[dev-dependencies]
+mockall = "0.10.2"

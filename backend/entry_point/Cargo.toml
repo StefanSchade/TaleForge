@@ -9,3 +9,6 @@ port = { path = "../port" }
 domain = { path = "../domain" }
 adapter = { path = "../adapter" }
 application = { path = "../application" }
+
+actix-web = "4.0.0"
+serde = { version = "1.0", features = ["derive"] }

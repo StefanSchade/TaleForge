@@ -4,23 +4,17 @@ use std::sync::Arc;
 use actix_web::web::Data;
 
 use adapter::web::server;
-use app_state::AppState;
+use adapter::web::app_state::AppState;
 
-use crate::adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use crate::application::use_cases::move_player::MovePlayerUseCase;
-use crate::domain::aggregates::player_state::PlayerState;
-use crate::domain::navigation_services::{NavigationService, NavigationServiceTrait};
-use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
+use application::use_cases::move_player::MovePlayerUseCase;
+use domain::aggregates::player_state::PlayerState;
+use application::navigation_services::{NavigationService, NavigationServiceTrait};
+use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+
+
 
 // src/main.rs
-mod data_loader;
-//mod domain;
-mod port;
-mod adapter;
-mod application;
-mod domain;
-mod app_state;
-
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
@@ -40,6 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     player_state_repository.save(PlayerState::new(1,1));
 
+
     data_loader::load_data_from_json(
         location_repository.clone(), // Assuming your function expects Arc<R> where R: LocationRepository
         passage_repository.clone(), // Assuming your function expects Arc<P> where P: PassageRepository
@@ -49,13 +44,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let navigation_service = NavigationService::new(location_repository.clone(),
                                                     passage_repository.clone());
-    let navigatin_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
+    let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
 
     let move_player_use_case = MovePlayerUseCase::new(
         location_repository.clone(),
         passage_repository.clone(),
         player_state_repository.clone(),
-        navigatin_service_trait_object.clone(),
+        navigation_service_trait_object.clone(),
     );
 
     let app_state = Data::new(Arc::new(AppState::new(

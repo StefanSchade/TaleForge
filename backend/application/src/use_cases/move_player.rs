@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
 
-use crate::domain::navigation_services::NavigationServiceTrait;
-use crate::port::context::RequestContext;
-use crate::port::dto::{MovePlayerCommand, MovePlayerResult};
-use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use crate::navigation_services::NavigationServiceTrait;
+use port::context::RequestContext;
+use port::dto::{MovePlayerCommand, MovePlayerResult};
+use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 #[allow(dead_code)] // unused repositories will be used at a later point
 pub struct MovePlayerUseCase {

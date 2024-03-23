@@ -2,10 +2,10 @@ use std::collections::HashMap;
 use std::option::Option;
 use std::sync::Mutex;
 
-use crate::domain::aggregates::location::Location;
-use crate::domain::aggregates::passage::Passage;
-use crate::domain::aggregates::player_state::PlayerState;
-use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use domain::aggregates::location::Location;
+use domain::aggregates::passage::Passage;
+use domain::aggregates::player_state::PlayerState;
+use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 pub struct InMemoryLocationRepository {
     locations: Mutex<HashMap<i32, Location>>,

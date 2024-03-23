@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use crate::application::use_cases::move_player::MovePlayerUseCase;
-use crate::port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use application::use_cases::move_player::MovePlayerUseCase;
+use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 pub struct AppState {
     pub location_repository: Arc<dyn LocationRepository>,

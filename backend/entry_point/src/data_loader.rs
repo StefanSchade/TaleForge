@@ -1,6 +1,6 @@
-use crate::domain::aggregates::location::Location;
-use crate::domain::aggregates::passage::Passage;
-use crate::port::repository::{LocationRepository, PassageRepository};
+use domain::aggregates::location::Location;
+use domain::aggregates::passage::Passage;
+use port::repository::{LocationRepository, PassageRepository};
 use serde_json;
 use std::fs::File;
 use std::io::Read;

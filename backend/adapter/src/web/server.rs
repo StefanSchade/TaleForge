@@ -4,8 +4,8 @@ use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web};
 
-use crate::adapter::web::controllers::player_controller;
-use crate::app_state::AppState;
+use crate::web::controllers::player_controller;
+use crate::web::app_state::AppState;
 
 pub async fn start_server(app_state: web::Data<Arc<AppState>>) -> std::io::Result<()> {
     HttpServer::new(move || {
