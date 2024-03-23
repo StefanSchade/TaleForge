@@ -44,11 +44,11 @@ mod tests {
 
     use mockall::*;
     use mockall::predicate::*;
-    use crate::domain::aggregates::location::LocationBuilder;
+    use domain::aggregates::location::LocationBuilder;
 
     use super::*;
-    use super::super::aggregates::passage::PassageBuilder;
-    use super::super::aggregates::passage::Passage;
+    use domain::aggregates::passage::PassageBuilder;
+    use domain::aggregates::passage::Passage;
 
     // Mocking the LocationRepository
     mock! {

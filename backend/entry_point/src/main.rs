@@ -1,3 +1,5 @@
+mod data_loader;
+
 use std::path::Path;
 use std::sync::Arc;
 
@@ -25,9 +27,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let player_state_repository: Arc<dyn PlayerStateRepository> = Arc::new(InMemoryPlayerStateRepository::new());
 
     // initialize the repos with data
-    let location_file_path = Path::new("../../../resources_test/locations.json");
-    let passage_file_path = Path::new("../../../resources_test/passages.json");
-
+    let location_file_path = Path::new("resources_test/locations.json");
+    let passage_file_path = Path::new("resources_test/passages.json");
     // initialize player state for test user 1
 
     // let mut player_state_repository_mutable = player_state_repository.clone()

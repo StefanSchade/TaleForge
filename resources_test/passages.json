@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "aggregate_id": 1,
     "from_location_id": 1,
     "to_location_id": 2,
     "description": "A steep path leading up to the hilltop.",
@@ -8,7 +8,7 @@
     "narration": "You take a deep breath and start your climb. The path is steep but well-trodden."
   },
   {
-    "id": 2,
+    "aggregate_id": 2,
     "from_location_id": 2,
     "to_location_id": 1,
     "description": "A winding path leading down to the old bridge.",

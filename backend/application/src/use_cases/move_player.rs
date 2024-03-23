@@ -51,10 +51,10 @@ mod tests {
     use mockall::predicate::eq;
     use mockall::{mock, predicate::*};
 
-    use crate::domain::aggregates::location::{Location, LocationBuilder};
-    use crate::domain::aggregates::passage::Passage;
-    use crate::domain::aggregates::player_state::PlayerState;
-    use crate::domain::navigation_services::NavigationServiceTrait;
+    use domain::aggregates::location::{Location, LocationBuilder};
+    use domain::aggregates::passage::Passage;
+    use domain::aggregates::player_state::PlayerState;
+    use crate::navigation_services::NavigationServiceTrait;
 
     use super::*;
 

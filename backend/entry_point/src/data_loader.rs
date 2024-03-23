@@ -23,6 +23,8 @@ pub fn load_data_from_json<R: LocationRepository, P: PassageRepository>(
     file.read_to_string(&mut contents)?;
     let locations: Vec<Location> = serde_json::from_str(&contents)?;
 
+    println!("Locations loaded");
+
     // Populate the location repository
     for location in locations {
         location_repo.add_location(location)?;

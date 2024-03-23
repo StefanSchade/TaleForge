@@ -6,3 +6,4 @@ members = [
     "backend/domain",
     "backend/entry_point"
 ]
+resolver = "2"
