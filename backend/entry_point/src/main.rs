@@ -35,7 +35,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     player_state_repository.save(PlayerState::new(1,1));
 
-
     data_loader::load_data_from_json(
         location_repository.clone(), // Assuming your function expects Arc<R> where R: LocationRepository
         passage_repository.clone(), // Assuming your function expects Arc<P> where P: PassageRepository
@@ -53,6 +52,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         player_state_repository.clone(),
         navigation_service_trait_object.clone(),
     );
+
+    use application::query_implementations::navigation_query_impl::NavigationQueryImpl;
+    use domain::queries::navigation_queries::navigation;
+
+ //   let navigaton_queries : navigation =  NavigationQueryImpl::new(Arc::new(()), Arc::new(()));
+
+
 
     let app_state = Data::new(Arc::new(AppState::new(
         location_repository.clone(),

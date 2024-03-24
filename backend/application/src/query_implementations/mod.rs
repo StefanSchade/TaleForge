@@ -1,1 +1,1 @@
-mod navigation_query_impl;
+pub mod navigation_query_impl;
