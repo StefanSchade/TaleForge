@@ -9,6 +9,8 @@ pub trait LocationRepository: Send + Sync  {
     fn get_all_locations(&self) -> Vec<Location>;
     fn add_location(&self, location: Location) -> Result<(), String>;
     // Add more methods as needed
+
+
 }
 
 
@@ -18,6 +20,7 @@ pub trait PassageRepository: Send + Sync {
     // New method to find a passage by direction and current location
     fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage>;
     fn add_passage(&self, passage: Passage) -> Result<(), String>;
+    fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<Passage>;
 }
 
 pub trait PlayerStateRepository: Send + Sync {

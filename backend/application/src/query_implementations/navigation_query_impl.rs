@@ -1,0 +1,43 @@
+use domain::queries::navigation_queries::navigation::NavigationQuery;
+use domain::aggregates::passage::Passage;
+use domain::aggregates::location::Location;
+
+use port::repository::{LocationRepository, PassageRepository};
+use std::sync::Arc;
+
+pub struct NavigationQueryImpl {
+    location_repository: Arc<dyn LocationRepository>,
+    passage_repository: Arc<dyn PassageRepository>,
+}
+
+impl NavigationQueryImpl {
+    pub fn new(
+        location_repository: Arc<dyn LocationRepository>,
+        passage_repository: Arc<dyn PassageRepository>
+    ) -> Self {
+        NavigationQueryImpl {
+            location_repository,
+            passage_repository,
+        }
+    }
+}
+
+impl NavigationQuery for NavigationQueryImpl {
+    fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage> {
+        self.passage_repository.find_by_start_and_end_id(from_location_id, to_location_id)
+    }
+
+    // fn find_location_by_direction(&self, current_location_id: i32, direction: &str) -> Option<Location> {
+    //     // This might involve more complex logic, potentially needing adjustments
+    //     // in the repository interfaces to support direction-based queries.
+    //     // For simplicity, let's assume there's a method in the passage repository
+    //     // to find passages by location and direction, then use the location repository
+    //     // to fetch the target location.
+    //     if let Some(passage) = self.passage_repository.find_by_location_and_direction(current_location_id, direction) {
+    //       //  self.location_repository.find_by_id(passage.to_location_id)
+    //         self.location_repository.find_by_id(passage.to_location_id)
+    //     } else {
+    //         None
+    //     }
+    // }
+}

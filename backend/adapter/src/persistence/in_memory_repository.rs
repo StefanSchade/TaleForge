@@ -85,6 +85,12 @@ impl PassageRepository for InMemoryPassageRepository {
         locations.insert(passage.get_aggregate_id(), passage);
         Ok(())
     }
+
+    fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage> {
+        self.passages.lock().unwrap().values()
+            .find(|passage| passage.get_from_location() == from_location_id && passage.get_to_location() == to_location_id)
+            .cloned()
+    }
 }
 
 impl InMemoryPlayerStateRepository {
