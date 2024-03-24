@@ -15,6 +15,11 @@ use application::navigation_services::{NavigationService, NavigationServiceTrait
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 
+use application::query_implementations::location_query_impl::LocationQueryImpl;
+use application::query_implementations::passage_query_impl::PassageQueryImpl;
+use domain::queries::location_queries::navigation::LocationQueries;
+use domain::queries::passage_queries::navigation::PassageQueries;
+
 
 // src/main.rs
 #[actix_web::main]
@@ -42,11 +47,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &passage_file_path,
     )?;
 
-    let navigation_queries : Arc<dyn PassageQueries> = Arc::new(PassageQueryImpl::new(location_repository.clone(), passage_repository.clone()));
+    let location_queries : Arc<dyn LocationQueries> = Arc::new(LocationQueryImpl::new(location_repository.clone()));
+    let passage_queries: Arc<dyn PassageQueries> = Arc::new(PassageQueryImpl::new(passage_repository.clone()));
 
 
-    let navigation_service = NavigationService::new(location_repository.clone(),
-                                                    passage_repository.clone(), navigation_queries.clone());
+    let navigation_service = NavigationService::new(location_queries.clone() , passage_queries.clone());
 
 
     let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
@@ -58,8 +63,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         navigation_service_trait_object.clone(),
     );
 
-    use application::query_implementations::navigation_query_impl::PassageQueryImpl;
-    use domain::queries::passage_queries::navigation::PassageQueries;
 
 
 

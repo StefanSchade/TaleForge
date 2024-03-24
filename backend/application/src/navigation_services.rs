@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use domain::aggregates::location::Location;
 use domain::aggregates::player_state::PlayerState;
+use domain::queries::location_queries::navigation::LocationQueries;
 use port::repository::{LocationRepository, PassageRepository};
 use domain::queries::passage_queries::navigation::PassageQueries;
 
@@ -12,25 +13,24 @@ fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Loca
 }
 
 pub struct NavigationService {
-    location_repository: Arc<dyn LocationRepository>,
-    passage_repository: Arc<dyn PassageRepository>,
-
-    navigation_query: Arc<dyn PassageQueries>,
+    passage_query: Arc<dyn PassageQueries>,
+    location_query: Arc<dyn LocationQueries>,
 
 }
 
 impl NavigationService {
-    pub fn new(location_repository: Arc<dyn LocationRepository>, passage_repository: Arc<dyn PassageRepository>, navigation_query: Arc<dyn PassageQueries> ) -> Self {
-        NavigationService { location_repository, passage_repository, navigation_query }
+    pub fn new(location_query: Arc<dyn LocationQueries> , passage_query: Arc<dyn PassageQueries> ) -> Self {
+        NavigationService { location_query: location_query , passage_query }
     }
 }
-
 
 impl NavigationServiceTrait for NavigationService {
     // Example method to navigate based on direction
     fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String> {
-        if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(player_state.current_location_id(), &*direction) {
-            if let Some(target_location) = self.location_repository.get_location_by_id(passage.get_to_location()) {
+        //if let Some(passage) = self.passage_repository.find_passage_by_direction_and_location(player_state.current_location_id(), &*direction) {
+        if let Some(passage) = self.passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), &*direction) {
+            //if let Some(target_location) = self.location_repository.get_location_by_id(passage.get_to_location()) {
+            if let Some(target_location) = self.location_query.get_location_by_aggregate_id(passage.get_to_location()) {
                 let narration = format!("{} and reach {}.", passage.get_narration_reference(), target_location.get_title_reference());
                 Ok((target_location, narration))
             } else {
@@ -70,10 +70,11 @@ mod tests {
         PassageRepository {}
 
          impl PassageRepository for PassageRepository {
-            fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage>;
+            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage>;
             fn get_passage_by_id(&self, id: i32) -> Option<Passage>;
             fn get_passages_for_location(&self, location_id: i32) -> Vec<Passage>;
             fn add_passage(&self, passage: Passage) -> Result<(), String>;
+            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<Passage>;
         }
     }
 
@@ -82,7 +83,7 @@ mod tests {
         let mut mock_passage_repo = MockPassageRepository::new();
         let mut mock_location_repo = MockLocationRepository::new();
 
-        mock_passage_repo.expect_find_passage_by_direction_and_location()
+        mock_passage_repo.expect_find_passage_by_location_and_direction()
             .with(eq(1), eq("north"))
             .times(1)
             .returning(|_, _| Some(PassageBuilder::default()

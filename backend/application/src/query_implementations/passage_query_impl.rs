@@ -6,17 +6,14 @@ use port::repository::{LocationRepository, PassageRepository};
 use std::sync::Arc;
 
 pub struct PassageQueryImpl {
- //   location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
 }
 
 impl PassageQueryImpl {
     pub fn new(
-        location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>
     ) -> Self {
         PassageQueryImpl {
- //           location_repository,
             passage_repository,
         }
     }
@@ -26,6 +23,12 @@ impl PassageQueries for PassageQueryImpl {
     fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage> {
         self.passage_repository.find_by_start_and_end_id(from_location_id, to_location_id)
     }
+
+
+    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage> {
+        self.passage_repository.find_passage_by_location_and_direction(location_id, direction)
+    }
+
 
     // fn find_location_by_direction(&self, current_location_id: i32, direction: &str) -> Option<Location> {
     //     // This might involve more complex logic, potentially needing adjustments

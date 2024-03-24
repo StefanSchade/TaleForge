@@ -73,7 +73,7 @@ impl PassageRepository for InMemoryPassageRepository {
             .cloned()
             .collect() // Collect filtered and cloned passages into a Vec
     }
-    fn find_passage_by_direction_and_location(&self, location_id: i32, direction: &str) -> Option<Passage> {
+    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage> {
         let passages = self.passages.lock().unwrap();
         passages.values().find(|&passage|
             (passage.get_from_location() == location_id) && (passage.get_direction_reference().eq_ignore_ascii_case(direction))
