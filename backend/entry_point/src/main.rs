@@ -42,8 +42,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &passage_file_path,
     )?;
 
+    let navigation_queries : Arc<dyn PassageQueries> = Arc::new(PassageQueryImpl::new(location_repository.clone(), passage_repository.clone()));
+
+
     let navigation_service = NavigationService::new(location_repository.clone(),
-                                                    passage_repository.clone());
+                                                    passage_repository.clone(), navigation_queries.clone());
+
+
     let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
 
     let move_player_use_case = MovePlayerUseCase::new(
@@ -53,10 +58,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         navigation_service_trait_object.clone(),
     );
 
-    use application::query_implementations::navigation_query_impl::NavigationQueryImpl;
-    use domain::queries::navigation_queries::navigation;
+    use application::query_implementations::navigation_query_impl::PassageQueryImpl;
+    use domain::queries::passage_queries::navigation::PassageQueries;
 
- //   let navigaton_queries : navigation =  NavigationQueryImpl::new(Arc::new(()), Arc::new(()));
+
 
 
 

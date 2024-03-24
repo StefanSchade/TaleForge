@@ -1,1 +1,1 @@
-pub mod navigation_queries;
+pub mod passage_queries;

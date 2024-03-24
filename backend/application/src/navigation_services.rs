@@ -3,6 +3,7 @@ use std::sync::Arc;
 use domain::aggregates::location::Location;
 use domain::aggregates::player_state::PlayerState;
 use port::repository::{LocationRepository, PassageRepository};
+use domain::queries::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
@@ -13,11 +14,14 @@ fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Loca
 pub struct NavigationService {
     location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
+
+    navigation_query: Arc<dyn PassageQueries>,
+
 }
 
 impl NavigationService {
-    pub fn new(location_repository: Arc<dyn LocationRepository>, passage_repository: Arc<dyn PassageRepository>) -> Self {
-        NavigationService { location_repository, passage_repository }
+    pub fn new(location_repository: Arc<dyn LocationRepository>, passage_repository: Arc<dyn PassageRepository>, navigation_query: Arc<dyn PassageQueries> ) -> Self {
+        NavigationService { location_repository, passage_repository, navigation_query }
     }
 }
 

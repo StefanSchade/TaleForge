@@ -1,28 +1,28 @@
-use domain::queries::navigation_queries::navigation::NavigationQuery;
+use domain::queries::passage_queries::navigation::PassageQueries;
 use domain::aggregates::passage::Passage;
 use domain::aggregates::location::Location;
 
 use port::repository::{LocationRepository, PassageRepository};
 use std::sync::Arc;
 
-pub struct NavigationQueryImpl {
-    location_repository: Arc<dyn LocationRepository>,
+pub struct PassageQueryImpl {
+ //   location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
 }
 
-impl NavigationQueryImpl {
+impl PassageQueryImpl {
     pub fn new(
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>
     ) -> Self {
-        NavigationQueryImpl {
-            location_repository,
+        PassageQueryImpl {
+ //           location_repository,
             passage_repository,
         }
     }
 }
 
-impl NavigationQuery for NavigationQueryImpl {
+impl PassageQueries for PassageQueryImpl {
     fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage> {
         self.passage_repository.find_by_start_and_end_id(from_location_id, to_location_id)
     }
