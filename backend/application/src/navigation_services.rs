@@ -54,31 +54,7 @@ mod tests {
     use domain::aggregates::passage::PassageBuilder;
     use domain::aggregates::passage::Passage;
 
-    // Mocking the LocationRepository
-    mock! {
-        LocationRepository {}
-
-        impl LocationRepository for LocationRepository{
-            fn get_location_by_id(&self, id: i32) -> Option<Location>;
-            fn get_all_locations(&self) -> Vec<Location>;
-            fn add_location(&self, location: Location) -> Result<(), String>;
-        }
-    }
-
-    // Mocking the PassageRepository
-    mock! {
-        PassageRepository {}
-
-         impl PassageRepository for PassageRepository {
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage>;
-            fn get_passage_by_id(&self, id: i32) -> Option<Passage>;
-            fn get_passages_for_location(&self, location_id: i32) -> Vec<Passage>;
-            fn add_passage(&self, passage: Passage) -> Result<(), String>;
-            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<Passage>;
-        }
-    }
-
-    mock! {
+     mock! {
         LocationQueries {}
 
         impl LocationQueries for LocationQueries {
@@ -106,7 +82,7 @@ mod tests {
             .returning(|_| Some(LocationBuilder::default()
                 .aggregate_id(2)
                 .title("Target Location".into())
-                .description("description".into())
+                .description("Description of Target Location".into())
                 .build().unwrap()));
 
         mock_passage_query.expect_find_passage_by_location_and_direction()
@@ -116,40 +92,10 @@ mod tests {
                 .aggregate_id(2)
                 .from_location_id(1)
                 .to_location_id(2)
-                .description("description".into())
+                .description("Description of passage".into())
                 .direction("north".into())
                 .narration("You go north".into())
                 .build().unwrap()));
-
-
-        //
-        // let mut mock_passage_repo = MockPassageRepository::new();
-        // let mut mock_location_repo = MockLocationRepository::new();
-        //
-        //
-        // mock_passage_repo.expect_find_passage_by_location_and_direction()
-        //     .with(eq(1), eq("north"))
-        //     .times(1)
-        //     .returning(|_, _| Some(PassageBuilder::default()
-        //         .aggregate_id(1)
-        //         .from_location_id(1)
-        //         .to_location_id(2)
-        //         .description("A passage".into())
-        //         .direction("north".into())
-        //         .narration("You go north".into())
-        //         .build()
-        //         .unwrap()));
-        //
-        // mock_location_repo.expect_get_location_by_id()
-        //     .with(eq(2)) // Assuming `to_location_id` is 2 as set in the PassageBuilder
-        //     .times(1)
-        //     .returning(|_| Some(LocationBuilder::default()
-        //         .aggregate_id(2)
-        //         .title("Target Location".into())
-        //         .description("abc".into())
-        //         .image_url(None)
-        //         .build()
-        //         .unwrap()));
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
 
