@@ -20,7 +20,6 @@ use application::query_implementations::passage_query_impl::PassageQueryImpl;
 use domain::queries::location_queries::navigation::LocationQueries;
 use domain::queries::passage_queries::navigation::PassageQueries;
 
-
 // src/main.rs
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

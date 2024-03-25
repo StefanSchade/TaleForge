@@ -3,24 +3,22 @@ use std::sync::Arc;
 use domain::aggregates::location::Location;
 use domain::aggregates::player_state::PlayerState;
 use domain::queries::location_queries::navigation::LocationQueries;
-use port::repository::{LocationRepository, PassageRepository};
 use domain::queries::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
 pub trait NavigationServiceTrait: Send + Sync {
-fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
+    fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
 }
 
 pub struct NavigationService {
     passage_query: Arc<dyn PassageQueries>,
     location_query: Arc<dyn LocationQueries>,
-
 }
 
 impl NavigationService {
-    pub fn new(location_query: Arc<dyn LocationQueries> , passage_query: Arc<dyn PassageQueries> ) -> Self {
-        NavigationService { location_query: location_query , passage_query }
+    pub fn new(location_query: Arc<dyn LocationQueries>, passage_query: Arc<dyn PassageQueries>) -> Self {
+        NavigationService { location_query: location_query, passage_query }
     }
 }
 
@@ -48,13 +46,14 @@ mod tests {
 
     use mockall::*;
     use mockall::predicate::*;
+
     use domain::aggregates::location::LocationBuilder;
+    use domain::aggregates::passage::Passage;
+    use domain::aggregates::passage::PassageBuilder;
 
     use super::*;
-    use domain::aggregates::passage::PassageBuilder;
-    use domain::aggregates::passage::Passage;
 
-     mock! {
+    mock! {
         LocationQueries {}
 
         impl LocationQueries for LocationQueries {
@@ -70,10 +69,8 @@ mod tests {
         }
     }
 
-
     #[test]
     fn navigate_to_passage_success() {
-
         let mut mock_passage_query = MockPassageQueries::new();
         let mut mock_location_query = MockLocationQueries::new();
 
@@ -88,7 +85,7 @@ mod tests {
         mock_passage_query.expect_find_passage_by_location_and_direction()
             .with(eq(1), eq("north"))
             .times(1)
-            .returning(|_,_| Some(PassageBuilder::default()
+            .returning(|_, _| Some(PassageBuilder::default()
                 .aggregate_id(2)
                 .from_location_id(1)
                 .to_location_id(2)
@@ -98,13 +95,11 @@ mod tests {
                 .build().unwrap()));
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
-
         let player_state_instance = PlayerState::new(1, 1);
 
         let result = navigation_service.navigate(player_state_instance, "north".into());
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
-
         assert_eq!(location.get_aggregate_id(), 2);
         assert_eq!(narration, "You go north and reach Target Location.");
     }

@@ -1,10 +1,8 @@
-use domain::queries::passage_queries::navigation::PassageQueries;
-use domain::aggregates::passage::Passage;
 use domain::aggregates::location::Location;
 
 use domain::queries::location_queries::navigation::LocationQueries;
 
-use port::repository::{LocationRepository, PassageRepository};
+use port::repository::LocationRepository;
 use std::sync::Arc;
 
 
