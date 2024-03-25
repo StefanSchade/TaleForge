@@ -1,0 +1,56 @@
+= Project Structure and Hexagonal Architecture in Rust
+
+== Separating a Project into Different Crates within One Workspace
+
+To manage complexity and enforce architectural patterns in Rust projects, using Cargo workspaces to separate a project into different crates is an effective strategy. This approach not only modularizes the codebase for better organization and maintainability but also facilitates adherence to specific architectural principles, such as the hexagonal architecture (also known as ports and adapters pattern).
+
+=== Creating a Workspace
+
+A workspace is a collection of packages that share the same output directory and `Cargo.lock` file. To define a workspace, you create a `Cargo.toml` file at the root of your project with a `[workspace]` section listing all member crates:
+
+[source,toml]
+----
+[workspace]
+members = [
+  "domain",
+  "adapters",
+  "port",
+  // other crates as needed
+]
+----
+
+Each crate within the workspace can then be structured to contain its own `Cargo.toml` file and source code, allowing for separate compilation and dependency management.
+
+=== Advantages of Using Workspaces
+
+- *Shared `Cargo.lock` and Output Directory*: Ensures consistent dependency versions across crates and efficient compilation.
+- *Modular Code Organization*: Each crate can focus on a specific aspect of the application, reducing complexity.
+- *Clear Dependency Management*: Dependencies between crates are explicitly defined, preventing unintended coupling.
+
+== Hexagonal Architecture with Rust Crates
+
+The hexagonal architecture advocates for the decoupling of application core logic from external concerns like UI, database access, or application infrastructure. By structuring a Rust project into crates within a workspace, we can naturally align with these principles.
+
+=== Domain Crate
+
+The domain crate encapsulates the business logic and domain models of the application. It should be kept free of dependencies on external frameworks or libraries to ensure the domain logic remains isolated and pure.
+
+=== Port Crate
+
+The port crate defines interfaces (traits in Rust) that represent the primary ways the application interacts with external services or systems. These interfaces abstract away the specifics of external dependencies, allowing the domain logic to interact with the outside world through well-defined contracts.
+
+=== Adapters Crate
+
+Adapters implement the interfaces defined in the port crate, translating between the domain models and external systems. There can be multiple adapter crates, each focusing on a specific external concern (e.g., database access, web interface).
+
+=== Enforcing Architectural Boundaries
+
+By organizing the application into these crates, Rust's type system and module visibility rules can be leveraged to enforce the architectural boundaries of hexagonal architecture:
+
+- *Domain Crate*: Should not have dependencies on other crates in the workspace.
+- *Port Crate*: Defines traits that domain and adapters crates can depend on.
+- *Adapters Crates*: Depend on the port crate for trait definitions and on the domain crate for domain models.
+
+== Conclusion
+
+Leveraging Cargo workspaces to organize Rust projects into multiple crates offers a robust method for implementing hexagonal architecture. This structure promotes a clean separation of concerns, modular code organization, and strict enforcement of architectural boundaries, ultimately leading to more maintainable and scalable software.

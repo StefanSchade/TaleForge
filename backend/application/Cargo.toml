@@ -1,0 +1,12 @@
+[package]
+name = "application"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+port = { path = "../port" }
+domain = { path = "../domain" }
+
+[dev-dependencies]
+mockall = "0.10.2"

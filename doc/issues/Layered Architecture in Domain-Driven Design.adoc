@@ -1,0 +1,83 @@
+= Layered Architecture in Domain-Driven Design
+
+In Domain-Driven Design (DDD), the architecture of a system is typically divided into distinct layers, each with its own responsibilities and concerns. Understanding the distinctions between these layers and their interactions is crucial for developers working within a DDD framework.
+
+== Layers Overview
+
+DDD commonly distinguishes between the following layers:
+
+- *Domain Layer*: Encapsulates the business logic and domain concepts.
+- *Application Layer*: Coordinates application operations, directing the flow of data between the domain and external agents.
+- *Port Layer*: Defines the APIs and interfaces that represent the capabilities of the domain and application as they are exposed to external concerns.
+- *Adapter Layer (Infrastructure Layer)*: Implements the interfaces defined in the port layer, adapting the application to different external technologies.
+
+image::./images/layers.puml[]
+
+//
+// [ditaa, "Layered Architecture"]
+// ----
+// +-------------------------+
+// |     External Agents     |
+// +------------+------------+
+//              |
+// +------------v------------+
+// |      Adapter Layer      |
+// +------------+------------+
+//              |
+// +------------v------------+
+// |        Port Layer       |
+// +------------+------------+
+//              |
+// +------------v------------+
+// |   Application Layer     |
+// +------------+------------+
+//              |
+// +------------v------------+
+// |       Domain Layer      |
+// +-------------------------+
+// ----
+
+== Layer Responsibilities
+
+=== Domain Layer
+
+- Encapsulates core business logic and domain concepts.
+- Contains entities, value objects, domain services, and aggregates.
+- Should be agnostic to external application layers or data access mechanisms.
+
+=== Application Layer
+
+- Orchestrates the flow of data to and from the domain layer and external resources.
+- Handles use cases and application logic, not domain logic.
+- Directs calls to domain objects and services to perform tasks.
+
+=== Port Layer
+
+- Defines high-level interfaces and abstractions for accessing domain and application capabilities.
+- Includes repository interfaces and service abstractions that external agents can interact with.
+- Acts as the contract that the adapter layer will implement.
+
+=== Adapter Layer
+
+- Implements the interfaces defined in the port layer, providing concrete technology-specific solutions.
+- Adapts the application to external libraries, frameworks, and databases.
+- Contains implementations for accessing external systems, like web APIs, databases, or message brokers.
+
+== Visibility and Data Flow
+
+- The *domain layer* should not have visibility into how its interfaces are implemented in the adapter layer.
+- The *application layer* uses the abstractions defined in the port layer to interact with the domain layer and external resources.
+- The *adapter layer* depends on the port layer and may also directly interact with the application layer for certain orchestrations.
+- External agents interact with the application through interfaces exposed by the adapter layer, which are defined by the port layer.
+
+== Implementing Query Interfaces
+
+In the context of DDD, query interfaces (like `NavigationQuery` for navigating between locations) are defined in the port layer but their implementations reside in the application layer. This supports the principle of layering by:
+
+- Keeping domain logic focused and agnostic of external data access mechanisms.
+- Allowing the application layer to orchestrate complex data flows and interactions using domain logic and external resources.
+
+== Conclusion
+
+Understanding the distinctions between these layers and their responsibilities is key to building a maintainable and scalable application following DDD principles. The separation ensures that the core domain logic remains insulated from external concerns, while still providing flexibility in how the application is implemented and interacts with different technologies.
+

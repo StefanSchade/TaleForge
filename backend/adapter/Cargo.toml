@@ -1,0 +1,12 @@
+[package]
+name = "adapter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+port = { path = "../port" }
+application = { path = "../application" }
+domain = { path = "../domain" }
+serde = { version = "1.0", features = ["derive"] }
+
+actix-web = "4.0.0"

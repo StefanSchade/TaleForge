@@ -1,0 +1,34 @@
+@startuml
+
+skinparam rectangle {
+    BackgroundColor<<External>> Wheat
+    BackgroundColor<<Adapter>> LightBlue
+    BackgroundColor<<Port>> LightGreen
+    BackgroundColor<<Application>> LightGrey
+    BackgroundColor<<Domain>> LightYellow
+}
+
+rectangle "External Agents" as External
+
+package "Adapter Layer (Infrastructure)" <<Adapter>> {
+    rectangle Adapter
+}
+
+package "Port Layer" <<Port>> {
+    rectangle Port
+}
+
+package "Application Layer" <<Application>> {
+    rectangle Application
+}
+
+package "Domain Layer" <<Domain>> {
+    rectangle Domain
+}
+
+External --> Adapter : uses
+Adapter --> Port : implements
+Port --> Application : defines
+Application --> Domain : orchestrates
+
+@enduml
