@@ -9,9 +9,9 @@ use adapter::web::server;
 use adapter::web::app_state::AppState;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use application::use_cases::move_player::MovePlayerUseCase;
+use application::use_cases::move_player::MovePlayerUseCaseImpl;
 use domain::aggregates::player_state::PlayerState;
-use application::navigation_services::{NavigationService, NavigationServiceTrait};
+use domain::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 
@@ -19,6 +19,7 @@ use application::query_implementations::location_query_impl::LocationQueryImpl;
 use application::query_implementations::passage_query_impl::PassageQueryImpl;
 use domain::queries::location_queries::navigation::LocationQueries;
 use domain::queries::passage_queries::navigation::PassageQueries;
+use port::use_cases::move_player::MovePlayerUseCase;
 
 
 // src/main.rs
@@ -56,23 +57,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
 
-    let move_player_use_case = MovePlayerUseCase::new(
+    let move_player_use_case : Arc<dyn MovePlayerUseCase> = Arc::new( MovePlayerUseCaseImpl::new(
         location_repository.clone(),
         passage_repository.clone(),
         player_state_repository.clone(),
         navigation_service_trait_object.clone(),
-    );
-
-
-
-
-
+    ));
 
     let app_state = Data::new(Arc::new(AppState::new(
         location_repository.clone(),
         passage_repository.clone(),
         player_state_repository.clone(),
-        move_player_use_case,
+        move_player_use_case.clone(),
     )));
 
     if let Err(e) = server::start_server(app_state).await {

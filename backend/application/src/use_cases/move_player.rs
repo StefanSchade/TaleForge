@@ -1,30 +1,39 @@
 use std::sync::Arc;
 
 
-use crate::navigation_services::NavigationServiceTrait;
+use domain::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
-use port::dto::{MovePlayerCommand, MovePlayerResult};
+use port::use_cases::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 #[allow(dead_code)] // unused repositories will be used at a later point
-pub struct MovePlayerUseCase {
+#[derive(Clone)]
+pub struct MovePlayerUseCaseImpl {
     location_repository: Arc<dyn LocationRepository>,
     passage_repository: Arc<dyn PassageRepository>,
     player_state_repository: Arc<dyn PlayerStateRepository>,
     navigation_service: Arc<dyn NavigationServiceTrait>,
 }
 
-impl MovePlayerUseCase {
+impl MovePlayerUseCaseImpl {
     pub fn new(
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>,
         player_state_repository: Arc<dyn PlayerStateRepository>,
-        navigation_service: Arc<dyn NavigationServiceTrait>,
+        navigation_service: Arc<dyn NavigationServiceTrait>
     ) -> Self {
-        Self { location_repository, passage_repository, player_state_repository, navigation_service }
+        Self {
+            location_repository,
+            passage_repository,
+            player_state_repository,
+            navigation_service,
+        }
     }
+}
 
-    pub fn execute(&self, input: MovePlayerCommand, context: RequestContext) -> Result<MovePlayerResult, String> {
+impl MovePlayerUseCase for MovePlayerUseCaseImpl {
+
+    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
         if let Some(player_id) = context.player_id {
             let mut player_state = match self.player_state_repository.find_by_id(player_id) {
                 Some(state) => state,
@@ -54,7 +63,7 @@ mod tests {
     use domain::aggregates::location::{Location, LocationBuilder};
     use domain::aggregates::passage::Passage;
     use domain::aggregates::player_state::PlayerState;
-    use crate::navigation_services::NavigationServiceTrait;
+    use domain::services::navigation_services::NavigationServiceTrait;
 
     use super::*;
 
@@ -144,7 +153,7 @@ mod tests {
             .returning(|_| ());
 
         let use_case =
-            MovePlayerUseCase::new(
+            MovePlayerUseCaseImpl::new(
                 Arc::new(mock_location_repo),
                 Arc::new(mock_passage_repo),
                 Arc::new(mock_player_state_repo),
@@ -153,7 +162,7 @@ mod tests {
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
         let context = RequestContext { player_id: Some(expected_player_id) };
 
-        let result = use_case.execute(command, context);
+        let result = use_case.execute(context, command);
 
         assert!(result.is_ok());
 

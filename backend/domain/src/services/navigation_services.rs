@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
-use domain::aggregates::location::Location;
-use domain::aggregates::player_state::PlayerState;
-use domain::queries::location_queries::navigation::LocationQueries;
-use port::repository::{LocationRepository, PassageRepository};
-use domain::queries::passage_queries::navigation::PassageQueries;
+use crate::aggregates::location::{Location, LocationBuilder};
+use crate::aggregates::passage::{Passage, PassageBuilder};
+use crate::aggregates::player_state::PlayerState;
+use crate::queries::location_queries::navigation::LocationQueries;
+use crate::queries::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
@@ -48,11 +48,10 @@ mod tests {
 
     use mockall::*;
     use mockall::predicate::*;
-    use domain::aggregates::location::LocationBuilder;
+    use crate::aggregates::location::{Location, LocationBuilder};
 
     use super::*;
-    use domain::aggregates::passage::PassageBuilder;
-    use domain::aggregates::passage::Passage;
+    use crate::aggregates::passage::{Passage, PassageBuilder};
 
      mock! {
         LocationQueries {}

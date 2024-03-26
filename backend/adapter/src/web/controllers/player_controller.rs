@@ -8,7 +8,7 @@ use crate::web::app_state::AppState;
 
 
 
-use port::dto::MovePlayerCommand;
+use port::use_cases::move_player::MovePlayerCommand;
 
 #[derive(Deserialize)]
 pub struct WebMovePlayerInput {
@@ -27,7 +27,7 @@ pub async fn move_player(data: web::Data<Arc<AppState>>, web_input: web::Json<We
 
     let command = MovePlayerCommand::from(web_input.into_inner());
     let context = RequestContext::new(Some(extracted_player_id));
-    let result = data.move_player_use_case.execute(command, context);
+    let result = data.move_player_use_case.execute(context, command);
 
     match result {
         Ok(response) => {
