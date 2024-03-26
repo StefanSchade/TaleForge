@@ -1,9 +1,9 @@
 [workspace]
 members = [
-    "backend/adapter",
-    "backend/port",
-    "backend/application",
-    "backend/domain",
-    "backend/entry_point"
+    "app-backend/adapter",
+    "app-backend/port",
+    "app-backend/application",
+    "app-backend/domain",
+    "app-backend/entry_point"
 ]
 resolver = "2"
