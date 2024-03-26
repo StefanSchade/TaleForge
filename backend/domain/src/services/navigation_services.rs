@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
-use crate::aggregates::location::{Location, LocationBuilder};
-use crate::aggregates::passage::{Passage, PassageBuilder};
+use crate::aggregates::location::{Location};
 use crate::aggregates::player_state::PlayerState;
 use crate::queries::location_queries::navigation::LocationQueries;
 use crate::queries::passage_queries::navigation::PassageQueries;

@@ -1,8 +1,8 @@
 use domain::queries::passage_queries::navigation::PassageQueries;
 use domain::aggregates::passage::Passage;
-use domain::aggregates::location::Location;
 
-use port::repository::{LocationRepository, PassageRepository};
+
+use port::repository::{PassageRepository};
 use std::sync::Arc;
 
 pub struct PassageQueryImpl {

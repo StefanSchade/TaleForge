@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use application::use_cases::move_player::MovePlayerUseCaseImpl;
+
 use port::use_cases::move_player::MovePlayerUseCase;
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
