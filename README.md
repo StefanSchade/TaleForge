@@ -6,6 +6,8 @@ Welcome enthusiasts of text adventures, role-playing games and programming! Our 
 
 ## Vision
 
+### A platform for text adventures and role playing
+
 I dream of TaleForge to become a gateway to limitless adventures, where users can create, share and enjoy text based graphics adventures:
 
 - **No-Code Adventure Design:** Create detailed, engaging text adventures without having to program.
@@ -18,6 +20,18 @@ I dream of TaleForge to become a gateway to limitless adventures, where users ca
 As a pet project born out of passion, TaleForge is also my journey into learning Rust and ReactJS, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development.
 
 <img src="README/images/visions.webp" width="300"/>
+
+### A learning resource for a Rust Web Application in hexagonal architecture
+
+- **Experimenting with Rust:** I want to extend my currently limited experience with Rust.
+- **Asses Rusts Capability for Webservices:** I would like to find out, wether this interesting option with its impressive performance is actually production ready.
+- **Setup a hexagonal template:** I would like to take a Rust template of the project structure away that has proven valuable in Java.
+- **Learn with AI:** I intend to use ChatGPT as my tutor doing this.
+
+### Project is supposed to serve as a template for further AI projects
+
+- **Template for generative AI:** I am investigating an efficient way to produce software in the age of AI. This project could serve as a template to communicate a desired way of structuring a project to a large language model.
+- **Extend AI toolset:** Developing this I can extend the tools I use when colaborating with AI.
 
 ## The Road Ahead
 
