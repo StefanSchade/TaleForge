@@ -49,7 +49,7 @@ impl Passage {
 
 #[cfg(test)]
 mod tests {
-    use crate::aggregates::passage::PassageBuilder;
+    use crate::model::passage::PassageBuilder;
 
     #[test]
     fn test_passage_builder() {

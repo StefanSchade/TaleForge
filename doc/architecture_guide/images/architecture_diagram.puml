@@ -1,0 +1,156 @@
+@startuml
+top to bottom direction
+
+rectangle "backend" #Tan {
+
+rectangle "crosscutting" #LightSlateGray {
+    package "framework" #LightSteelBlue {
+        [Errors] #Gold
+    }
+}
+
+rectangle "domain" #LightSlateGray {
+
+    package "model" #LightSteelBlue {
+        [location] #Gold
+        [passage] #Gold
+        [player_state] #Gold
+    }
+
+    package "services" #LightSteelBlue {
+        [navigation_service] #Gold
+    }
+
+    package "query_interfaces" #LightSteelBlue {
+            [location_queries] #Gold
+            [passage_queries] #Gold
+    }
+}
+
+rectangle "application" #LightSlateGray {
+
+    package "query_implementations" #LightSteelBlue {
+        [location_query_impl] #Gold
+        [passage_query_impl] #Gold
+      }
+
+    package "use_case_impl" #LightSteelBlue {
+        [move_player_impl] #Gold
+      }
+
+    package "dto_domain_mapping" #LightSteelBlue {
+             [location_mapper] #Gold
+             [passage_mapper] #Gold
+    }
+
+}
+
+rectangle "port" #LightSlateGray {
+
+    package "dto" #LightSteelBlue {
+        [location_dto] #Gold
+        [passage_dto] #Gold
+      }
+
+    package "use_case" #LightSteelBlue {
+        [move_player] #Gold
+      }
+
+    package "repositories" #LightSteelBlue {
+        [location_repository] #Gold
+        [passage_repository] #Gold
+      }
+
+    package "dto_domain_mapping" #LightSteelBlue {
+             [location_mapper] #Gold
+             [passage_mapper] #Gold
+    }
+
+}
+
+
+rectangle "adapter" #LightSlateGray {
+
+    package "persistence" #LightSteelBlue {
+        [location_repository_impl_in_memory] #Gold
+        [passage_repository_impl_in_memory] #Gold
+      }
+
+    package "web" #LightSteelBlue {
+        package "controller" #LightSteelBlue {
+                [player_controller] #Gold
+                [admin_controller] #Gold
+           }
+         [server]   #Gold
+         [app_state] #Gold
+      }
+}
+
+rectangle "entry_point" #LightSlateGray {
+
+    [main] #Gold
+
+}
+
+}
+
+' ***********************
+' layout
+' ***********************
+
+' layer domain
+        [location]-[hidden]--[Errors]
+        [passage]-[hidden]--[Errors]
+        [navigation_service]-[hidden]--[Errors]
+        [location_queries]-[hidden]--[Errors]
+        [passage_queries]-[hidden]--[Errors]
+
+
+
+' layer application
+        [location_query_impl]-[hidden]-[passage_queries]
+
+' layer port
+
+          [move_player]-[hidden]-[passage_mapper]
+          [passage_repository]-[hidden]-[passage_mapper]
+
+
+' layer port - application
+
+          [move_player]-[hidden]-[passage_mapper]
+          [passage_repository]-[hidden]-[passage_mapper]
+
+' layer adapter
+
+          [location_repository_impl_in_memory]-[hidden]-[location_repository]
+
+
+          [main]-[hidden]-[location_repository_impl_in_memory]
+          [main]-[hidden]-[passage_repository_impl_in_memory]
+           [main]-[hidden]-[player_controller]
+
+' ***********************
+' implements
+' ***********************
+
+        [move_player_impl].|>[move_player] : "    implements"
+        [passage_repository_impl_in_memory].|>[passage_repository] : "    implements"
+        [location_repository_impl_in_memory].|>[location_repository] : "    implements"
+
+
+        [passage_query_impl]...|>[passage_queries]: "    implements"
+        [location_query_impl]...|>[location_queries]: "    implements"
+
+        [player_controller] --> [move_player]: "    uses"
+'          [navigation_service] --> [location_queries]: "    uses"
+'         [navigation_service] --> [passage_queries]: "    uses"
+
+          [passage_mapper] -> [passage]: "    uses"
+         [location_mapper] -> [location]: "    uses"
+
+          [passage_mapper] -> [passage_dto]: "    uses"
+         [location_mapper] -> [location_dto]: "    uses"
+
+
+@enduml

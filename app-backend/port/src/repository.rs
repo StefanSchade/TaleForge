@@ -1,6 +1,6 @@
-use domain::aggregates::location::Location;
-use domain::aggregates::passage::Passage;
-use domain::aggregates::player_state::PlayerState;
+use domain::model::location::Location;
+use domain::model::passage::Passage;
+use domain::model::player_state::PlayerState;
 
 // we want to be able to change the implementation of theese repos after compilation, therefore the traits need to be object safe. This implies that they have no method, that returns 'Self'. Compare implmementation of struc AppState
 

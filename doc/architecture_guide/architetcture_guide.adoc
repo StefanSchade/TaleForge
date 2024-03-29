@@ -1,0 +1,73 @@
+= Software Architecture Documentation
+:toc: macro
+:toc-title:
+:sectnums:
+:sectnumlevels: 5
+:source-highlighter: rouge
+
+toc::[]
+
+== Introduction
+
+This document provides an overview of our software architecture, drawing inspiration from several architectural and design principles. It aims to align our development team on the architecture's rationale, structure, and benefits, fostering a cohesive and informed approach to project development.
+
+== Inspirational Concepts
+
+This section briefly introduces the key concepts that have influenced our architecture's design. For further reading on each, references are provided.
+
+=== Domain-Driven Design (DDD)
+
+Domain-Driven Design is an approach to software development that centers on complex needs by connecting the implementation to an evolving model of the core business concepts. DDD facilitates the collaboration between technical and domain experts to iteratively refine the domain model, which guides the design of the software.
+
+*Reference:* "https://domaindrivendesign.org/"
+
+=== Hexagonal Architecture (Ports and Adapters)
+
+Hexagonal Architecture, or Ports and Adapters, focuses on isolating the core logic of the application from external concerns such as the UI, databases, and other services. This isolation is achieved by defining ports that represent primary and secondary ways of interacting with the application, implemented concretely by adapters.
+
+*Reference:* Alistair Cockburn's "Hexagonal Architecture" - "https://alistair.cockburn.us/hexagonal-architecture/"
+
+=== Clean Architecture
+
+Clean Architecture proposes a system that is independent of frameworks, UI, database, and any external agency. It emphasizes the separation of concerns through layers, where each layer has a distinct set of responsibilities and dependencies only point inwards towards the domain logic.
+
+*Reference:* Robert C. Martin's "The Clean Architecture" - "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"
+
+=== Event-Driven Architecture
+
+Event-Driven Architecture is a design paradigm in which the flow of the application is determined by events or changes in state. This architecture pattern allows for high levels of decoupling, scalability, and responsiveness, making it suitable for complex, dynamic systems.
+
+*Note:* While not currently implemented, we consider Event-Driven Architecture a viable option for future scalability and flexibility enhancements.
+
+== Current Architecture
+
+=== Overview
+
+Our current architecture is designed with the principles of DDD at its core, structured to facilitate Hexagonal and Clean Architecture approaches. The system is organized into layers, each with specific roles and allowed interactions.
+
+=== Layers and Their Interactions
+
+- *Domain Layer:* Contains the business logic and domain models. It is the heart of our application, strictly isolated from external concerns.
+- *Application Layer:* Acts as a mediator between the domain layer and external interfaces, orchestrating the flow of data and translating between domain and application-specific data models.
+- *Port Layer:* Defines the APIs and interfaces for the application, abstracting the core logic from external concerns.
+- *Adapter Layer:* Implements the port interfaces, adapting the application to different external services, databases, and user interfaces.
+
+=== Artifacts Within the Layers
+
+- *Entities and Value Objects:* Represent the domain concepts, encapsulated within the Domain Layer.
+- *Use Cases:* Encapsulated within the Application Layer, defining the application-specific business rules and flows.
+- *Repositories and Services Interfaces:* Defined in the Port Layer, abstracting data access and domain services.
+- *Controllers and Persistence Implementations:* Reside in the Adapter Layer, providing concrete implementations for user interaction and data management.
+
+== Benefits of Our Architecture
+
+The chosen architectural approach offers several advantages:
+
+- *Flexibility and Scalability:* Easy adaptation to new requirements or technologies without impacting the core domain logic.
+- *Maintainability:* Separation of concerns makes the system easier to understand, debug, and extend.
+- *Testability:* Each layer can be independently tested, ensuring robustness and reliability.
+- *Collaboration:* Clear boundaries and abstractions facilitate better communication and collaboration between team members with different expertise.
+
+== Conclusion
+
+This document lays the foundation for understanding our software architecture, its underlying principles, and the benefits it brings to our development process. As we move forward, continuous refinement and adherence to these architectural guidelines will ensure our project's success and sustainability.

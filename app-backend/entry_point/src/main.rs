@@ -9,17 +9,17 @@ use adapter::web::server;
 use adapter::web::app_state::AppState;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use application::use_cases::move_player::MovePlayerUseCaseImpl;
-use domain::aggregates::player_state::PlayerState;
+use application::use_case_impl::move_player_impl::MovePlayerUseCaseImpl;
+use domain::model::player_state::PlayerState;
 use domain::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 
 use application::query_implementations::location_query_impl::LocationQueryImpl;
 use application::query_implementations::passage_query_impl::PassageQueryImpl;
-use domain::queries::location_queries::navigation::LocationQueries;
-use domain::queries::passage_queries::navigation::PassageQueries;
-use port::use_cases::move_player::MovePlayerUseCase;
+use domain::query_interfaces::location_queries::navigation::LocationQueries;
+use domain::query_interfaces::passage_queries::navigation::PassageQueries;
+use port::use_case::move_player::MovePlayerUseCase;
 
 
 // src/main.rs

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 
-use port::use_cases::move_player::MovePlayerUseCase;
+use port::use_case::move_player::MovePlayerUseCase;
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 pub struct AppState {

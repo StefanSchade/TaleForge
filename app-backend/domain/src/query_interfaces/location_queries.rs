@@ -1,5 +1,5 @@
 pub mod navigation {
-    use crate::aggregates::location::Location;
+    use crate::model::location::Location;
 
     pub trait LocationQueries: Send + Sync {
         fn get_location_by_aggregate_id(&self, location_aggregate_id: i32) -> Option<Location>;

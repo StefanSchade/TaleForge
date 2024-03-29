@@ -1,5 +1,5 @@
-use domain::aggregates::location::Location;
-use domain::aggregates::passage::Passage;
+use domain::model::location::Location;
+use domain::model::passage::Passage;
 use port::repository::{LocationRepository, PassageRepository};
 use serde_json;
 use std::fs::File;

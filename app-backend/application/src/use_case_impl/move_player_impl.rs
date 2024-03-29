@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use domain::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
-use port::use_cases::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
+use port::use_case::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
 use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
 
 #[allow(dead_code)] // unused repositories will be used at a later point
@@ -60,9 +60,9 @@ mod tests {
     use mockall::predicate::eq;
     use mockall::{mock, predicate::*};
 
-    use domain::aggregates::location::{Location, LocationBuilder};
-    use domain::aggregates::passage::Passage;
-    use domain::aggregates::player_state::PlayerState;
+    use domain::model::location::{Location, LocationBuilder};
+    use domain::model::passage::Passage;
+    use domain::model::player_state::PlayerState;
     use domain::services::navigation_services::NavigationServiceTrait;
 
     use super::*;
