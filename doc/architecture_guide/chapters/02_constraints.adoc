@@ -1,22 +1,48 @@
 = Constraints
 
-The development and deployment of the TaleForge project are subject to a series of constraints that influence various architectural, technological, and operational decisions.
-Recognizing and addressing these constraints early in the planning process is crucial for aligning the project's objectives with practical realities and stakeholder expectations.
+For a professional project, recognizing and addressing constraints early in the planning process is crucial. However for this pet project a minimal review will suffice.
 
 == Technological Constraints
 
-. *Programming Language*: The project is committed to using Rust for the backend development. This choice dictates certain libraries, frameworks, and tools compatible with the Rust ecosystem.
+. *Programming Language*: The project is committed to using Rust for the backend development.
 . *Cloud-Native Deployment*: The application is designed to be cloud-native, necessitating adherence to principles and practices that support scalability, resilience, and portability across cloud environments.
 . *Authentication and Security*: Integration with OpenID Connect (OIDC) for authentication, requiring the system to support OIDC-compliant authorization servers, such as Keycloak.
 
 == Organizational Constraints
 
-. *Resource Availability*: Limited human and computational resources may affect the project's scope and timelines, prioritizing certain features or capabilities based on available expertise and infrastructure.
-. *Knowledge and Expertise*: The current level of Rust proficiency within the team may influence the adoption rate of certain Rust-centric technologies or architectural patterns.
+. *Resource Availability*: As the project is of educational nature, both human and financial resources are limited indeed.
+. *Knowledge and Expertise*: As I have a Java background, my Rust knowledge is limited and of theoretical nature. Part of this project is to experiment with the patterns, I am familiar with in the context of Rust.
 
-== Regulatory and Compliance Constraints
+=== Regulatory and Compliance Constraints
+:sectnums!:
 
-. *Data Privacy and Security*: Compliance with data protection regulations (such as GDPR in Europe) mandates stringent data handling, storage, and processing practices, especially concerning user-generated content and personal data.
+The TaleForge project operates within a regulatory framework that imposes certain obligations and considerations, especially given its interactive, user-centric nature and potential to handle sensitive personal information. Compliance with these regulations is not only a legal necessity but also a cornerstone of building trust and ensuring user safety.
+
+==== Data Privacy
+
+The handling of personal information is a critical aspect of the TaleForge project, subject to stringent data protection laws such as the General Data Protection Regulation (GDPR) in the European Union, among others. The extensive definition of personal information by these regulations means that nearly any application managing server-stored user data must consider privacy implications meticulously. This is particularly true for TaleForge, which incorporates elements of social media and community interaction, thereby increasing its exposure to privacy concerns.
+
+. *Personal Data Handling*: The project must implement mechanisms for data collection, storage, processing, and deletion that comply with legal standards, ensuring users' rights are protected.
+. *User Consent and Transparency*: Clear, accessible information about data usage and user consent for data processing must be established, along with easy-to-use options for users to manage their data.
+
+==== Security
+
+Given the project's goal to establish patterns for production-ready applications, adopting state-of-the-art security practices is within the project’s scope. This encompasses not only technical measures but also procedural approaches to maintain high-security standards.
+
+. *Authentication and Authorization*: Implementing robust, up-to-date mechanisms for authentication and authorization is critical. This includes outlining strategies for integrating OAuth2, OpenID Connect, or similar protocols to ensure secure access control.
+. *Vulnerability Management*: Establishing processes for regular vulnerability assessments, including scanning for security flaws in dependencies and timely updating of libraries, is essential to mitigate potential security risks.
+. *Security Best Practices*: Adoption of security best practices and guidelines, such as those recommended by OWASP (Open Web Application Security Project), to safeguard against common vulnerabilities and threats.
+
+==== Development and Deployment Considerations
+
+Currently, the TaleForge project is conceptualized as a development endeavor with an educational purpose, which implies a certain degree of flexibility regarding full-scale compliance and security implementations. However, planning for a future public deployment necessitates a forward-looking approach to these issues:
+
+. *Gradual Implementation*: While the immediate focus may be on development and learning, incorporating privacy and security considerations from the outset ensures a smoother transition to a public, production-level deployment.
+. *Educational Value*: Leveraging the project as an educational template includes demonstrating how regulatory and security challenges can be effectively addressed within application development, offering valuable insights for developers.
+
+In summary, while regulatory and compliance constraints may initially take a backseat in a development and educational context, the TaleForge project acknowledges their importance and incorporates foundational practices to address these concerns progressively.
+
+
 
 == Environmental Constraints
 
