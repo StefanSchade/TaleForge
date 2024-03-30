@@ -1,5 +1,6 @@
+:sectnums:
+
 = Introduction and Goals
-:sectnums!:
 
 The TaleForge project is embarked upon with two principal objectives:
 

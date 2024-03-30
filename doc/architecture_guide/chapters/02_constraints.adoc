@@ -1,0 +1,28 @@
+= Constraints
+
+The development and deployment of the TaleForge project are subject to a series of constraints that influence various architectural, technological, and operational decisions.
+Recognizing and addressing these constraints early in the planning process is crucial for aligning the project's objectives with practical realities and stakeholder expectations.
+
+== Technological Constraints
+
+. *Programming Language*: The project is committed to using Rust for the backend development. This choice dictates certain libraries, frameworks, and tools compatible with the Rust ecosystem.
+. *Cloud-Native Deployment*: The application is designed to be cloud-native, necessitating adherence to principles and practices that support scalability, resilience, and portability across cloud environments.
+. *Authentication and Security*: Integration with OpenID Connect (OIDC) for authentication, requiring the system to support OIDC-compliant authorization servers, such as Keycloak.
+
+== Organizational Constraints
+
+. *Resource Availability*: Limited human and computational resources may affect the project's scope and timelines, prioritizing certain features or capabilities based on available expertise and infrastructure.
+. *Knowledge and Expertise*: The current level of Rust proficiency within the team may influence the adoption rate of certain Rust-centric technologies or architectural patterns.
+
+== Regulatory and Compliance Constraints
+
+. *Data Privacy and Security*: Compliance with data protection regulations (such as GDPR in Europe) mandates stringent data handling, storage, and processing practices, especially concerning user-generated content and personal data.
+
+== Environmental Constraints
+
+. *Scalability*: The architecture must accommodate varying loads, with the capability to scale resources up or down based on user demand, without degrading performance or user experience.
+. *Maintenance and Evolution*: The system should be designed for ease of maintenance, allowing for continuous updates, bug fixes, and feature enhancements without significant downtime or disruption.
+
+== Summary
+
+Acknowledging these constraints is essential for guiding the architectural design and implementation strategies of the TaleForge project. By considering these limitations early on, the project can navigate challenges more effectively, ensuring a robust, secure, and user-centric platform.

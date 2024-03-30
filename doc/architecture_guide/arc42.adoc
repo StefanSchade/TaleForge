@@ -2,7 +2,7 @@
 :toc: macro
 :toc-title: Contents
 :sectnums:
-:sectnumlevels: 3
+:sectnumlevels: 6
 :source-highlighter: rouge
 
 toc::[]
@@ -16,9 +16,9 @@ include::./chapters/00_abstract.adoc[]
 
 include::./chapters/01_introduction_and_goals.adoc[]
 
+include::./chapters/02_constraints.adoc[]
 
-== Constraints
-* List any technical, organizational, or operational constraints affecting the architecture.
+
 
 == Context and Scope
 === Business Context
