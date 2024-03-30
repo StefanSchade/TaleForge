@@ -1,19 +1,26 @@
 == Introduction and Goals
 
-There are 3 Goals I pursue with this project
+There are 2 main goals I pursue with this project
 
-* Develop a platform, that ...
+. Develop a platform, that ...
 ** ... allows users to design their own adventure games and share them.
 ** ... allows users play text adventure games developed by others.
 
-* Learn about Rust and Hexagonal Architecture to be able ...
-** ... to develop resource efficient state-of-the-art web apps.
-** ... write decent Rust code.
-** ... layout an application so it is easy to develop and maintain.
+. Provide know how and a template
 
-* Explore the possibilities of Large Language Models and AI:
-** Use ChatGPT as a learning coach and for pair programming.
-** Establish a template to give an AI context when asking it to implement completely different functionality.
+    ** Archetypical Rust web application with the following features:
+        *** an up-to-date modern web application
+        *** high performance and small resource footprint
+        *** front- and backend
+    ** To be used to create further apps efficiently and consistently
+        *** Further development within the TaleForge project
+        *** Useful for followup projects with a different functionality
+        *** Useful to provide context to a Large Language Model, communicating the expectation for AI-generated application code
+
+Aditionally, I want to
+
+    * improve my own Rust know how
+    * collect experience using AI in pair programing and learning
 
 === Requirements Overview
 
@@ -29,14 +36,13 @@ There are 3 Goals I pursue with this project
 
 ** Honor the https://12factor.net/[12 factor app] principles
 
+** Cloud native
+
 ** Try to find production grade solutions
 
-*** OIDC Authorization
+*** OIDC Authorization, HTTPS
 
-*** ...
-
-
-
+*** Logging and Configuration Management
 
 === Architecture Goals
 * Outline the primary goals of the architecture, such as flexibility, scalability, performance, etc.
@@ -44,10 +50,9 @@ There are 3 Goals I pursue with this project
 * Goals
 ** easy to maintain
 ** good developer experience
-** scalab
+** scalability and cloud native
 
 * Patterns
 ** Domain Driven Design
 ** Hexagonal Architecture
-** Event driven Architecture (keep this as an option)
-
+** Event driven Architecture / CQRS (keep this as an option)
