@@ -1,0 +1,53 @@
+== Introduction and Goals
+
+There are 3 Goals I pursue with this project
+
+* Develop a platform, that ...
+** ... allows users to design their own adventure games and share them.
+** ... allows users play text adventure games developed by others.
+
+* Learn about Rust and Hexagonal Architecture to be able ...
+** ... to develop resource efficient state-of-the-art web apps.
+** ... write decent Rust code.
+** ... layout an application so it is easy to develop and maintain.
+
+* Explore the possibilities of Large Language Models and AI:
+** Use ChatGPT as a learning coach and for pair programming.
+** Establish a template to give an AI context when asking it to implement completely different functionality.
+
+=== Requirements Overview
+
+* Business requirements:
+
+** Provide a browser based web app for interactive use  that is dedicated to facilitate playing and designing text adventure games augmented with graphical illustrations (graphics adventures)
+
+** Allow for multiplayer games
+
+** Include social media functionality like reviewing and liking games,
+
+* Technical requirements:
+
+** Honor the https://12factor.net/[12 factor app] principles
+
+** Try to find production grade solutions
+
+*** OIDC Authorization
+
+*** ...
+
+
+
+
+=== Architecture Goals
+* Outline the primary goals of the architecture, such as flexibility, scalability, performance, etc.
+
+* Goals
+** easy to maintain
+** good developer experience
+** scalab
+
+* Patterns
+** Domain Driven Design
+** Hexagonal Architecture
+** Event driven Architecture (keep this as an option)
+

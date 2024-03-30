@@ -9,6 +9,8 @@ toc::[]
 
 == Introduction
 
+This document provides an overview over the architecture of the
+
 This document provides an overview of our software architecture, drawing inspiration from several architectural and design principles. It aims to align our development team on the architecture's rationale, structure, and benefits, fostering a cohesive and informed approach to project development.
 
 == Inspirational Concepts

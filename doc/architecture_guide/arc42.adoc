@@ -2,57 +2,20 @@
 :toc: macro
 :toc-title: Contents
 :sectnums:
-:sectnumlevels: 5
+:sectnumlevels: 3
 :source-highlighter: rouge
 
 toc::[]
 
+
 :sectnums!:
-== Abstract
 
-=== Objective
-
-This document describes the TaleForge architecture.
-
-=== Audience
-
-It is not exclusively aimed at (potential) contributors and users of the system, but also to learners either interested in setting up a Rust Web-App in hexagonal architecture or in the use of generative AI for developing similar applications (compare the project objectives described in the https://github.com/StefanSchade/TaleForge/blob/master/README.md[README.md])
-
-=== Scope
-
-The application is currently under development, but eventually it will likely consist of the following components:
-
-* Backend in Rust
-* Frontend in ReactJS
-* Third party components
-  ** Database
-  ** Authorization Server
-  ** Cache / Messaging
-* Infrastructure and Deployment
-  ** Scripts for deployment
-  ** Configuration
-
-This document will focus with both the back- and frontend as they are the assets, developed in this repo.
-
-=== Document structure
-
-The document follows the https://arc42.org/[Arc 42 Standard]
+include::./chapters/00_abstract.adoc[]
 
 :sectnums:
 
-== Introduction and Goals
+include::./chapters/01_introduction_and_goals.adoc[]
 
-There are 3 Goals I pursue with this project
-
-* Develop a plattform that allows users...
-  ** to design their own adventure games and share them with others
-  ** play
-
-=== Requirements Overview
-* Briefly describe the main business and technical requirements that influence the project.
-
-=== Architecture Goals
-* Outline the primary goals of the architecture, such as flexibility, scalability, performance, etc.
 
 == Constraints
 * List any technical, organizational, or operational constraints affecting the architecture.

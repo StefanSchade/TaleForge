@@ -17,7 +17,7 @@ I dream of TaleForge to become a gateway to limitless adventures, where users ca
 - **Community Sharing:** Release your creations to the community, inspiring and being inspired by fellow adventurers.
 - **Future Expansion:** Role-playing features and more on the horizon, expanding what's possible in text adventures.
 
-As a pet project born out of passion, TaleForge is also my journey into learning Rust and ReactJS, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development.
+As a pet project born out of passion, TaleForge is also my journey into learning Rust and ReactJS, connecting with like-minded enthusiasts, and exploring modern software architecture and AI tools in game development. *The educational motivation is at the center of this project*
 
 <img src="README/images/visions.webp" width="300"/>
 
