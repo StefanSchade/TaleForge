@@ -1,58 +1,44 @@
-== Introduction and Goals
+= Introduction and Goals
+:sectnums!:
 
-There are 2 main goals I pursue with this project
+The TaleForge project is embarked upon with two principal objectives:
 
-. Develop a platform, that ...
-** ... allows users to design their own adventure games and share them.
-** ... allows users play text adventure games developed by others.
+. To establish a versatile platform that:
+** Empowers users to design, share, and play their own adventure games.
+** Facilitates the enjoyment of text adventure games, enriched with graphical elements, created by the community.
 
-. Provide know how and a template
+. To disseminate know-how and provide a replicable template for:
+** Crafting an archetype of a modern, high-performance Rust web application with minimal resource demands, encompassing both front-end and back-end development.
+** Enabling efficient and consistent development of additional applications within the TaleForge ecosystem and beyond, serving as a foundational blueprint.
+** Offering a contextually rich example to Large Language Models (LLMs), guiding AI-generated code towards expectations aligned with real-world application development.
 
-    ** Archetypical Rust web application with the following features:
-        *** an up-to-date modern web application
-        *** high performance and small resource footprint
-        *** front- and backend
-    ** To be used to create further apps efficiently and consistently
-        *** Further development within the TaleForge project
-        *** Useful for followup projects with a different functionality
-        *** Useful to provide context to a Large Language Model, communicating the expectation for AI-generated application code
+Additionally, this endeavor seeks to:
 
-Aditionally, I want to
+* Enhance personal proficiency and understanding of Rust.
+* Garner insights into the integration of AI in pair programming contexts and the broader learning journey.
 
-    * improve my own Rust know how
-    * collect experience using AI in pair programing and learning
+== Requirements Overview
 
-=== Requirements Overview
+The aspirations of the TaleForge project are underpinned by a set of business and technical requirements:
 
-* Business requirements:
+=== Business Requirements:
+* Deliver a browser-based application that provides an interactive platform for both playing and designing text-based adventure games, augmented with graphic illustrations.
+* Support multiplayer gaming experiences.
+* Incorporate social functionalities, allowing users to review, like, and interact with game content.
 
-** Provide a browser based web app for interactive use  that is dedicated to facilitate playing and designing text adventure games augmented with graphical illustrations (graphics adventures)
+=== Technical Requirements:
+* Adherence to the principles outlined in the link:https://12factor.net/[Twelve-Factor App] methodology, ensuring a robust, scalable, and maintainable cloud-native application.
+* Integration of production-grade solutions, including OIDC for authorization, secured communications via HTTPS, comprehensive logging, and effective configuration management.
 
-** Allow for multiplayer games
+== Architecture Goals
 
-** Include social media functionality like reviewing and liking games,
+The architectural vision for TaleForge is driven by the necessity for a system that is not only robust and scalable but also offers an engaging and productive development experience. The guiding principles and patterns for achieving these objectives include:
 
-* Technical requirements:
+* Maintenance simplicity, ensuring that the system remains adaptable and straightforward to update or expand.
+* A superior developer experience, characterized by clear documentation, well-defined processes, and supportive tooling.
+* Scalability and cloud-native design, facilitating the platform's growth and evolution without compromising performance or reliability.
 
-** Honor the https://12factor.net/[12 factor app] principles
-
-** Cloud native
-
-** Try to find production grade solutions
-
-*** OIDC Authorization, HTTPS
-
-*** Logging and Configuration Management
-
-=== Architecture Goals
-* Outline the primary goals of the architecture, such as flexibility, scalability, performance, etc.
-
-* Goals
-** easy to maintain
-** good developer experience
-** scalability and cloud native
-
-* Patterns
-** Domain Driven Design
-** Hexagonal Architecture
-** Event driven Architecture / CQRS (keep this as an option)
+=== Adopted Patterns:
+* Domain-Driven Design (DDD) to encapsulate complex business requirements in a modular and intuitive domain model.
+* Hexagonal Architecture (Ports and Adapters) for decoupling core logic from external interfaces, enhancing adaptability.
+* Event-Driven Architecture and Command Query Responsibility Segregation (CQRS) as optional patterns, offering avenues for further architectural evolution focused on system responsiveness and scalability.
