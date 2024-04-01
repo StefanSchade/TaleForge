@@ -1,6 +1,6 @@
 = Constraints
 
-For a professional project, recognizing and addressing constraints early in the planning process is crucial. However for this pet project a minimal review will suffice.
+For a professional project, recognizing and addressing constraints early in the planning process is crucial. While reliable planning is not as important for a pet project, an overview over the relevant constraints remains important. Without it, the establishment of adequate design decisions and implementation strategies would become impossible.
 
 == Technological Constraints
 
@@ -10,28 +10,48 @@ For a professional project, recognizing and addressing constraints early in the 
 
 == Organizational Constraints
 
-. *Resource Availability*: As the project is of educational nature, both human and financial resources are limited indeed.
+. *Resource Availability*: As the project is of educational nature, both human and financial resources are very limited indeed.
 . *Knowledge and Expertise*: As I have a Java background, my Rust knowledge is limited and of theoretical nature. Part of this project is to experiment with the patterns, I am familiar with in the context of Rust.
 
 === Regulatory and Compliance Constraints
-:sectnums!:
 
-The TaleForge project operates within a regulatory framework that imposes certain obligations and considerations, especially given its interactive, user-centric nature and potential to handle sensitive personal information. Compliance with these regulations is not only a legal necessity but also a cornerstone of building trust and ensuring user safety.
+Nowadays, almost any publicly available web application is subject to regulation, especially with respect to data protection. The TaleForge project in particular touches many aspects, which are subject to regulation:
+
+* Social media functionality as the ability to connect to and interact with outer users
+* Providing a platform for users to generate input (adventures) that might be offensive or inappropriate for minors
+
+Should the project make it as far as a public deployment, ensuring user safety will become a major issue.
 
 ==== Data Privacy
 
-The handling of personal information is a critical aspect of the TaleForge project, subject to stringent data protection laws such as the General Data Protection Regulation (GDPR) in the European Union, among others. The extensive definition of personal information by these regulations means that nearly any application managing server-stored user data must consider privacy implications meticulously. This is particularly true for TaleForge, which incorporates elements of social media and community interaction, thereby increasing its exposure to privacy concerns.
+The handling of personal information is subject to stringent data protection laws such as the General Data Protection Regulation (GDPR) in the European Union.
 
-. *Personal Data Handling*: The project must implement mechanisms for data collection, storage, processing, and deletion that comply with legal standards, ensuring users' rights are protected.
-. *User Consent and Transparency*: Clear, accessible information about data usage and user consent for data processing must be established, along with easy-to-use options for users to manage their data.
+Resulting requirements:
+
+* The storage of personal information of users must be justified by actual use cases requiring this specific information.
+
+* User Consent and Transparency:
+
+    ** Clearly accessible information about data usage
+    ** easy-to-use options for users to manage their data
+    ** Establish user consent
+
+* Processes to manage personal information
+
+    ** Collection
+    ** Processing
+    ** Deletion
+
+Unathorized access to personal information has to be prevented.
 
 ==== Security
 
-Given the project's goal to establish patterns for production-ready applications, adopting state-of-the-art security practices is within the project’s scope. This encompasses not only technical measures but also procedural approaches to maintain high-security standards.
+Given the project's goal to establish patterns for production-ready applications, adopting state-of-the-art security practices is within the project’s immediate scope.
 
-. *Authentication and Authorization*: Implementing robust, up-to-date mechanisms for authentication and authorization is critical. This includes outlining strategies for integrating OAuth2, OpenID Connect, or similar protocols to ensure secure access control.
-. *Vulnerability Management*: Establishing processes for regular vulnerability assessments, including scanning for security flaws in dependencies and timely updating of libraries, is essential to mitigate potential security risks.
-. *Security Best Practices*: Adoption of security best practices and guidelines, such as those recommended by OWASP (Open Web Application Security Project), to safeguard against common vulnerabilities and threats.
+Resulting requirements:
+
+* *Authentication and Authorization:* Implementing robust, up-to-date mechanisms for authentication and authorization
+* *Vulnerability Management*: Establishing regular vulnerability assessments (scanning of dependencies, timely update of libraries), adopting practices suggested by OWASP (Open Web Application Security Project)
 
 ==== Development and Deployment Considerations
 
@@ -42,13 +62,14 @@ Currently, the TaleForge project is conceptualized as a development endeavor wit
 
 In summary, while regulatory and compliance constraints may initially take a backseat in a development and educational context, the TaleForge project acknowledges their importance and incorporates foundational practices to address these concerns progressively.
 
+== Environmental and Economical Constraints
 
+In real-life projects, scalability and maintainability often take a a backseat as the user base is still limited and the paramount importance of a start up is to fulfill growth expectations.
 
-== Environmental Constraints
+This project is educational and prioritizes the establishment of best practices over new functionality.
 
-. *Scalability*: The architecture must accommodate varying loads, with the capability to scale resources up or down based on user demand, without degrading performance or user experience.
-. *Maintenance and Evolution*: The system should be designed for ease of maintenance, allowing for continuous updates, bug fixes, and feature enhancements without significant downtime or disruption.
+Resulting requirements:
 
-== Summary
+* *Good Scalability*: The architecture must accommodate varying loads, with the capability to scale resources up or down based on user demand, without degrading performance or user experience.
+* *Maintainability*: The system should be designed for ease of maintenance, allowing for continuous updates, bug fixes, and feature enhancements without significant downtime or disruption.
 
-Acknowledging these constraints is essential for guiding the architectural design and implementation strategies of the TaleForge project. By considering these limitations early on, the project can navigate challenges more effectively, ensuring a robust, secure, and user-centric platform.
