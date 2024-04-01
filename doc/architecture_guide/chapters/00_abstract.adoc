@@ -2,6 +2,8 @@
 
 === Scope of the Document
 
+[[building_block_approach]]
+
 This document serves as a detailed architectural blueprint specifically for the backend of the core domain (facilitating a graphics / text adventure) .
 
 Given the ambitious scope of TaleForge (for further details, see the https://github.com/StefanSchade/TaleForge/blob/master/README.md[README on GitHub]), it is anticipated that the project will eventually evolve to include multiple distinct domains, each with

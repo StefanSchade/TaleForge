@@ -18,7 +18,7 @@ include::./chapters/01_introduction_and_goals.adoc[]
 
 include::./chapters/02_constraints.adoc[]
 
-
+include::./chapters/03_context_and_scope.adoc[]
 
 == Context and Scope
 === Business Context
