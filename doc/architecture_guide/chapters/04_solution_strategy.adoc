@@ -1,0 +1,73 @@
+== Solution Strategy
+
+=== Choice of Technology
+
+==== Frontend
+
+*Technolgies*
+
+* ReactJS
+* Typescript
+* Redux
+
+*Test*
+
+
+*Development Tools*
+
+* d
+
+
+
+
+==== Backend
+
+
+
+
+==== Integration
+
+
+
+=== Solution Architecture
+
+REquirements:
+
+- *Flexibility and Scalability:* Easy adaptation to new requirements or technologies without impacting the core domain logic.
+- *Maintainability:* Separation of concerns makes the system easier to understand, debug, and extend.
+- *Testability:* Each layer can be independently tested, ensuring robustness and reliability.
+- *Collaboration:* Clear boundaries and abstractions facilitate better communication and collaboration between team members with different expertise.
+
+
+
+==== Frontend
+
+
+==== Backend
+
+===== Domain Driven Design
+
+Domain-Driven Design is an approach to software development that centers on complex needs by connecting the implementation to an evolving model of the core business concepts. DDD facilitates the collaboration between technical and domain experts to iteratively refine the domain model, which guides the design of the software.
+
+
+DDD focuses on structuring projects around the business domain, emphasizing the importance of understanding the domain to create effective software solutions.
+
+Reference: https://domaindrivendesign.org/
+
+===== Hexagonal Architecture
+
+Also known as Ports and Adapters, this design pattern aims to decouple the application's core logic from external concerns by defining clear boundaries.
+
+Reference: Alistair Cockburn's original article - Hexagonal Architecture
+
+===== Clean Architecture
+
+Proposed by Robert C. Martin, Clean Architecture emphasizes the separation of concerns, allowing for an independent, testable, and maintainable system.
+
+*Reference:* Robert C. Martin's "The Clean Architecture" - "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"
+
+===== Event-Driven Architecture
+
+
+
+

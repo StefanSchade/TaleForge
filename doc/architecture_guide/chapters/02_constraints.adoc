@@ -1,19 +1,19 @@
-= Constraints
+== Constraints
 
 For a professional project, recognizing and addressing constraints early in the planning process is crucial. While reliable planning is not as important for a pet project, an overview over the relevant constraints remains important. Without it, the establishment of adequate design decisions and implementation strategies would become impossible.
 
-== Technological Constraints
+=== Technological Constraints
 
 . *Programming Language*: The project is committed to using Rust for the backend development.
 . *Cloud-Native Deployment*: The application is designed to be cloud-native, necessitating adherence to principles and practices that support scalability, resilience, and portability across cloud environments.
 . *Authentication and Security*: Integration with OpenID Connect (OIDC) for authentication, requiring the system to support OIDC-compliant authorization servers, such as Keycloak.
 
-== Organizational Constraints
+=== Organizational Constraints
 
 . *Resource Availability*: As the project is of educational nature, both human and financial resources are very limited indeed.
 . *Knowledge and Expertise*: As I have a Java background, my Rust knowledge is limited and of theoretical nature. Part of this project is to experiment with the patterns, I am familiar with in the context of Rust.
 
-=== Regulatory and Compliance Constraints
+==== Regulatory and Compliance Constraints
 
 Nowadays, almost any publicly available web application is subject to regulation, especially with respect to data protection. The TaleForge project in particular touches many aspects, which are subject to regulation:
 
@@ -22,7 +22,7 @@ Nowadays, almost any publicly available web application is subject to regulation
 
 Should the project make it as far as a public deployment, ensuring user safety will become a major issue.
 
-==== Data Privacy
+===== Data Privacy
 
 The handling of personal information is subject to stringent data protection laws such as the General Data Protection Regulation (GDPR) in the European Union.
 
@@ -44,7 +44,7 @@ Resulting requirements:
 
 Unathorized access to personal information has to be prevented.
 
-==== Security
+===== Security
 
 Given the project's goal to establish patterns for production-ready applications, adopting state-of-the-art security practices is within the project’s immediate scope.
 
@@ -53,7 +53,7 @@ Resulting requirements:
 * *Authentication and Authorization:* Implementing robust, up-to-date mechanisms for authentication and authorization
 * *Vulnerability Management*: Establishing regular vulnerability assessments (scanning of dependencies, timely update of libraries), adopting practices suggested by OWASP (Open Web Application Security Project)
 
-==== Development and Deployment Considerations
+===== Development and Deployment Considerations
 
 Currently, the TaleForge project is conceptualized as a development endeavor with an educational purpose, which implies a certain degree of flexibility regarding full-scale compliance and security implementations. However, planning for a future public deployment necessitates a forward-looking approach to these issues:
 
@@ -62,7 +62,7 @@ Currently, the TaleForge project is conceptualized as a development endeavor wit
 
 In summary, while regulatory and compliance constraints may initially take a backseat in a development and educational context, the TaleForge project acknowledges their importance and incorporates foundational practices to address these concerns progressively.
 
-== Environmental and Economical Constraints
+=== Environmental and Economical Constraints
 
 In real-life projects, scalability and maintainability often take a a backseat as the user base is still limited and the paramount importance of a start up is to fulfill growth expectations.
 
@@ -72,4 +72,3 @@ Resulting requirements:
 
 * *Good Scalability*: The architecture must accommodate varying loads, with the capability to scale resources up or down based on user demand, without degrading performance or user experience.
 * *Maintainability*: The system should be designed for ease of maintenance, allowing for continuous updates, bug fixes, and feature enhancements without significant downtime or disruption.
-

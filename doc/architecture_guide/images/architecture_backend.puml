@@ -1,94 +1,94 @@
 @startuml
 top to bottom direction
 
-rectangle "backend" #Tan {
+rectangle "backend" #DEDFE5 {
 
-rectangle "crosscutting" #LightSlateGray {
-    package "framework" #LightSteelBlue {
-        [Errors] #Gold
+rectangle "crosscutting" #8387C4 {
+    package "framework" #E2E3F5 {
+        [Errors] #B7BBF2
     }
 }
 
-rectangle "domain" #LightSlateGray {
+rectangle "domain" #8387C4 {
 
-    package "model" #LightSteelBlue {
-        [location] #Gold
-        [passage] #Gold
-        [player_state] #Gold
+    package "model" #E2E3F5 {
+        [location] #B7BBF2
+        [passage] #B7BBF2
+        [player_state] #B7BBF2
     }
 
-    package "services" #LightSteelBlue {
-        [navigation_service] #Gold
+    package "services" #E2E3F5 {
+        [navigation_service] #B7BBF2
     }
 
-    package "query_interfaces" #LightSteelBlue {
-            [location_queries] #Gold
-            [passage_queries] #Gold
+    package "query_interfaces" #E2E3F5 {
+            [location_queries] #B7BBF2
+            [passage_queries] #B7BBF2
     }
 }
 
-rectangle "application" #LightSlateGray {
+rectangle "application" #8387C4 {
 
-    package "query_implementations" #LightSteelBlue {
-        [location_query_impl] #Gold
-        [passage_query_impl] #Gold
+    package "query_implementations" #E2E3F5 {
+        [location_query_impl] #B7BBF2
+        [passage_query_impl] #B7BBF2
       }
 
-    package "use_case_impl" #LightSteelBlue {
-        [move_player_impl] #Gold
+    package "use_case_impl" #E2E3F5 {
+        [move_player_impl] #B7BBF2
       }
 
-    package "dto_domain_mapping" #LightSteelBlue {
-             [location_mapper] #Gold
-             [passage_mapper] #Gold
-    }
-
-}
-
-rectangle "port" #LightSlateGray {
-
-    package "dto" #LightSteelBlue {
-        [location_dto] #Gold
-        [passage_dto] #Gold
-      }
-
-    package "use_case" #LightSteelBlue {
-        [move_player] #Gold
-      }
-
-    package "repositories" #LightSteelBlue {
-        [location_repository] #Gold
-        [passage_repository] #Gold
-      }
-
-    package "dto_domain_mapping" #LightSteelBlue {
-             [location_mapper] #Gold
-             [passage_mapper] #Gold
+    package "dto_domain_mapping" #E2E3F5 {
+             [location_mapper] #B7BBF2
+             [passage_mapper] #B7BBF2
     }
 
 }
 
+rectangle "port" #8387C4 {
 
-rectangle "adapter" #LightSlateGray {
-
-    package "persistence" #LightSteelBlue {
-        [location_repository_impl_in_memory] #Gold
-        [passage_repository_impl_in_memory] #Gold
+    package "dto" #E2E3F5 {
+        [location_dto] #B7BBF2
+        [passage_dto] #B7BBF2
       }
 
-    package "web" #LightSteelBlue {
-        package "controller" #LightSteelBlue {
-                [player_controller] #Gold
-                [admin_controller] #Gold
+    package "use_case" #E2E3F5 {
+        [move_player] #B7BBF2
+      }
+
+    package "repositories" #E2E3F5 {
+        [location_repository] #B7BBF2
+        [passage_repository] #B7BBF2
+      }
+
+    package "dto_domain_mapping" #E2E3F5 {
+             [location_mapper] #B7BBF2
+             [passage_mapper] #B7BBF2
+    }
+
+}
+
+
+rectangle "adapter" #8387C4 {
+
+    package "persistence" #E2E3F5 {
+        [location_repository_impl_in_memory] #B7BBF2
+        [passage_repository_impl_in_memory] #B7BBF2
+      }
+
+    package "web" #E2E3F5 {
+        package "controller" #E2E3F5 {
+                [player_controller] #B7BBF2
+                [admin_controller] #B7BBF2
            }
-         [server]   #Gold
-         [app_state] #Gold
+         [server]   #B7BBF2
+         [app_state] #B7BBF2
       }
 }
 
-rectangle "entry_point" #LightSlateGray {
+rectangle "entry_point" #8387C4 {
 
-    [main] #Gold
+    [main] #B7BBF2
 
 }
 

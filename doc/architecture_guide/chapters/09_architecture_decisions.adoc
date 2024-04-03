@@ -1,0 +1,3 @@
+
+== Architectural Decisions
+* Document key architectural decisions made during the design process, including alternatives considered and rationales for the chosen options.

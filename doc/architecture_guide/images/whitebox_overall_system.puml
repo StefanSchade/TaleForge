@@ -1,0 +1,32 @@
+@startuml Whitebox_Overall_System
+
+!define Actor(name) actor name as "**<color:RoyalBlue>name</color>**"
+!define System(name) rectangle name as "**<color:Tomato>name</color>**"
+!define Database(name) database name as "**<color:SeaGreen>name</color>**"
+!define Component(name) component name as "**<color:SlateGray>name</color>**"
+
+skinparam ArrowColor DeepSkyBlue
+skinparam ActorBorderColor DarkSlateGray
+skinparam RectangleBorderColor DarkSlateGray
+skinparam ComponentBorderColor DarkSlateGray
+skinparam DatabaseBorderColor DarkSlateGray
+
+
+  System(Frontend)
+  System(Backend)
+  Database(Database)
+
+  Actor(User)
+  Component(Keycloak)
+  Component(MessageBroker)
+  System(NeighbouringDomains)
+
+User --> Frontend : Uses
+Frontend --> Backend : Sends requests\n(ReactJS in a browser)
+Backend --> Database : Reads from/Writes to
+Backend --> Keycloak : Authenticates/Authorizes\n(OIDC Authorization Server)
+Backend --> MessageBroker : Publishes/Subscribes
+Backend --> NeighbouringDomains : Server 2 Server\ncommunication
+NeighbouringDomains --> Frontend : Distinct frontends\n(currently separate)
+
+@enduml

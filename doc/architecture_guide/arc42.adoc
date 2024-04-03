@@ -1,4 +1,4 @@
-= Architecture Documentation: Project Name
+= Architecture Documentation: TaleForge / Player Module Backend
 :toc: macro
 :toc-title: Contents
 :sectnums:
@@ -6,7 +6,6 @@
 :source-highlighter: rouge
 
 toc::[]
-
 
 :sectnums!:
 
@@ -20,51 +19,20 @@ include::./chapters/02_constraints.adoc[]
 
 include::./chapters/03_context_and_scope.adoc[]
 
-== Context and Scope
-=== Business Context
-* Define the business context, including the main actors and systems interacting with the application.
+include::./chapters/04_solution_strategy.adoc[]
 
-=== Technical Context
-* Describe the technical environment in which the application operates, including external systems and interfaces.
+include::./chapters/05_building_block_view.adoc[]
 
-== Solution Strategy
-* Explain the high-level strategy that guides the solution architecture, touching on the chosen architectural styles, patterns (e.g., DDD, Hexagonal, Clean Architecture, Event-Driven), and technologies.
+include::./chapters/06_runtime_view.adoc[]
 
-== Building Block View
+include::./chapters/07_deployment_view.adoc[]
 
+include::./chapters/08_cross_cutting.adoc[]
 
+include::./chapters/09_architecture_decisions.adoc[]
 
+include::./chapters/10_quality_requirements.adoc[]
 
-image::./images/architecture_diagram.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+include::./chapters/11_risk_and_tech_debt.adoc[]
 
-
-=== Whitebox Overall System
-* Provide a high-level overview of the system's structure, focusing on the major components and their responsibilities.
-
-==== Level 2
-* Detail the decomposition of the top-level components into their subcomponents, focusing on the second level of granularity.
-
-==== Level 3
-* Optionally, provide further decomposition of components if necessary.
-
-== Runtime View
-* Describe how the major building blocks interact at runtime, focusing on key scenarios or use cases.
-
-== Deployment View
-* Illustrate the deployment architecture, showing how the software components are mapped to hardware or cloud resources.
-
-== Cross-cutting Concepts
-* Cover cross-cutting architectural concerns and concepts, such as security, data management, error handling, etc.
-
-== Architectural Decisions
-* Document key architectural decisions made during the design process, including alternatives considered and rationales for the chosen options.
-
-== Quality Requirements
-* Outline the key quality attributes of the system, such as reliability, scalability, maintainability, etc., and how the architecture addresses them.
-
-== Risks and Technical Debt
-* Identify any known risks and areas of technical debt that might impact the architecture or project.
-
-== Glossary
-* Provide definitions for key terms and concepts used throughout the documentation.
-
+include::./chapters/12_glossary.adoc[]

@@ -1,0 +1,2 @@
+== Deployment View
+* Illustrate the deployment architecture, showing how the software components are mapped to hardware or cloud resources.

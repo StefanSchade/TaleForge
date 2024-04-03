@@ -1,0 +1,18 @@
+
+== Building Block View
+
+
+
+
+=== Whitebox Overall System
+* Provide a high-level overview of the system's structure, focusing on the major components and their responsibilities.
+
+image::./images/whitebox_overall_system.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+
+==== Level 2
+* Detail the decomposition of the top-level components into their subcomponents, focusing on the second level of granularity.
+
+image::./images/architecture_diagram.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+
+==== Level 3
+* Optionally, provide further decomposition of components if necessary.

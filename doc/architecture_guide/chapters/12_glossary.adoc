@@ -1,0 +1,4 @@
+
+== Glossary
+* Provide definitions for key terms and concepts used throughout the documentation.
+

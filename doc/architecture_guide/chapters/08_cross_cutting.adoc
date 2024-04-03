@@ -1,0 +1,2 @@
+== Cross-cutting Concepts
+* Cover cross-cutting architectural concerns and concepts, such as security, data management, error handling, etc.
