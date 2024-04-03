@@ -8,31 +8,33 @@ As the project is dedicated to Domain Driven Design (DDD), the associated langua
 
 === Business context
 
-This description will remain a bit vague as the context is not yet fully explored. In due time there will be a document describing the whole system.
-
 According to DDD the communication will consist of Domain Events transmitted from and to other domains.
+
+This description will remain work in progress as our domain is the first to be explored in detail.
+
+At this point, the domain events are mocked since the neighbouring domains are not yet implemented.
 
 |===
 | Neighbouring Subdomain | Domain Event | Data Content | Description
 
-| unknown - mocked at this time
+| Game Design
 | Release Game
 | Game layout
-| An adventure that has previously been designed is transmitted to our backend as one of the games it can facilitate
+| An adventure that has previously been designed is transmitted to our backend as one of the games it can facilitate. The release process involves creating a snapshot that will remain stable enough to allow game execution independently from potential further changes to the design.
 
-| unknown - mocked at this time
+| Game Catalogue
 | Start Game Execution
-| List of players
-| An adventurer or a group of adventurers start a game, so they can play
+| List of Players
+| An adventurer or a group of adventurers start a game, so they can play. This will likely be initiate from some sort of catalogue, where potential players can explore possible games. For multiplayer games some kind of mechanism has to be developed to define a group of users, that play one adventure together.
 
 |===
 
-The interaction with the player(s) during game execution is not listed here since this happens within the domain.
+The interaction with the player(s) during game execution is not listed here since this happens within the domain "Game Execution".
 
 === Technical Context
 
 |===
-| Technical Environment | Interface | System (likely) | Description
+| Technical Component | Interface | System (likely) | Description
 
 | OIDC Authorization Server
 | HTTP(S) / OAUTH2
@@ -54,9 +56,12 @@ The interaction with the player(s) during game execution is not listed here sinc
 | tbd
 | tbc
 
+| Docker Runtime
+| OCI
+| tbd
+| tbc
+
 |===
 
 The interaction with the player(s) during game execution is not listed here since this happens within the domain.
 
-* Databases (probably relational)
-* Authorization server ()

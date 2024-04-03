@@ -35,11 +35,12 @@ The aspirations of the TaleForge project are underpinned by a set of business an
 
 The architectural vision for TaleForge is driven by the necessity for a system that is not only robust and scalable but also offers an engaging and productive development experience. The guiding principles and patterns for achieving these objectives include:
 
-* Maintenance simplicity, ensuring that the system remains adaptable and straightforward to update or expand.
-* A superior developer experience, characterized by clear documentation, well-defined processes, and supportive tooling.
-* Scalability and cloud-native design, facilitating the platform's growth and evolution without compromising performance or reliability.
+* Maintainability: ensuring that changes to the system (bug fixes or new features) remain easy as the code base grows
+* Developer Experience: clear documentation, well-defined processes, and supportive tooling
+* Scalability & Cloud-Native Design: maintain performance and reliability while the platform grows
 
 ==== Adopted Patterns:
 * Domain-Driven Design (DDD) to encapsulate complex business requirements in a modular and intuitive domain model.
 * Hexagonal Architecture (Ports and Adapters) for decoupling core logic from external interfaces, enhancing adaptability.
+* Clean architecture
 * Event-Driven Architecture and Command Query Responsibility Segregation (CQRS) as optional patterns, offering avenues for further architectural evolution focused on system responsiveness and scalability.

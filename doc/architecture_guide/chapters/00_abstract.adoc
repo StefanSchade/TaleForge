@@ -1,34 +1,33 @@
 == Abstract
 
-=== Scope of the Document
-
-[[building_block_approach]]
-
-This document serves as a detailed architectural blueprint specifically for the backend of the core domain (facilitating a graphics / text adventure) .
-
-Given the ambitious scope of TaleForge (for further details, see the https://github.com/StefanSchade/TaleForge/blob/master/README.md[README on GitHub]), it is anticipated that the project will eventually evolve to include multiple distinct domains, each with
-its dedicated frontend and backend components. This expansion, coupled with the integration of essential infrastructure components such as databases and authentication servers (e.g., Keycloak) made it necessary to focus on one component at this point.
-
-Moreover, an additional objective is to establish a replicable template for Rust-based web applications. In line with this goal, this document will specifically delineate the architectural framework for the backend segment of an individual application.
-
-This decision to confine the focus of applies a strategic approach to *Complexity Management*: To explain a large-scale and complex system, it is partitioned into manageable, discrete building blocks. This modularization allows for each component to be exhaustively detailed in isolation. The benefit is that to understand the  composite system, these building blocks can then be treated as 'black boxes,' thereby improving the clarity fo the overall system architecture.
-
-=== Intended Audience
-
-* Potential contributors to the TaleForge project.
-* Development teams taking this as a template for other apps. (This includes Large Language Models that generate code based on our app as a template)
-* Learners interested in the solutions we developed.
-
 === Objectives
 
 This document will guide through the TaleForge development journey:
 
 * describe *architectural patterns* and the intention behind them
 * document *decisions* and the reasoning leading up to them
-* communicate the established *design principles* to contributers and learners
+* communicate the established *design principles* to contributors and learners
 
 Thus it will help facilitating efficient and coherent development practices both for TaleForge and for follow-up projects.
 
-==== Future Considerations
+=== Scope
 
-As the project progresses, additional documents will be developed to cover other domains, frontend architecture, and infrastructure components, ensuring comprehensive coverage of the entire Taleforge platform.
+Given its ambitious scope, TaleForge (see https://github.com/StefanSchade/TaleForge/blob/master/README.md[README]) represents a large and complex project. Domain Driven Design (DDD) makes this kind of problem manageable by dividing the complex domain into subdomains, describing each as its own system.
+
+This document describes the Subdomain of Game Execution that is committed to facilitating a text adventure game that has been designed by one user and selected by a another previously using different bounded contexts.
+
+[[building_block_approach]]
+
+=== Intended Audience
+
+* contributors (potential and actual) to the project.
+* Development teams using this as a template:
+    ** other bounded contexts within the TaleForge project
+    ** projects with a similar stack but different functionality
+    ** Large Language Models (LMMs), to communicate a desired structure of to-be-generated code
+* Learners interested in the solutions / best practices we developed.
+
+=== Future Considerations
+
+* The assembly of the overall system will be described in a distinct document in due time.
+* As this is the first bounded context we explore, this document will also be a template for future bounded contexts.
