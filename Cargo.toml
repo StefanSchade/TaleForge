@@ -3,7 +3,7 @@ members = [
     "app-backend/adapter",
     "app-backend/port",
     "app-backend/application",
-    "app-backend/domain",
+    "app-backend/domain_pure",
     "app-backend/entry_point"
 ]
 resolver = "2"

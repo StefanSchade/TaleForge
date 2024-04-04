@@ -107,13 +107,13 @@ rectangle "entry_point" #8387C4 {
 ' layout
 ' ***********************
 
-' layer crosscutting to domain
+' layer crosscutting to domain_pure
         [location]-[hidden]-[Errors]
         [location_queries]-[hidden]-[Errors]
         [passage_queries]-[hidden]-[Errors]
 
 
-' layer domain to application
+' layer domain_pure to application
         [location_query_impl]-[hidden]-[passage_queries]
         [location_query_impl]-[hidden]--[service 1]
         

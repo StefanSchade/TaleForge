@@ -1,8 +1,8 @@
 
 
-use domain::model::location::Location;
+use domain_pure::model::location::Location;
 
-use domain::contracts::location_queries::navigation::LocationQueries;
+use domain_pure::contracts::location_queries::navigation::LocationQueries;
 
 use port::repositories::location_repository::LocationRepository;
 use std::sync::Arc;

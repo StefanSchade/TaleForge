@@ -1,4 +1,4 @@
-use domain::model::location::Location;
+use domain_pure::model::location::Location;
 
 pub trait LocationRepository: Send + Sync  {
     fn get_location_by_id(&self, id: i32) -> Option<Location>;

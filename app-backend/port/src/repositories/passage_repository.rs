@@ -1,4 +1,4 @@
-use domain::model::passage::Passage;
+use domain_pure::model::passage::Passage;
 
 pub trait PassageRepository: Send + Sync {
     fn get_passage_by_id(&self, id: i32) -> Option<Passage>;

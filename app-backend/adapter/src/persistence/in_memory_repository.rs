@@ -2,9 +2,9 @@ use std::collections::HashMap;
 use std::option::Option;
 use std::sync::Mutex;
 
-use domain::model::location::Location;
-use domain::model::passage::Passage;
-use domain::model::player_state::PlayerState;
+use domain_pure::model::location::Location;
+use domain_pure::model::passage::Passage;
+use domain_pure::model::player_state::PlayerState;
 
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;

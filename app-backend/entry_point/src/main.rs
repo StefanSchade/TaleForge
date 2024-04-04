@@ -10,8 +10,8 @@ use adapter::web::app_state::AppState;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
 use application::domain_story_impl::move_player_impl::MovePlayerUseCaseImpl;
-use domain::model::player_state::PlayerState;
-use domain::services::navigation_services::{NavigationService, NavigationServiceTrait};
+use domain_pure::model::player_state::PlayerState;
+use domain_pure::services::navigation_services::{NavigationService, NavigationServiceTrait};
 
 
 use port::repositories::location_repository::LocationRepository;
@@ -21,8 +21,8 @@ use port::repositories::player_state_repository::PlayerStateRepository;
 
 use application::contract_implementations::location_query_impl::LocationQueryImpl;
 use application::contract_implementations::passage_query_impl::PassageQueryImpl;
-use domain::contracts::location_queries::navigation::LocationQueries;
-use domain::contracts::passage_queries::navigation::PassageQueries;
+use domain_pure::contracts::location_queries::navigation::LocationQueries;
+use domain_pure::contracts::passage_queries::navigation::PassageQueries;
 use port::domain_stories::move_player::MovePlayerUseCase;
 
 

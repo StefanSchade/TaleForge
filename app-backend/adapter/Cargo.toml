@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 port = { path = "../port" }
 application = { path = "../application" }
-domain = { path = "../domain" }
+domain_pure = { path = "../domain_pure" }
 serde = { version = "1.0", features = ["derive"] }
 
 actix-web = "4.0.0"

@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 port = { path = "../port" }
-domain = { path = "../domain" }
+domain_pure = { path = "../domain_pure" }
 adapter = { path = "../adapter" }
 application = { path = "../application" }
 

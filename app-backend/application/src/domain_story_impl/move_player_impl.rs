@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 
-use domain::services::navigation_services::NavigationServiceTrait;
+use domain_pure::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
 use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
 
@@ -64,10 +64,10 @@ mod tests {
     use mockall::predicate::eq;
     use mockall::{mock, predicate::*};
 
-    use domain::model::location::{Location, LocationBuilder};
-    use domain::model::passage::Passage;
-    use domain::model::player_state::PlayerState;
-    use domain::services::navigation_services::NavigationServiceTrait;
+    use domain_pure::model::location::{Location, LocationBuilder};
+    use domain_pure::model::passage::Passage;
+    use domain_pure::model::player_state::PlayerState;
+    use domain_pure::services::navigation_services::NavigationServiceTrait;
 
     use super::*;
 

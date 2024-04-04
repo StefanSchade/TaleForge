@@ -1,5 +1,5 @@
-use domain::model::location::Location;
-use domain::model::passage::Passage;
+use domain_pure::model::location::Location;
+use domain_pure::model::passage::Passage;
 
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;

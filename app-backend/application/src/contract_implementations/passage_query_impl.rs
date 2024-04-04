@@ -1,5 +1,5 @@
-use domain::contracts::passage_queries::navigation::PassageQueries;
-use domain::model::passage::Passage;
+use domain_pure::contracts::passage_queries::navigation::PassageQueries;
+use domain_pure::model::passage::Passage;
 
 
 use port::repositories::passage_repository::PassageRepository;

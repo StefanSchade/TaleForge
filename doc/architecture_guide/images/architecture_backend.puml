@@ -98,7 +98,7 @@ rectangle "entry_point" #8387C4 {
 ' layout
 ' ***********************
 
-' layer domain
+' layer domain_pure
         [location]-[hidden]--[Errors]
         [passage]-[hidden]--[Errors]
         [navigation_service]-[hidden]--[Errors]
