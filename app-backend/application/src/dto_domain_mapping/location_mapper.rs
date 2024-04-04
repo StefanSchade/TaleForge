@@ -1,7 +1,7 @@
-// src/port/dto/location_mapper.rs
+use domain_pure::model::location::Location;
+use domain_pure::model::location::LocationBuilder;
+use port::dto::location_dto::LocationDTO;
 
-use crate::domain::aggregates::location::Location;
-use crate::port::dtos::location_dto::LocationDTO;
 
 pub fn location_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
@@ -13,7 +13,7 @@ pub fn location_to_dto(location: &Location) -> LocationDTO {
 }
 
 pub fn dto_to_location(dto: &LocationDTO) -> Location {
-    Location::builder()
+    LocationBuilder::default()
         .aggregate_id(dto.id)
         .title(dto.title.clone())
         .description(dto.description.clone())
@@ -25,7 +25,7 @@ pub fn dto_to_location(dto: &LocationDTO) -> Location {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::domain::aggregates::location::LocationBuilder; // Adjust this path based on your actual module structure.
+    use domain_pure::model::location::LocationBuilder; // Adjust this path based on your actual module structure.
 
     #[test]
     fn test_location_to_dto_mapping() {

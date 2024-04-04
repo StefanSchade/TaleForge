@@ -51,8 +51,9 @@ mod tests {
 
     use super::*;
     use domain_pure::model::passage::{Passage, PassageBuilder};
+    use domain_pure::model::player_state::PlayerStateBuilder;
 
-     mock! {
+    mock! {
         LocationQueries {}
 
         impl LocationQueries for LocationQueries {
@@ -97,7 +98,7 @@ mod tests {
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
 
-        let player_state_instance = PlayerState::new(1, 1);
+        let player_state_instance = PlayerStateBuilder::default().player_id(1).current_location_id(1).build().unwrap();
 
         let result = navigation_service.navigate(player_state_instance, "north".into());
         assert!(result.is_ok());

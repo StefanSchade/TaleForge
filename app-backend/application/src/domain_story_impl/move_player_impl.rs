@@ -66,7 +66,7 @@ mod tests {
 
     use domain_pure::model::location::{Location, LocationBuilder};
     use domain_pure::model::passage::Passage;
-    use domain_pure::model::player_state::PlayerState;
+    use domain_pure::model::player_state::{PlayerState, PlayerStateBuilder};
     use domain_contract::services::navigation_services::NavigationServiceTrait;
 
     use super::*;
@@ -135,7 +135,14 @@ mod tests {
             .unwrap());
 
         mock_navigation_service.expect_navigate()
-            .with(eq(PlayerState::new(expected_player_id,1)), eq(expected_direction_instruction.to_string()))
+            //.with(eq(PlayerState::new(expected_player_id,1)), eq(expected_direction_instruction.to_string()))
+            .with(eq(
+                PlayerStateBuilder::default()
+                    .player_id(expected_player_id)
+                    .current_location_id(1)
+                    .build()
+                    .unwrap()
+            ), eq(expected_direction_instruction.to_string()))
             .times(1)
             .returning(move |_, _| {
                 let loc = expected_destination_location.clone();
@@ -145,7 +152,13 @@ mod tests {
         mock_player_state_repo.expect_find_by_id()
             .with(eq(expected_player_id))
             .times(1)
-            .returning(move |_| Some(PlayerState::new(expected_player_id,1)));
+            .returning(move |_| Some(
+                PlayerStateBuilder::default()
+                    .player_id(expected_player_id)
+                    .current_location_id(1)
+                    .build()
+                    .unwrap()
+            ));
 
         // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of
         // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`

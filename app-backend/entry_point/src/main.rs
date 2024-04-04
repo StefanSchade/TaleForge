@@ -10,7 +10,7 @@ use adapter::web::app_state::AppState;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
 use application::domain_story_impl::move_player_impl::MovePlayerUseCaseImpl;
-use domain_pure::model::player_state::PlayerState;
+use domain_pure::model::player_state::PlayerStateBuilder;
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 
 
@@ -43,7 +43,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // let mut player_state_repository_mutable = player_state_repository.clone()
 
-    player_state_repository.save(PlayerState::new(1,1));
+    player_state_repository.save(
+        PlayerStateBuilder::default()
+            .player_id(1)
+            .current_location_id(1)
+            .build()
+            .unwrap()
+    );
 
     data_loader::load_data_from_json(
         location_repository.clone(), // Assuming your function expects Arc<R> where R: LocationRepository
