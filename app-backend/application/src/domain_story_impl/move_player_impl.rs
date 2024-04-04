@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 
-use domain_pure::services::navigation_services::NavigationServiceTrait;
+use domain_contract::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
 use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
 
@@ -67,7 +67,7 @@ mod tests {
     use domain_pure::model::location::{Location, LocationBuilder};
     use domain_pure::model::passage::Passage;
     use domain_pure::model::player_state::PlayerState;
-    use domain_pure::services::navigation_services::NavigationServiceTrait;
+    use domain_contract::services::navigation_services::NavigationServiceTrait;
 
     use super::*;
 

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use crate::model::location::{Location};
-use crate::model::player_state::PlayerState;
+use domain_pure::model::location::{Location};
+use domain_pure::model::player_state::PlayerState;
 use crate::contracts::location_queries::navigation::LocationQueries;
 use crate::contracts::passage_queries::navigation::PassageQueries;
 
@@ -47,10 +47,10 @@ mod tests {
 
     use mockall::*;
     use mockall::predicate::*;
-    use crate::model::location::{Location, LocationBuilder};
+    use domain_pure::model::location::{Location, LocationBuilder};
 
     use super::*;
-    use crate::model::passage::{Passage, PassageBuilder};
+    use domain_pure::model::passage::{Passage, PassageBuilder};
 
      mock! {
         LocationQueries {}

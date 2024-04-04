@@ -1,4 +1,4 @@
-use domain_pure::contracts::passage_queries::navigation::PassageQueries;
+use domain_contract::contracts::passage_queries::navigation::PassageQueries;
 use domain_pure::model::passage::Passage;
 
 

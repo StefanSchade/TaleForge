@@ -1,5 +1,5 @@
 pub mod navigation {
-    use crate::model::passage::Passage;
+    use domain_pure::model::passage::Passage;
 
     pub trait PassageQueries: Send + Sync {
         fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage>;
