@@ -1,6 +1,9 @@
 use domain::model::location::Location;
 use domain::model::passage::Passage;
-use port::repository::{LocationRepository, PassageRepository};
+
+use port::repositories::location_repository::LocationRepository;
+use port::repositories::passage_repository::PassageRepository;
+
 use serde_json;
 use std::fs::File;
 use std::io::Read;

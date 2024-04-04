@@ -1,8 +1,8 @@
-use domain::query_interfaces::passage_queries::navigation::PassageQueries;
+use domain::contracts::passage_queries::navigation::PassageQueries;
 use domain::model::passage::Passage;
 
 
-use port::repository::{PassageRepository};
+use port::repositories::passage_repository::PassageRepository;
 use std::sync::Arc;
 
 pub struct PassageQueryImpl {
@@ -32,7 +32,7 @@ impl PassageQueries for PassageQueryImpl {
 
     // fn find_location_by_direction(&self, current_location_id: i32, direction: &str) -> Option<Location> {
     //     // This might involve more complex logic, potentially needing adjustments
-    //     // in the repository interfaces to support direction-based query_interfaces.
+    //     // in the repository interfaces to support direction-based contracts.
     //     // For simplicity, let's assume there's a method in the passage repository
     //     // to find passages by location and direction, then use the location repository
     //     // to fetch the target location.

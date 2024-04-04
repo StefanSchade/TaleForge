@@ -3,8 +3,12 @@ use std::sync::Arc;
 
 use domain::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
-use port::use_case::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
-use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerUseCase};
+
+use port::repositories::location_repository::LocationRepository;
+use port::repositories::passage_repository::PassageRepository;
+use port::repositories::player_state_repository::PlayerStateRepository;
+
 
 #[allow(dead_code)] // unused repositories will be used at a later point
 #[derive(Clone)]

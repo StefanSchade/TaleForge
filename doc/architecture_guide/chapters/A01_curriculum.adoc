@@ -1,0 +1,72 @@
+== Curriculum
+
+The following resources can get you up to speed with Domain Driven Design:
+
+[cols="a,4"]
+|===
+| Cover | Description
+
+| image::./images/BookCover_VaughnVernon_DomainDrivenDesignDistilled(DEU).jpg[align="center",width=150]
+
+image::./images/BookCover_VaughnVernon_DomainDrivenDesignDistilled.jpg[align="center",width=150]
+|*Domain Driven Design Distilled (Vaughn Vernon, 2016)*
+
+This concise title is a great place to start. It presents the basic concepts of Domain Driven Design and shows how business analysis can be performed with DDD techniques.
+
+However, the necessary detail to perform the concrete implementation in Hexagonal Architecture is beyond the scope of this book.
+
+
+| image::./images/BookCover_Hombergs_GetYourHandsDirtyOnCleanArchitecture.jpg[align="center",width=150]
+
+image::./images/BookCover_Hombergs_GetYourHandsDirtyOnCleanArchitecture_2023.jpg[align="center",width=150]
+
+|*Get Your Hands Dirty on Clean Architecture (Tom Hombergs, 2019 / 2023)*
+
+This title is very short and to the point and presents Hexagonal Architecture in an implementation orientated manner. Code examples are in **Java / Spring**. The more subtle details are beyond the scope of this book, however.
+
+| image::./images/BookCover_Zimarev_DomainDrivenDesignWithDotNet.jpg[align="center",width=150]
+|*Hands-On Domain-Driven Design with .NET Core (Alexey Zimarev,
+2019)*
+
+This book excels where Homberg's book lacks. There is a detailed description of the business analysis parts (e.g. event storming) and CQRS - both are topics that were not covered by Homberg. As the title relates, the code examples are in **.NET**
+
+Alexey Zimarev puts a strong emphasis on asynchronous architecture.
+
+| image::./images/BookCover_EricEvans_DomainDrivenDesign.jpg[align="center",width=150]
+|*Domain-Driven Design: Tackling Complexity in the Heart of Software (Eric Evans, Pearson Education 2003)*
+
+This is a real classic and often just referred to as the "blue book". Definitely worth reading when looking to understand the fundamental principles of Domain-Driven Design, but due to its age not all that useful for implementation. It was published before the advent of hexagonal architecture.
+
+| image::./images/BookCover_EricEvans_DomainDrivenDesign_Reference.jpg[align="center",width=150]
+|*Domain-Driven Design: Reference (Eric Evans, Pearson Education 2015)*
+
+This reference gives a quick and authoritative summary of the key concepts of DDD. Availiable under Creative Commons Licence as a https://domainlanguage.com/wp-content/uploads/2020/08/DDD-Reference-version-2015-03.pdf[free pdf]
+
+| image::./images/BookCover_VaughnVernon_ImplementingDomainDrivenDesignDistilled.jpg[align="center",width=150]
+|*Implementing Domain-Driven Design  (Vaughn Vernon, 2013)*
+
+A classic for the implementation of Domain-Driven Design and often referred to simply as the "red book". Features cool cowboy illustrations. Code examples in **Java**.
+
+Vaughn Vernon is a very prominent member of the DDD comunity and puts a strong emphasis on asynchronous architecture.
+
+| image::./images/BookCover_MillettTune_PatternsPrinciples.jpg[align="center",width=150]
+|*Patterns, Principles, and Practices of Domain-Driven Design (Scott Millett, Nick Tune, 2015)*
+
+A more recent book that seems to be similar to Vernon's "red book". Code examples are in **.NET**.
+
+| **Blog:** .Net Junkie on CQRS
+|
+
+Two articles of Steven van Deursen's blog https://blogs.cuttingedge.it/steven/[.NET Junkie] from 2011 featured the https://blogs.cuttingedge.it/steven/posts/2011/meanwhile-on-the-query-side-of-my-architecture/[command] and the https://blogs.cuttingedge.it/steven/posts/2011/meanwhile-on-the-query-side-of-my-architecture/[query] side of the Command-query responsibility segregation (CQRS) principle.
+
+These blogs were an inspiration for the implementation of our domain stories and domain events.
+
+https://blogs.cuttingedge.it/steven/posts/2012/returning-data-from-command-handlers/[Further articles on the command pattern]
+
+
+| **Blog:** Vernon on Aggregates
+| A series of articles by Vaughn Vernon on https://www.dddcommunity.org/library/vernon_2011/[aggregate design] with important considerations on persistence.
+
+
+|===
+

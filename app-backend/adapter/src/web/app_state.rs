@@ -1,8 +1,10 @@
 use std::sync::Arc;
 
 
-use port::use_case::move_player::MovePlayerUseCase;
-use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+use port::domain_stories::move_player::MovePlayerUseCase;
+use port::repositories::location_repository::LocationRepository;
+use port::repositories::passage_repository::PassageRepository;
+use port::repositories::player_state_repository::PlayerStateRepository;
 
 pub struct AppState {
     pub location_repository: Arc<dyn LocationRepository>,

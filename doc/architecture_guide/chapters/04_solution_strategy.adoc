@@ -1,73 +1,89 @@
 == Solution Strategy
 
+The solution strategy for the TaleForge project is driven by the need to create a robust, flexible, and user-friendly platform for designing and playing graphic/text adventure games. This section outlines the technological choices and architectural patterns selected to meet the project's requirements.
+
 === Choice of Technology
+
+The technology stack for TaleForge is carefully chosen to leverage modern, efficient tools that enhance development productivity and product performance.
 
 ==== Frontend
 
-*Technolgies*
+The frontend is developed using ReactJS and TypeScript, providing a strong foundation for building a dynamic and responsive user interface. Redux is used for state management, ensuring predictable state updates and facilitating easier debugging.
 
-* ReactJS
-* Typescript
-* Redux
+*Technologies*:
 
-*Test*
+- ReactJS: A JavaScript library for building user interfaces, chosen for its component-based architecture, which enables modular and reusable UI components.
 
+- TypeScript: A superset of JavaScript that adds static types, enhancing code quality and maintainability.
 
-*Development Tools*
+- Redux: A state management library that works well with React, providing a centralized way to manage state across the application.
 
-* d
+*Development Tools*:
 
-
-
+(Tools like Webpack, Babel, ESLint, and others that are commonly used in ReactJS projects would be listed here.)
 
 ==== Backend
 
+The backend employs Rust with the Actix-web framework, prioritizing performance and safety. Rust’s ownership model and Actix-web’s asynchronous capabilities offer high concurrency and efficient resource use, making them ideal for the backend services of TaleForge.
 
+*Technologies*:
 
+- Rust: Chosen for its performance, reliability, and superior memory safety features.
+
+- Actix-web: A powerful, pragmatic, and extremely fast web framework for Rust.
 
 ==== Integration
 
+The integration strategy focuses on ensuring seamless communication between the frontend, backend, and external systems such as databases, authentication servers, and message brokers.
 
+*Integration Points*:
+
+- OIDC Authorization with Keycloak: For secure user authentication and authorization.
+
+- Message brokers for asynchronous communication and event-driven architectures, enhancing system scalability and decoupling service dependencies.
 
 === Solution Architecture
 
-REquirements:
+The architectural design of TaleForge is predicated on several key requirements:
 
-- *Flexibility and Scalability:* Easy adaptation to new requirements or technologies without impacting the core domain logic.
-- *Maintainability:* Separation of concerns makes the system easier to understand, debug, and extend.
-- *Testability:* Each layer can be independently tested, ensuring robustness and reliability.
-- *Collaboration:* Clear boundaries and abstractions facilitate better communication and collaboration between team members with different expertise.
+- *Flexibility and Scalability*: The architecture is designed to easily accommodate new features and technologies without significant rework.
+- *Maintainability*: Clear separation of concerns across the system’s components makes the platform easier to understand, debug, and extend.
+- *Testability*: Independent testing of each architectural layer ensures the system's robustness and reliability.
+- *Collaboration*: Defined boundaries and interfaces between components enhance team collaboration and efficiency.
 
+==== Architectural Patterns
 
+To achieve these requirements, TaleForge adopts several architectural patterns:
 
-==== Frontend
+===== Domain-Driven Design (DDD)
 
-
-==== Backend
-
-===== Domain Driven Design
-
-Domain-Driven Design is an approach to software development that centers on complex needs by connecting the implementation to an evolving model of the core business concepts. DDD facilitates the collaboration between technical and domain experts to iteratively refine the domain model, which guides the design of the software.
-
-
-DDD focuses on structuring projects around the business domain, emphasizing the importance of understanding the domain to create effective software solutions.
-
-Reference: https://domaindrivendesign.org/
+DDD emphasizes close alignment between the software design and business domain, facilitating collaborative development and evolutionary design of domain models.
 
 ===== Hexagonal Architecture
 
-Also known as Ports and Adapters, this design pattern aims to decouple the application's core logic from external concerns by defining clear boundaries.
-
-Reference: Alistair Cockburn's original article - Hexagonal Architecture
+Also known as Ports and Adapters, this pattern decouples the application's core logic from external interfaces and frameworks, promoting flexibility and portability.
 
 ===== Clean Architecture
 
-Proposed by Robert C. Martin, Clean Architecture emphasizes the separation of concerns, allowing for an independent, testable, and maintainable system.
+This architecture stresses the importance of separating concerns, resulting in a system that is independent of UI, databases, and external frameworks, and hence more testable and maintainable. It is closely related to hexagonal architecture and was proposed by Robert C. Martin.
 
 *Reference:* Robert C. Martin's "The Clean Architecture" - "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"
 
 ===== Event-Driven Architecture
 
+Event-Driven Architecture allows for high levels of decoupling, scalability, and responsiveness, making it suitable for complex, dynamic systems.
 
+*Note:* While not currently implemented, we consider Event-Driven Architecture a viable option for future scalability and flexibility enhancements.
+
+=== Conclusion
+
+By adhering to these architectural principles and patterns, TaleForge aims to create a durable, scalable, and maintainable platform that supports creative game design and engaging player experiences.
+
+The chosen architectural approach offers several advantages:
+
+- *Flexibility and Scalability:* Easy adaptation to new requirements or technologies without impacting the core domain logic.
+- *Maintainability:* Separation of concerns makes the system easier to understand, debug, and extend.
+- *Testability:* Each layer can be independently tested, ensuring robustness and reliability.
+- *Collaboration:* Clear boundaries and abstractions facilitate better communication and collaboration between team members with different expertise.
 
 

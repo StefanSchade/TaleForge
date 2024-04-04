@@ -1,10 +1,6 @@
 == Context and Scope
 
-In the section <<Scope of the Document>> we explained that the complex vision of the TaleForge project requires a building-block-approach to the overall architecture to manage the complexity.
-
-This document describes the backend of the core domain dedicated to the facilitation of an adventure game.
-
-As the project is dedicated to Domain Driven Design (DDD), the associated language and concepts will be used to describe the relation of the building block to its context.
+In the <<_abstract>> we deduced, how the complex scope of the TaleForge project and the commitment to Domain Driven Design (DDD) prompted us to divide the problem domain into subdomains. This document is dedicated to the Domain "Game Execution" that is committed to facilitate the execution of text adventure games. DDD concepts and lingo will be used to describe the relation of this domain to its context.
 
 === Business context
 
@@ -15,7 +11,7 @@ This description will remain work in progress as our domain is the first to be e
 At this point, the domain events are mocked since the neighbouring domains are not yet implemented.
 
 |===
-| Neighbouring Subdomain | Domain Event | Data Content | Description
+| Neighbouring Subdomai\ndd | Domain Event | Data Content | Description
 
 | Game Design
 | Release Game
@@ -49,7 +45,7 @@ The interaction with the player(s) during game execution is not listed here sinc
 | Message Broker
 | ?
 | tbd
-| tbc
+| DDD encourages asynchronous communication between the bounded contexts - this could in a first step also be modelled through a conventional data base
 
 | Browser
 | HTTP(S)
@@ -64,4 +60,3 @@ The interaction with the player(s) during game execution is not listed here sinc
 |===
 
 The interaction with the player(s) during game execution is not listed here since this happens within the domain.
-

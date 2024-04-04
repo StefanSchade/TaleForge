@@ -1,3 +1,84 @@
 
 == Architectural Decisions
 * Document key architectural decisions made during the design process, including alternatives considered and rationales for the chosen options.
+
+=== Strict encapsulation of the Domain and Application
+
+==== Problem
+
+Our architecture defines the port layer as an api that regulates access to the domain from the outside. A strict interpretation of this intention means that the domain and its model is not accessible from the outside. While this adds architectural clarity it complicates things as an abstraction layer is introduced with a perhaps weak justification. Going through many abstraction layers is something, developers generally dislike.
+
+==== Alternative 1: The Domain can not be accessed from the adapter layer
+
+*Arguments*
+
+* *Encapsulation of the domain:* The domain logic is decoupled from the adapter layer, so repeated restructuring of the domain implementation (knowledge crunching) is not limited by the effect on the adapter layer.
+* The port layer is a classic API. For implementation in the adapter layer there is no insight into the domain layer necessary and the API is a self-sufficient artifact that a user can comprehend without looking beyond.
+* When implementing a new feature, the work within the domain is decoupled from the work in the adapter layer - this is an advantage when using an AI since it allows breaking down the problem into smaller pieces.
+
+*Consequences*
+
+* There will be an additional dto layer in port, so we get another mapping when objects are passed between outside and inside
+
+
+==== Alternative 2: The Domain may be accessed via the adapter layer
+
+*Arguments*
+
+* An additional layer of abstraction increases mental burden of the developer and produces additional code
+* The adapters typically contain an abstraction layer on the far side (e.g. Web model, Persistence model), therefore a consumer of the adapter is already decoupled from the domain.
+* A typical custom integration scenario would normally be based on these adapter models then on the port layer. The developers using the port layer to implement the adapters typically have insight to the domain anyway.
+
+*Consequences*
+
+* The domain must be visible to the port and the adapter layer
+
+==== Decission: Alternative 1
+
+* We descide for Alternative 1
+* Reasons
+** As the objective of the project is to provide a template, this is not the place for pragmatic compromise
+* Comments
+** When applying the template it is legitimate to drop the dto layer to simplify development
+
+=== Separation of the domain layer into the crates `domain pure` and `domain contract`
+
+==== Problem
+
+Standard hexagonal architecture and DDD speaks of the "Domain" without the distinction between `pure` and `contract`. However the literaturefootnote:[Millett, Scott; Tune, Nick. Patterns, Principles, and Practices of Domain-Driven Design (p. 390 ff). Wiley] distinguishes 2 kinds of domain service (additionally to the applicaiton service):
+
+* *pure domain services:* contain important business rules and reside entirely within the domain model.
+* *domain services representing contracts:* Concept itself is important to the domain, but the implementation relie on infrastructure that cannot be used in the domain model.
+
+This prompted the division of the domain layer into two parts. The "pure" part is strictly self-sufficient, while the "contract" part depends on infrastructure. This dependency is conceptual not technical since the dependency inversion principle is applied.
+
+One reason to choose Rust is the option to package the domain as a wasm module and integrate it into the frontend. Thus business logic could be made available to the frontend without the need to perform network requests. This only makes sense for a crate that is truly independent of the infrastructure layer.
+
+==== Alternative 1: The Domain is modeled as one crate
+
+*Arguments*
+
+* *Keep it simple:* The solution limits the number of crates in the project that is already high
+* The distinction between a "pure" and a "contract" domain is certainly not widely accepted
+
+*Consequences*
+
+* The domain can not be easily transferred to the frontend as a wasm without fulfilling the contracts
+
+
+==== Alternative 2: The Domain is split into two crates "domain contract" and "domain pure"
+
+*Arguments*
+
+* *Conceptual clarity:* While not generally established the difference can be grasped by a very strong definition (no reliance on infrastructure)
+* *True independence at least for the pure part:* Without the separation the whole domain becomes dependent of the infrastructure layer (although the dependence is softened by dependency inversion) this weakens the concept of an independent domain.
+* The *pure domain* as a stateless service without run- or compiletime dependencies can be integrated into a frontend as a wasm
+
+==== Decision: Alternative 2
+
+* We decide for Alternative 2
+* Reasons
+** As the objective of the project is to provide a template, this is not the place for pragmatic compromise
+** The possibility to use Rust logic in the frontend was one reason for choosing Rust in the first place
+* Comments
+** When applying the template it is legitimate to deviate from this decision

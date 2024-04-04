@@ -1,8 +1,9 @@
-@startuml Whitebox_Overall_System
+@startuml Whitebox_Overall_DomainComponent
 
 !define Actor(name) actor name as "**<color:RoyalBlue>name</color>**"
-!define System(name) rectangle name as "**<color:Tomato>name</color>**"
-!define Database(name) database name as "**<color:SeaGreen>name</color>**"
+!define DomainComponent(name) rectangle name as "**<color:Tomato>name</color>**"
+!define NeighbouringDomain(name) rectangle name as "**<color:SeaGreen>name</color>**"
+!define Database(name) database name as "**<color:Tomato>name</color>**"
 !define Component(name) component name as "**<color:SlateGray>name</color>**"
 
 skinparam ArrowColor DeepSkyBlue
@@ -11,22 +12,37 @@ skinparam RectangleBorderColor DarkSlateGray
 skinparam ComponentBorderColor DarkSlateGray
 skinparam DatabaseBorderColor DarkSlateGray
 
+  Actor(Player)
+  
+  DomainComponent(Frontend)
+  note left: ReactJS in browser
+  DomainComponent(Backend)
+  note left: Rust in ActixWeb
+    Database(Database)
 
-  System(Frontend)
-  System(Backend)
-  Database(Database)
-
-  Actor(User)
-  Component(Keycloak)
+  Component(OIDC_Authorization_Server)
   Component(MessageBroker)
-  System(NeighbouringDomains)
 
-User --> Frontend : Uses
-Frontend --> Backend : Sends requests\n(ReactJS in a browser)
+  NeighbouringDomain(Game_Designer)
+  NeighbouringDomain(GameCatalogue)
+
+' Our Bounded Context
+
+Player --> Frontend : Game interaction
+
+Frontend --> Backend : REST
+Frontend <-- Backend : Websockets
+
+Backend <--> OIDC_Authorization_Server : OIDC Flow
+Frontend <--> OIDC_Authorization_Server : OIDC Flow
 Backend --> Database : Reads from/Writes to
-Backend --> Keycloak : Authenticates/Authorizes\n(OIDC Authorization Server)
-Backend --> MessageBroker : Publishes/Subscribes
-Backend --> NeighbouringDomains : Server 2 Server\ncommunication
-NeighbouringDomains --> Frontend : Distinct frontends\n(currently separate)
+
+Backend <----> MessageBroker : Publishes/Subscribes
+
+' Other Bounded Contexts
+
+Game_Designer <--> MessageBroker : Publishes/Subscribes
+GameCatalogue <--> MessageBroker : Publishes/Subscribes
+
 
 @enduml

@@ -2,9 +2,9 @@
 
 use domain::model::location::Location;
 
-use domain::query_interfaces::location_queries::navigation::LocationQueries;
+use domain::contracts::location_queries::navigation::LocationQueries;
 
-use port::repository::{LocationRepository};
+use port::repositories::location_repository::LocationRepository;
 use std::sync::Arc;
 
 
@@ -31,7 +31,7 @@ impl LocationQueries for LocationQueryImpl {
 
     // fn find_location_by_direction(&self, current_location_id: i32, direction: &str) -> Option<Location> {
     //     // This might involve more complex logic, potentially needing adjustments
-    //     // in the repository interfaces to support direction-based query_interfaces.
+    //     // in the repository interfaces to support direction-based contracts.
     //     // For simplicity, let's assume there's a method in the passage repository
     //     // to find passages by location and direction, then use the location repository
     //     // to fetch the target location.

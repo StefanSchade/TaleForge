@@ -1,18 +1,131 @@
-
 == Building Block View
 
-
-
+As described in the <<_abstract>>, this document focuses on the domain "Game Execution", but it is embedded into a wider system.
 
 === Whitebox Overall System
-* Provide a high-level overview of the system's structure, focusing on the major components and their responsibilities.
 
-image::./images/whitebox_overall_system.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+The diagram shows the components of the domain (Frontend, Backend, Database), infrastructure components (Message Broker, OIDC Authorization Server) and as an example two different domains (Game Design and Game Catalogue) that interact with our application.
 
-==== Level 2
-* Detail the decomposition of the top-level components into their subcomponents, focusing on the second level of granularity.
+At this point, there is no frontend integration so there is no connections to the other domains in the frontend. In the long run, this could change for instance by establishing a portal component that provides a common frame for the individual frontends.
 
-image::./images/architecture_diagram.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+image::./images/whitebox_overall_system.png[title="Backend Architecture", width="500", height="400", alt="Component view of the backend's architecture."]
 
-==== Level 3
-* Optionally, provide further decomposition of components if necessary.
+=== Backend
+
+The diagram shows the architectural layers of the backend that are represented by Rust crates (the relation is not strictly 1:1) and the artifacts / components in these layers represented by Rust modules and files.
+
+The components represent a simplified system for clarity with the following restricitons>
+
+* just 1 use case (move player)
+* just 2 aggregates in the domain model (location and passage)
+* just 1 domain service (navigation service) that relies on 2 query interfaces (passage_queries, location_queries)
+* as there currently is no example for a pure domain service "serivce 1" has been established as a dummy
+
+
+image::./images/architecture_backend_domain_split.png[title="Backend Architecture", width="800", height="400", alt="Component view of the backend's architecture."]
+
+==== Architectural layers
+
+===== Crosscutting
+
+* intention
+** contains cross-cutting concerns that are known across the whole project
+** examples
+*** logging
+*** error handling
+* current implementation status
+** not yet established in the code base
+* future plans
+** Whether there will be one or multiple crates depends on future design decisions
+
+===== Domain
+
+* intention
+** contains the core business logic
+** accessed by adapters only via the port layer (compare section: <<_strict_encapsulation_of_the_domain_and_application>>)
+** has no technical dependency on application, port or adapter layer (achieved by dependency inversion by query interfaces)
+* current implementation status
+** one domain crate
+* future plans
+** Separate into two crates: one (domain model) that is truly independent of the outside layers and another (domain services) that is logically dependent (but technically independent because of the use of the dependency inversion pattern). This can be useful as the first crate can be packaged as a wasm and integrated into the front-end to perform validations etc.
+
+===== Application
+
+* intention
+** contains services that orchestrate the domain logic (i.e. plumbing between domain and application)
+*** use cases, aka domain stories
+*** application services (e.g. query implementations, dto mappings)
+** accessed by adapters only via the port layer (compare section: <<_strict_encapsulation_of_the_domain_and_application>>)
+** depends only on port and domain - the layers it is supposed to connect
+* current implementation status
+** no relevant information at this point
+* future plans
+** no relevant information at this point
+
+===== Port
+
+* intention
+** Represents the API of the domain and application layer
+** Contains abstractions / interfaces
+*** Inbound interfaces implemented by the application layer and used by the adapter layer (e.g. use cases, aka domain stories)
+*** outbound interfaces implemented by the adapter layer and used by the application layer (e.g. repositories)
+*** data transfer objects (DTOs) to facilitate communication between inside and outside (compare <<_strict_encapsulation_of_the_domain_and_application>>)
+** port packages should describe the purpose (e.g. persistence) of the specific port rather than the technology (e.g. rdbms)
+* current implementation status
+** no relevant information at this point
+* future plans
+** no relevant information at this point
+
+===== Adapter
+
+* intention
+** As the name adapter implies it connects between 2 abstraction layers: One is the port layer representing our application internals, the other is an adapter specific outside abstraction connecting to the outside world.
+**
+** adapter packages should describe the integration scenario (e.g. test stubs, custom integration for customer xyz) rather than the purpose (persistence) or the technology (rdbms)
+* current implementation status
+** stub implementations for persistence (in memory repos)
+* future plans
+** it has to be defined weather the in memory repos will be used in the future to test the use cases front-to-back
+
+===== Entry Point
+
+* intention
+** pluggs everything together
+** initializes the application
+*** initial load of (test) data into the repositories in the absence of a database
+*** startup of the actix web server
+* current implementation status
+** work in progress, a bit messy right now
+* future plans
+** consistent dependency injection framework
+
+==== Artifacts by layer
+
+* domain
+** domain model
+*** organized by aggregates
+*** infrastructure aspects can influence the model (database id generation, optimistic locking) this might be legitimate, as the behaviour of the objects depends on these concepts
+*** one of 2 types of service (compare Scott Millet)
+**** Pure domain services are part of the domain model (stateless, no dependency on repos etc.)
+*** models should not be simple data containers (anemic domain model)
+** domain service
+*** the other of 2 types of service (compare Scott Millet)
+**** domain service as a `contract` (service layer) - concept is important to the domain but implementation relies on infrastructure / example for contracts are our `queries`
+* application
+** contract implementations
+** mapping between dto and domain
+** use case, aka domain story implementations
+* port
+** inbound interfaces
+** outbound interfaces
+** dtos
+* adapter
+** implementation of outbound interfaces
+** web server, controller
+* entry point
+*** dependency injection
+*** main
+
+=== Frontend
+
+tbd

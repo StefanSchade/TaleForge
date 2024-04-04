@@ -1,5 +1,7 @@
 == Abstract
 
+This document follows the structure suggested by https://arc42.org/overview[Arc42]. All sections originating from this template are numbered with the respective number from the template. Additional sections are unnumbered.
+
 === Objectives
 
 This document will guide through the TaleForge development journey:
@@ -12,11 +14,9 @@ Thus it will help facilitating efficient and coherent development practices both
 
 === Scope
 
-Given its ambitious scope, TaleForge (see https://github.com/StefanSchade/TaleForge/blob/master/README.md[README]) represents a large and complex project. Domain Driven Design (DDD) makes this kind of problem manageable by dividing the complex domain into subdomains, describing each as its own system.
+Given its ambitious scope, TaleForge (see https://github.com/StefanSchade/TaleForge/blob/master/README.md[README]) represents a large and complex project. Domain Driven Design (DDD) makes this kind of problem manageable by dividing it into subdomains, describing each as its own system.
 
-This document describes the Subdomain of Game Execution that is committed to facilitating a text adventure game that has been designed by one user and selected by a another previously using different bounded contexts.
-
-[[building_block_approach]]
+This document describes the Subdomain "Game Execution" that is committed to facilitating a text adventure game that has been previously designed by one user and selected by another.
 
 === Intended Audience
 

@@ -9,7 +9,7 @@ rectangle "crosscutting" #8387C4 {
     }
 }
 
-rectangle "domain" #8387C4 {
+rectangle "domain pure" #8387C4 {
 
     package "model" #E2E3F5 {
         [location] #B7BBF2
@@ -17,11 +17,20 @@ rectangle "domain" #8387C4 {
         [player_state] #B7BBF2
     }
 
+    package "pure services" #E2E3F5 {
+        [service 1] #B7BBF2
+    }
+
+
+}
+
+rectangle "domain contract" #8387C4 {
+
     package "services" #E2E3F5 {
         [navigation_service] #B7BBF2
     }
 
-    package "query_interfaces" #E2E3F5 {
+    package "contracts" #E2E3F5 {
             [location_queries] #B7BBF2
             [passage_queries] #B7BBF2
     }
@@ -29,7 +38,7 @@ rectangle "domain" #8387C4 {
 
 rectangle "application" #8387C4 {
 
-    package "query_implementations" #E2E3F5 {
+    package "contract_impl" #E2E3F5 {
         [location_query_impl] #B7BBF2
         [passage_query_impl] #B7BBF2
       }
@@ -98,22 +107,20 @@ rectangle "entry_point" #8387C4 {
 ' layout
 ' ***********************
 
-' layer domain
-        [location]-[hidden]--[Errors]
-        [passage]-[hidden]--[Errors]
-        [navigation_service]-[hidden]--[Errors]
-        [location_queries]-[hidden]--[Errors]
-        [passage_queries]-[hidden]--[Errors]
+' layer crosscutting to domain
+        [location]-[hidden]-[Errors]
+        [location_queries]-[hidden]-[Errors]
+        [passage_queries]-[hidden]-[Errors]
 
 
-
-' layer application
+' layer domain to application
         [location_query_impl]-[hidden]-[passage_queries]
+        [location_query_impl]-[hidden]--[service 1]
+        
 
-' layer port
-
-          [move_player]-[hidden]-[passage_mapper]
-          [passage_repository]-[hidden]-[passage_mapper]
+' layer application to port
+          [move_player]----[hidden]----[passage_mapper]
+          [passage_repository]--[hidden]-[passage_mapper]
 
 
 ' layer port - application
@@ -143,14 +150,12 @@ rectangle "entry_point" #8387C4 {
         [location_query_impl]...|>[location_queries]: "    implements"
 
         [player_controller] --> [move_player]: "    uses"
-'          [navigation_service] --> [location_queries]: "    uses"
-'         [navigation_service] --> [passage_queries]: "    uses"
 
-          [passage_mapper] -> [passage]: "    uses"
-         [location_mapper] -> [location]: "    uses"
+        [passage_mapper] -> [passage]: "    uses"
+        [location_mapper] -> [location]: "    uses"
 
-          [passage_mapper] --> [passage_dto]: "    uses"
-         [location_mapper] --> [location_dto]: "    uses"
+        [passage_mapper] --> [passage_dto]: "    uses"
+        [location_mapper] --> [location_dto]: "    uses"
 
 
 @enduml

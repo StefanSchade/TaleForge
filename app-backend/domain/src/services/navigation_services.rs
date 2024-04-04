@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use crate::model::location::{Location};
 use crate::model::player_state::PlayerState;
-use crate::query_interfaces::location_queries::navigation::LocationQueries;
-use crate::query_interfaces::passage_queries::navigation::PassageQueries;
+use crate::contracts::location_queries::navigation::LocationQueries;
+use crate::contracts::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely

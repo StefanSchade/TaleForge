@@ -1,4 +1,4 @@
-= Architecture Documentation: TaleForge / Player Module Backend
+= Architecture Documentation: TaleForge / Domain "Game Execution"
 :toc: macro
 :toc-title: Contents
 :sectnums:
@@ -36,3 +36,7 @@ include::./chapters/10_quality_requirements.adoc[]
 include::./chapters/11_risk_and_tech_debt.adoc[]
 
 include::./chapters/12_glossary.adoc[]
+
+:sectnums!:
+
+include::./chapters/A01_curriculum.adoc[]

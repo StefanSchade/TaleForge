@@ -8,7 +8,7 @@ use crate::web::app_state::AppState;
 
 
 
-use port::use_case::move_player::MovePlayerCommand;
+use port::domain_stories::move_player::MovePlayerCommand;
 
 #[derive(Deserialize)]
 pub struct WebMovePlayerInput {

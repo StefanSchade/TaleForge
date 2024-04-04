@@ -5,7 +5,10 @@ use std::sync::Mutex;
 use domain::model::location::Location;
 use domain::model::passage::Passage;
 use domain::model::player_state::PlayerState;
-use port::repository::{LocationRepository, PassageRepository, PlayerStateRepository};
+
+use port::repositories::location_repository::LocationRepository;
+use port::repositories::passage_repository::PassageRepository;
+use port::repositories::player_state_repository::PlayerStateRepository;
 
 pub struct InMemoryLocationRepository {
     locations: Mutex<HashMap<i32, Location>>,
