@@ -3,7 +3,7 @@ use domain_pure::model::location::LocationBuilder;
 use port::dto::location_dto::LocationDTO;
 
 
-pub fn location_to_dto(location: &Location) -> LocationDTO {
+pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
         id: location.get_aggregate_id(),
         title: location.get_title_reference().to_string(),
@@ -12,7 +12,7 @@ pub fn location_to_dto(location: &Location) -> LocationDTO {
     }
 }
 
-pub fn dto_to_location(dto: &LocationDTO) -> Location {
+pub fn location_map_dto_to_domain(dto: &LocationDTO) -> Location {
     LocationBuilder::default()
         .aggregate_id(dto.id)
         .title(dto.title.clone())
@@ -25,7 +25,7 @@ pub fn dto_to_location(dto: &LocationDTO) -> Location {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use domain_pure::model::location::LocationBuilder; // Adjust this path based on your actual module structure.
+    use domain_pure::model::location::LocationBuilder;
 
     #[test]
     fn test_location_to_dto_mapping() {
@@ -37,7 +37,7 @@ mod tests {
             .build()
             .unwrap();
 
-        let dto = location_to_dto(&location);
+        let dto = location_map_domain_to_dto(&location);
 
         assert_eq!(dto.id, location.get_aggregate_id());
         assert_eq!(dto.title, location.get_title_reference());
@@ -54,7 +54,7 @@ mod tests {
             image_url: Some("https://example.com/ruins.jpg".into()),
         };
 
-        let location = dto_to_location(&dto);
+        let location = location_map_dto_to_domain(&dto);
 
         assert_eq!(location.get_aggregate_id(), dto.id);
         assert_eq!(location.get_title_reference(), dto.title);
