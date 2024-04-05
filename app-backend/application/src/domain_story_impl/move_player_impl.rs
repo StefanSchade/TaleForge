@@ -8,6 +8,7 @@ use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, Mov
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
 use port::repositories::player_state_repository::PlayerStateRepository;
+use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 
 #[allow(dead_code)] // unused repositories will be used at a later point
@@ -44,9 +45,9 @@ impl MovePlayerUseCase for MovePlayerUseCaseImpl {
                 None => return Err("Player state not found".to_string()),
             };
 
-            let (new_location, narration) = self.navigation_service.navigate(player_state.clone(), input.direction)?;
+            let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction)?;
 
-            player_state.set_current_location_id(new_location.get_aggregate_id());
+            player_state.current_location_id = new_location.get_aggregate_id();
             self.player_state_repository.save(player_state);
 
             Ok(MovePlayerResult {
@@ -68,6 +69,9 @@ mod tests {
     use domain_pure::model::passage::Passage;
     use domain_pure::model::player_state::{PlayerState, PlayerStateBuilder};
     use domain_contract::services::navigation_services::NavigationServiceTrait;
+    use port::dto::location_dto::LocationDTO;
+    use port::dto::passage_dto::PassageDTO;
+    use port::dto::player_state_dto::PlayerStateDTO;
 
     use super::*;
 
@@ -83,9 +87,9 @@ mod tests {
         LocationRepository {}
 
         impl LocationRepository for LocationRepository  {
-            fn get_location_by_id(&self, id: i32) -> Option<Location>;
-            fn get_all_locations(&self) -> Vec<Location>;
-            fn add_location(&self, location: Location) -> Result<(), String>;
+            fn get_location_by_id(&self, id: i32) -> Option<LocationDTO>;
+            fn get_all_locations(&self) -> Vec<LocationDTO>;
+            fn add_location(&self, location: LocationDTO) -> Result<(), String>;
         }
     }
 
@@ -93,11 +97,11 @@ mod tests {
         PassageRepository {}
 
          impl  PassageRepository for PassageRepository {
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage>;
-            fn get_passage_by_id(&self, id: i32) -> Option<Passage>;
-            fn get_passages_for_location(&self, location_id: i32) -> Vec<Passage>;
-            fn add_passage(&self, passage: Passage) -> Result<(), String>;
-            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<Passage>;
+            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<PassageDTO>;
+            fn get_passage_by_id(&self, id: i32) -> Option<PassageDTO>;
+            fn get_passages_for_location(&self, location_id: i32) -> Vec<PassageDTO>;
+            fn add_passage(&self, passage: PassageDTO) -> Result<(), String>;
+            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<PassageDTO>;
         }
     }
 
@@ -105,8 +109,8 @@ mod tests {
         PlayerStateRepository {}
 
         impl PlayerStateRepository for PlayerStateRepository  {
-             fn find_by_id(&self, id: i32) -> Option<PlayerState>;
-             fn save(&self, player_state: PlayerState);
+             fn find_by_id(&self, id: i32) -> Option<PlayerStateDTO>;
+             fn save(&self, player_state: PlayerStateDTO);
         }
     }
 
@@ -153,11 +157,21 @@ mod tests {
             .with(eq(expected_player_id))
             .times(1)
             .returning(move |_| Some(
-                PlayerStateBuilder::default()
-                    .player_id(expected_player_id)
-                    .current_location_id(1)
-                    .build()
-                    .unwrap()
+
+                PlayerStateDTO {
+                    player_id: expected_player_id,
+                    current_location_id: 1,
+                }
+
+
+                // PlayerStateBuilder::default()
+                //     .player_id(expected_player_id)
+                //     .current_location_id(1)
+                //     .build()
+                //     .unwrap()
+
+
+
             ));
 
         // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of
@@ -165,7 +179,7 @@ mod tests {
         // However doing so results in an [E0373], so we apply what we would do with non-Copy data and move
         // ownership explicitly to the closure.
         mock_player_state_repo.expect_save()
-            .withf(move |ps| ps.get_player_id() == expected_player_id)
+            .withf(move |ps| ps.player_id == expected_player_id)
             .times(1)
             .returning(|_| ());
 

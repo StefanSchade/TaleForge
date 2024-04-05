@@ -24,6 +24,7 @@ use application::contract_implementations::passage_query_impl::PassageQueryImpl;
 use domain_contract::contracts::location_queries::navigation::LocationQueries;
 use domain_contract::contracts::passage_queries::navigation::PassageQueries;
 use port::domain_stories::move_player::MovePlayerUseCase;
+use port::dto::player_state_dto::PlayerStateDTO;
 
 
 // src/main.rs
@@ -44,11 +45,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let mut player_state_repository_mutable = player_state_repository.clone()
 
     player_state_repository.save(
-        PlayerStateBuilder::default()
-            .player_id(1)
-            .current_location_id(1)
-            .build()
-            .unwrap()
+
+        PlayerStateDTO {
+            player_id: 1,
+            current_location_id: 1,
+        }
+
+
+
+        // PlayerStateBuilder::default()
+        //     .player_id(1)
+        //     .current_location_id(1)
+        //     .build()
+        //     .unwrap()
+
+
+
     );
 
     data_loader::load_data_from_json(

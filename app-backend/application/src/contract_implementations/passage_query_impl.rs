@@ -1,5 +1,7 @@
 use domain_contract::contracts::passage_queries::navigation::PassageQueries;
 use domain_pure::model::passage::Passage;
+use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
+
 
 
 use port::repositories::passage_repository::PassageRepository;
@@ -21,12 +23,14 @@ impl PassageQueryImpl {
 
 impl PassageQueries for PassageQueryImpl {
     fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage> {
-        self.passage_repository.find_by_start_and_end_id(from_location_id, to_location_id)
+        let passage_dto_option = self.passage_repository.find_by_start_and_end_id(from_location_id, to_location_id);
+        passage_dto_option.map(|passage_dto|  passage_map_dto_to_domain(&passage_dto))
     }
 
 
     fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage> {
-        self.passage_repository.find_passage_by_location_and_direction(location_id, direction)
+        let passage_dto_option = self.passage_repository.find_passage_by_location_and_direction(location_id, direction);
+        passage_dto_option.map(|passage_dto|  passage_map_dto_to_domain(&passage_dto))
     }
 
 

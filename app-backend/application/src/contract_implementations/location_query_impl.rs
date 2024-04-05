@@ -6,6 +6,7 @@ use domain_contract::contracts::location_queries::navigation::LocationQueries;
 
 use port::repositories::location_repository::LocationRepository;
 use std::sync::Arc;
+use crate::dto_domain_mapping::location_mapper::location_map_dto_to_domain;
 
 
 pub struct LocationQueryImpl {
@@ -26,7 +27,8 @@ impl LocationQueryImpl {
 
 impl LocationQueries for LocationQueryImpl {
     fn get_location_by_aggregate_id(&self, location_aggregate_id: i32) -> Option<Location> {
-        self.location_repository.get_location_by_id(location_aggregate_id)
+        let location_option = self.location_repository.get_location_by_id(location_aggregate_id);
+        location_option.map(|locationDTO| location_map_dto_to_domain(&locationDTO))
     }
 
     // fn find_location_by_direction(&self, current_location_id: i32, direction: &str) -> Option<Location> {
