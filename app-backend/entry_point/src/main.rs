@@ -9,7 +9,7 @@ use adapter::web::server;
 use adapter::web::app_state::AppState;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use application::domain_story_impl::move_player_impl::MovePlayerUseCaseImpl;
+use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use domain_pure::model::player_state::PlayerStateBuilder;
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 
@@ -23,7 +23,7 @@ use application::contract_implementations::location_query_impl::LocationQueryImp
 use application::contract_implementations::passage_query_impl::PassageQueryImpl;
 use domain_contract::contracts::location_queries::navigation::LocationQueries;
 use domain_contract::contracts::passage_queries::navigation::PassageQueries;
-use port::domain_stories::move_player::MovePlayerUseCase;
+use port::domain_stories::move_player::MovePlayerDomainStory;
 use port::dto::player_state_dto::PlayerStateDTO;
 
 
@@ -79,7 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
 
-    let move_player_use_case : Arc<dyn MovePlayerUseCase> = Arc::new( MovePlayerUseCaseImpl::new(
+    let move_player_use_case : Arc<dyn MovePlayerDomainStory> = Arc::new( MovePlayerDomainStoryImpl::new(
         location_repository.clone(),
         passage_repository.clone(),
         player_state_repository.clone(),

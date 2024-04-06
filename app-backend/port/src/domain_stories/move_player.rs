@@ -4,7 +4,7 @@ use crate::context::RequestContext;
 
 
 
-pub trait MovePlayerUseCase: Send + Sync {
+pub trait MovePlayerDomainStory: Send + Sync {
     fn execute(&self,context: RequestContext, command: MovePlayerCommand) -> Result<MovePlayerResult, String>;
 }
 

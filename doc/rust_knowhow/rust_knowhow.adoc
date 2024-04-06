@@ -1,0 +1,13 @@
+= Architecture Documentation: TaleForge / Domain "Game Execution"
+:toc: macro
+:toc-title: Contents
+:sectnums:
+:sectnumlevels: 6
+:source-highlighter: rouge
+
+toc::[]
+
+:sectnums!:
+
+include::./chapters/mapping_efficiently.adoc[]
+
