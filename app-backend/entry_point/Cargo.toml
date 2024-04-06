@@ -3,13 +3,12 @@ name = "entry_point"
 version = "0.1.0"
 edition = "2021"
 
-
 [dependencies]
-port = { path = "../port" }
-domain_pure = { path = "../domain_pure" }
-domain_contract = { path = "../domain_contract" }
 adapter = { path = "../adapter" }
+port = { path = "../port" }
 application = { path = "../application" }
+domain_contract = { path = "../domain_contract" }
+domain_pure = { path = "../domain_pure" }
 
 actix-web = "4.0.0"
 serde = { version = "1.0", features = ["derive"] }
