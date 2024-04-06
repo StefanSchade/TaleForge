@@ -1,4 +1,4 @@
-== Borrowing
+=== Borrowing
 
 The Borrowing strategy involves using references to the source data instead of transferring ownership. This method allows the original data to remain intact for further use, providing greater flexibility in how data is handled post-mapping. However, it's essential to note that borrowing, by itself, doesn't avoid cloning but offers a strategy for more controlled and conditional use of cloning.
 
@@ -21,7 +21,7 @@ Note: The above code snippet is illustrative and may not compile due to type mis
 - *Complexity in Management*: Managing lifetimes and ensuring data validity can become more complex, particularly in scenarios requiring mutable access or where data lives across different contexts.
 - *Potential for Cloning*: While borrowing can defer the decision on whether to clone, there are scenarios where cloning becomes inevitable if the target object requires ownership of the data.
 
-== Understanding Borrowing's Role
+==== Understanding Borrowing's Role
 
 Borrowing's real advantage lies in the deferment and conditional application of cloning, allowing developers to make strategic decisions about when and if cloning is necessary based on the application's specific logic and requirements. This strategy is especially useful in read-only scenarios or when data is temporarily borrowed for operations like serialization, where taking ownership (and thus cloning) may not be required.
 

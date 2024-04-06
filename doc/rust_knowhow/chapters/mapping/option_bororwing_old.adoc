@@ -1,4 +1,4 @@
-== Borrowing
+=== Borrowing
 
 The Borrowing strategy involves passing references to the source data instead of transferring ownership. This method allows the source object to remain in use after mapping but may still require cloning if the target object needs ownership of the data.
 

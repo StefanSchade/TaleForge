@@ -1,0 +1,35 @@
+=== Lazy Cloning with Closures
+
+In the context of mapping, you could wrap the cloning operation within a closure, allowing the consumer of the mapped data to decide when or if to clone it. This approach is useful when the decision to clone depends on runtime conditions that are not known at the time of mapping.
+
+.Code Snippet
+[source,rust]
+----
+pub fn domain_to_dto_lazy(domain: &DomainModel) -> impl Fn() -> DtoModel {
+    move || DtoModel {
+        // Only clone data when the closure is executed.
+        data: domain.data.clone(),
+    }
+}
+----
+
+Usage:
+
+.Code Snippet
+[source,rust]
+----
+let domain_model = DomainModel { data: "expensive to clone".into() };
+let dto_lazy = domain_to_dto_lazy(&domain_model);
+// The cloning operation is deferred until the closure is called.
+let dto = dto_lazy();
+----
+
+.Pros
+- performance benefits
+
+.Cons
+- adds to the complexity of the codebase
+- might require documentation
+- can make it less predictable when operations like cloning will occur impacting debugging or performance profiling
+
+

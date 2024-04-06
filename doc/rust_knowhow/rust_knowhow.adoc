@@ -1,4 +1,4 @@
-= Architecture Documentation: TaleForge / Domain "Game Execution"
+= Rust Knowledge Base
 :toc: macro
 :toc-title: Contents
 :sectnums:
@@ -7,7 +7,6 @@
 
 toc::[]
 
-:sectnums!:
-
+:sectnums:
 include::./chapters/mapping/_chapter.adoc[]
 

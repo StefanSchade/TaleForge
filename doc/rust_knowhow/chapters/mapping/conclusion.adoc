@@ -1,11 +1,5 @@
-== Conclusion
+=== Conclusion
 
 Choosing the right data mapping optimization strategy in Rust depends on the specific requirements and constraints of the immediate use case.
 
-I presume that in most cases the code can be designed in such a way,
-
-
-
-Ownership Transfer is ideal for situations where the source object is no longer needed, whereas Borrowing suits cases where the source needs to be retained. `Cow` offers a compromise that optimizes for performance while maintaining flexibility. Consider your application's performance characteristics and data usage patterns to select the most appropriate approach.
-
-===
+I presume that in most cases the code can be designed in such a way, that ownership transfer will work. It seems a sensible approach to start here and defer the use of more sophisticated strategies to a time when they are actually needed.

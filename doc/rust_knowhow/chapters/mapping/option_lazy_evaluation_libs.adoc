@@ -1,0 +1,29 @@
+=== Lazy Evaluation Libraries for Complex Scenarios
+
+For more complex mapping scenarios, where the decision to clone might depend on several factors or where cloning is particularly expensive, using a library like once_cell or lazy_static could provide a pattern for deferring this expense until it's clear that the data needs to be owned.
+
+.Code Snippet
+[source,rust]
+----
+use once_cell::sync::Lazy;
+
+static LAZY_MAPPED_DATA: Lazy<DtoModel> = Lazy::new(|| {
+    println!("Expensively cloning data for the DTO...");
+    DtoModel {
+        data: "expensively cloned data".into(),
+    }
+});
+
+fn main() {
+    // The data is only cloned when LAZY_MAPPED_DATA is first accessed.
+    println!("Accessing mapped data: {}", LAZY_MAPPED_DATA.data);
+}
+----
+
+.Pros
+- performance benefits
+
+.Cons
+- adds to the complexity of the codebase
+- might require documentation
+- can make it less predictable when operations like cloning will occur impacting debugging or performance profiling

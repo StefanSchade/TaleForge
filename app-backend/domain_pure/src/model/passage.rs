@@ -42,7 +42,7 @@ impl Passage {
     pub fn direction_owned(&self) -> String {
         self.direction.clone()
     }
-    pub fn narration_owned(&self) -> String {
+    pub fn _get_narration_clone(&self) -> String {
         self.narration.clone()
     }
 }

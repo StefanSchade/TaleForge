@@ -1,4 +1,4 @@
-== Ownership Transfer
+=== Ownership Transfer
 
 The Ownership Transfer approach involves transferring ownership of the data from the source object to the target object during mapping. This method eliminates the need for cloning by consuming the source object.
 
