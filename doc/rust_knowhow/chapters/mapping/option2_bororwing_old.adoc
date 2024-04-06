@@ -1,0 +1,20 @@
+== Borrowing
+
+The Borrowing strategy involves passing references to the source data instead of transferring ownership. This method allows the source object to remain in use after mapping but may still require cloning if the target object needs ownership of the data.
+
+.Code Snippet
+[source,rust]
+----
+pub fn domain_to_dto(domain: &DomainModel) -> DtoModel {
+    // Clone data only if necessary
+    DtoModel { data: domain.data.clone() }
+}
+----
+
+.Pros
+- Retains flexibility by keeping the source object available for further use.
+- Reduces cloning when mutable access to the mapped data is not required.
+
+.Cons
+- May still require cloning, depending on the use case.
+- Increases complexity due to explicit lifetime management.

@@ -1,0 +1,20 @@
+== Ownership Transfer
+
+The Ownership Transfer approach involves transferring ownership of the data from the source object to the target object during mapping. This method eliminates the need for cloning by consuming the source object.
+
+.Code Snippet
+[source,rust]
+----
+pub fn domain_to_dto(domain: DomainModel) -> DtoModel {
+    // Transfer ownership of data from domain to DTO
+    DtoModel { data: domain.data }
+}
+----
+
+.Pros
+- Eliminates cloning entirely, optimizing memory usage and performance.
+- Simplifies the code when the source object is no longer needed.
+
+.Cons
+- Consumes the source object, making it unavailable for further use.
+- Limits flexibility in cases where the source object is needed after mapping.

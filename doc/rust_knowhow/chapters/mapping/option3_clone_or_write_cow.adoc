@@ -1,0 +1,23 @@
+== Clone on Write (`Cow`)
+
+The Clone on Write (`Cow`) strategy provides a flexible approach that defers cloning until it becomes necessary. If the data is not modified, `Cow` borrows it from the source object. If modifications are needed, `Cow` clones the data on demand.
+
+.Code Snippet
+[source,rust]
+----
+use std::borrow::Cow;
+
+pub fn domain_to_dto<'a>(domain: &'a DomainModel) -> DtoModel<'a> {
+    DtoModel {
+        data: Cow::Borrowed(&domain.data)
+    }
+}
+----
+
+.Pros
+- Offers a dynamic balance between efficiency and flexibility.
+- Avoids cloning when the data is not modified, optimizing performance.
+
+.Cons
+- Introduces slight runtime overhead due to dynamic cloning decisions.
+- Adds complexity through explicit lifetime annotations and management.

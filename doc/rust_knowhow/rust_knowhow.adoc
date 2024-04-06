@@ -9,5 +9,5 @@ toc::[]
 
 :sectnums!:
 
-include::./chapters/mapping_efficiently.adoc[]
+include::./chapters/mapping/_chapter.adoc[]
 

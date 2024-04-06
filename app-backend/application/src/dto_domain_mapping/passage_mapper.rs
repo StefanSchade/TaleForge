@@ -6,9 +6,9 @@ pub fn passage_map_domain_to_dto(passage: &Passage) -> PassageDTO {
         id: passage.get_aggregate_id(),
         from_location_id: passage.get_from_location(),
         to_location_id: passage.get_to_location(),
-        description: passage._get_description_clone(),
-        direction: passage._get_direction_clone(),
-        narration: passage._get_narration_clone(),
+        description: passage.description_owned(),
+        direction: passage.direction_owned(),
+        narration: passage.narration_owned(),
     }
 }
 
@@ -47,8 +47,8 @@ mod tests {
         assert_eq!(original_passage.get_aggregate_id(), converted_back_player_state.get_aggregate_id());
         assert_eq!(original_passage.get_to_location(), converted_back_player_state.get_to_location());
         assert_eq!(original_passage.get_from_location(), converted_back_player_state.get_from_location());
-        assert_eq!(original_passage._get_description_clone(), converted_back_player_state._get_description_clone());
-        assert_eq!(original_passage._get_narration_clone(), converted_back_player_state._get_narration_clone());
-        assert_eq!(original_passage._get_direction_clone(), converted_back_player_state._get_direction_clone());
+        assert_eq!(original_passage.description_owned(), converted_back_player_state.description_owned());
+        assert_eq!(original_passage.narration_owned(), converted_back_player_state.narration_owned());
+        assert_eq!(original_passage.direction_owned(), converted_back_player_state.direction_owned());
     }
 }
