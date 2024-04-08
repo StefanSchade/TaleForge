@@ -1,6 +1,8 @@
 === Borrowing
 
-The Borrowing strategy involves using references to the source data instead of transferring ownership. This method allows the original data to remain intact for further use, providing greater flexibility in how data is handled post-mapping. However, it's essential to note that borrowing, by itself, doesn't avoid cloning but offers a strategy for more controlled and conditional use of cloning.
+The Borrowing strategy involves using references to the source data instead of transferring ownership. This method allows the original data to remain intact for further use, providing greater flexibility in how data is handled post-mapping.
+
+While borrowing can prevent *unnecessary* cloning, it can not avoid cloning in any scenario (see below). Adding borrowing as an option offers a strategy for more controlled and conditional use of cloning as demonstrated in the following: code snippet.
 
 .Code Snippet
 [source,rust]
@@ -26,3 +28,28 @@ Note: The above code snippet is illustrative and may not compile due to type mis
 Borrowing's real advantage lies in the deferment and conditional application of cloning, allowing developers to make strategic decisions about when and if cloning is necessary based on the application's specific logic and requirements. This strategy is especially useful in read-only scenarios or when data is temporarily borrowed for operations like serialization, where taking ownership (and thus cloning) may not be required.
 
 It's a strategy that emphasizes flexibility and strategic decision-making in the cloning process, offering potential performance optimizations in scenarios where unconditional cloning can be avoided. However, it necessitates careful design and understanding of Rust's ownership and lifetime rules to be effectively implemented without introducing errors or unnecessary complexity.
+
+==== Scenarios where cloning becomes necessary
+
+==== governed by the receiving context
+
+* If the data needs to be stored or used after the original data's scope has ended (e.g., storing data for the duration of the application).
+
+* If the data will to another thread, esp. when the data does not implement the Sync and Send traits.
+
+* If you need to mutate data that has been borrowed immutably elsewhere
+
+==== governed by the original context
+
+* *Immutable Borrowing for Shared Reading:* If both the original context and the receiving context intend to read the data without modifying it, immutable borrowing (&T) suffices. Rust allows multiple immutable references to the same data because this does not pose a risk to memory safety or data consistency.
+
+* *Mutability Constraints:* If the original context needs to mutate the data while it's borrowed elsewhere, you'll encounter a conflict due to Rust's borrowing rules, which prohibit mutating data that's currently borrowed (even if it's an immutable borrow). This scenario often requires rethinking your design to either:
+
+    ** Clone the data if both contexts need independent mutability.
+    ** Sequence access to ensure mutable access does not overlap with any borrows.
+
+* If the original context needs the data for a duration that extends beyond the scope where the borrow would end, cloning may be necessary to ensure the data remains available.
+
+==== If original and receiving context both need to see each others changes, cloning is not an option, use `Arc<Mutex<T>>` instead
+
+Data Synchronization: If both the original and receiving contexts need to see updates made by the other, cloning wouldn't be appropriate unless combined with some form of synchronization mechanism (e.g., through Arc<Mutex<T>> for shared state across threads).

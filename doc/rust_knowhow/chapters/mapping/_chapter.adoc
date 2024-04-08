@@ -1,6 +1,4 @@
-== Optimizing Data Mapping in Rust: Avoiding Unnecessary Cloning
-
-Data mapping is a common task in software development, particularly in systems designed following Domain-Driven Design (DDD) principles. It involves converting data between different formats or models, such as between domain models and data transfer objects (DTOs). In Rust, efficient data mapping is crucial due to the language's focus on safety and performance, especially concerning ownership and borrowing rules.
+== Optimizing Data Transfer in Rust: Avoiding Unnecessary Cloning during Mapping and in Getters
 
 include::./problem_statement.adoc[]
 

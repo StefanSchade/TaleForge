@@ -1,11 +1,11 @@
 === The Problem
 
-Cloning data during mapping operations can introduce performance overheads, particularly for larger or complex structures. While Rust's ownership system ensures memory safety, naively cloning data without considering the necessity can lead to inefficient use of resources.
+Transfering data from one context to the other is a common task in software development:
 
-This document explores three approaches to optimize data mapping in Rust by minimizing unnecessary cloning:
+* *mapping* one representation into the other
+* accessing data via *getters* from the "Outside"
+* using data contained in another context (e.g. struct, collection) in a *method*
 
-- Ownership Transfer
-- Borrowing
-- Clone on Write (`Cow`)
+In Rust, efficient handling of ownership in these transfers is crucial due to the language's memory model. Simply cloning data to avoid dealing with this problem can can introduce performance overheads, particularly for larger or complex structures.
 
-Each strategy has its advantages and trade-offs, depending on the specific use case and performance requirements.
+We explore various strategies to deal with that problems. Each has its advantages and trade-offs, depending on the specific use case and performance requirements.
