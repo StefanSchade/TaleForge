@@ -1,9 +1,7 @@
-
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;
 
-
-
+#[cfg_attr(test, mockall::automock)]
 pub trait MovePlayerDomainStory: Send + Sync {
     fn execute(&self,context: RequestContext, command: MovePlayerCommand) -> Result<MovePlayerResult, String>;
 }

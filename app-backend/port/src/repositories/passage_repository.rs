@@ -1,5 +1,5 @@
 use crate::dto::passage_dto::PassageDTO;
-
+#[cfg_attr(test, mockall::automock)]
 pub trait PassageRepository: Send + Sync {
     fn get_passage_by_id(&self, id: i32) -> Option<PassageDTO>;
     fn get_passages_for_location(&self, location_id: i32) -> Vec<PassageDTO>;
