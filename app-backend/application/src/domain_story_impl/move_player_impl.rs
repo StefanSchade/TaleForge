@@ -1,15 +1,13 @@
 use std::sync::Arc;
 
-
-use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
+use domain_contract::services::navigation_services::NavigationServiceTrait;
 use port::context::RequestContext;
-use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerDomainStory};
-
+use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
 use port::repositories::player_state_repository::PlayerStateRepository;
-use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
+use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 #[allow(dead_code)] // unused repositories will be used at a later point
 #[derive(Clone)]
@@ -25,7 +23,7 @@ impl MovePlayerDomainStoryImpl {
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>,
         player_state_repository: Arc<dyn PlayerStateRepository>,
-        navigation_service: Arc<dyn NavigationServiceTrait>
+        navigation_service: Arc<dyn NavigationServiceTrait>,
     ) -> Self {
         Self {
             location_repository,
@@ -37,7 +35,6 @@ impl MovePlayerDomainStoryImpl {
 }
 
 impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
-
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
         if let Some(player_id) = context.player_id {
             let mut player_state = match self.player_state_repository.find_by_id(player_id) {
@@ -62,12 +59,12 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
 
 #[cfg(test)]
 mod tests {
-    use mockall::predicate::eq;
     use mockall::{mock, predicate::*};
+    use mockall::predicate::eq;
 
+    use domain_contract::services::navigation_services::NavigationServiceTrait;
     use domain_pure::model::location::{Location, LocationBuilder};
     use domain_pure::model::player_state::{PlayerState, PlayerStateBuilder};
-    use domain_contract::services::navigation_services::NavigationServiceTrait;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
@@ -156,7 +153,6 @@ mod tests {
             .with(eq(expected_player_id))
             .times(1)
             .returning(move |_| Some(
-
                 PlayerStateDTO {
                     player_id: expected_player_id,
                     current_location_id: 1,
@@ -168,9 +164,6 @@ mod tests {
                 //     .current_location_id(1)
                 //     .build()
                 //     .unwrap()
-
-
-
             ));
 
         // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of

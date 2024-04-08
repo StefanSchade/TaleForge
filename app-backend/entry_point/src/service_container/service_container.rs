@@ -1,7 +1,3 @@
-use std::sync::Arc;
-use port::repositories::location_repository::LocationRepository;
-use port::repositories::passage_repository::PassageRepository;
-use port::repositories::player_state_repository::PlayerStateRepository;
 use crate::service_container::domain_service_container::DomainServiceContainer;
 use crate::service_container::domain_story_container::DomainStoryContainer;
 use crate::service_container::query_container::QueryContainer;
@@ -18,7 +14,7 @@ impl ServiceContainer {
     pub fn new() -> Self {
         let repo_container = RepositoryContainer::new();
         let query_container = QueryContainer::new(&repo_container);
-        let domain_service_container=  DomainServiceContainer::new(query_container.clone());
+        let domain_service_container = DomainServiceContainer::new(query_container.clone());
         let domain_story_container = DomainStoryContainer::new(
             &repo_container,
             &domain_service_container);
@@ -40,5 +36,4 @@ impl ServiceContainer {
     pub fn domain_story(&self) -> DomainStoryContainer {
         self.domain_story_container.clone()
     }
-
 }

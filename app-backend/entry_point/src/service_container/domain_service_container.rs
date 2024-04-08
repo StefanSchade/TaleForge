@@ -1,11 +1,8 @@
 use std::sync::Arc;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
-use port::repositories::location_repository::LocationRepository;
-use port::repositories::passage_repository::PassageRepository;
-use crate::service_container::domain_story_container::DomainStoryContainer;
+
 use crate::service_container::query_container::QueryContainer;
-use crate::service_container::repository_container::RepositoryContainer;
 
 #[derive(Clone)]
 pub struct DomainServiceContainer {
@@ -26,5 +23,4 @@ impl DomainServiceContainer {
     pub fn navigation(&self) -> Arc<dyn NavigationServiceTrait> {
         self.navigation.clone()
     }
-
 }
