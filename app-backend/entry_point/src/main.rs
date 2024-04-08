@@ -35,14 +35,6 @@ use crate::service_container::service_container::ServiceContainer;
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    // setup the repositories
-    //  let location_repository: Arc<dyn LocationRepository> = Arc::new(InMemoryLocationRepository::new());
-    //  let passage_repository: Arc<dyn PassageRepository> = Arc::new(InMemoryPassageRepository::new());
-    //  let player_state_repository: Arc<dyn PlayerStateRepository> = Arc::new(InMemoryPlayerStateRepository::new());
-
-    // let repo_container = RepositoryContainer::new(    );
-
-
     // initialize dependency injection container
 
     let container = ServiceContainer::new();
@@ -58,8 +50,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &passage_file_path,
     )?;
 
-
-
     // initialize player 1
     container.repo().player_state()
     .save(
@@ -68,27 +58,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             current_location_id: 1,
         }
     );
-
-
-    // let location_queries : Arc<dyn LocationQueries> = Arc::new(LocationQueryImpl::new(location_repository.clone()));
-    // let passage_queries: Arc<dyn PassageQueries> = Arc::new(PassageQueryImpl::new(passage_repository.clone()));
-
-
-    // let navigation_service = NavigationService::new(location_queries.clone() , passage_queries.clone());
-    //
-    //
-    // let navigation_service_trait_object: Arc<dyn NavigationServiceTrait> = Arc::new(navigation_service);
-
-    // let move_player_use_case : Arc<dyn MovePlayerDomainStory> = Arc::new( MovePlayerDomainStoryImpl::new(
-    //     location_repository.clone(),
-    //     passage_repository.clone(),
-    //     player_state_repository.clone(),
-    //     navigation_service_trait_object.clone(),
-    // ));
-    //
-
-
-//    let app_state = Data::new(Arc::new(AppState::new(container.repo().location(), container.repo().passage(), container.repo().player_state(), Arc::new(()))));
 
     let app_state = Data::new(Arc::new(AppState::new(
         container.repo().location(),
