@@ -3,7 +3,7 @@ use port::dto::player_state_dto::PlayerStateDTO;
 
 pub fn player_state_map_domain_to_dto(domain_stuct: &PlayerState) -> PlayerStateDTO {
     PlayerStateDTO {
-        player_id: domain_stuct.get_player_id(),
+        player_id: domain_stuct.player_id(),
         current_location_id: domain_stuct.current_location_id()
     }
 }
@@ -34,7 +34,7 @@ use port::dto::player_state_dto::PlayerStateDTO;
         let player_state_dto = player_state_map_domain_to_dto(&original_player_state);
         let converted_back_player_state = player_state_map_dto_to_domain(&player_state_dto);
 
-        assert_eq!(original_player_state.get_player_id(), converted_back_player_state.get_player_id());
+        assert_eq!(original_player_state.player_id(), converted_back_player_state.player_id());
         assert_eq!(original_player_state.current_location_id(), converted_back_player_state.current_location_id());
     }
 
@@ -49,7 +49,7 @@ use port::dto::player_state_dto::PlayerStateDTO;
 
         let player_state = player_state_map_dto_to_domain(&player_state_dto);
 
-        assert_eq!(player_state.get_player_id(), 0);
+        assert_eq!(player_state.player_id(), 0);
         assert_eq!(player_state.current_location_id(), 0);
     }
 }

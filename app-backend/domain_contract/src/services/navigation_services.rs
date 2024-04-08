@@ -30,7 +30,7 @@ impl NavigationServiceTrait for NavigationService {
         if let Some(passage) = self.passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), &*direction) {
             //if let Some(target_location) = self.location_repository.get_location_by_id(passage.get_to_location()) {
             if let Some(target_location) = self.location_query.get_location_by_aggregate_id(passage.get_to_location()) {
-                let narration = format!("{} and reach {}.", passage.narration(), target_location.get_title_reference());
+                let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
                 Ok((target_location, narration))
             } else {
                 Err("Target location not found.".to_string())
@@ -104,7 +104,7 @@ mod tests {
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
 
-        assert_eq!(location.get_aggregate_id(), 2);
+        assert_eq!(location.aggregate_id(), 2);
         assert_eq!(narration, "You go north and reach Target Location.");
     }
 }

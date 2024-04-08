@@ -12,10 +12,8 @@ impl PlayerState {
     pub fn current_location_id(&self) -> i32 {
         self.current_location_id
     }
-
     pub fn set_current_location_id(&mut self, location_id: i32) {
         self.current_location_id = location_id;
     }
-
-    pub fn get_player_id(&self) -> i32 {self.player_id}
+    pub fn player_id(&self) -> i32 {self.player_id}
 }

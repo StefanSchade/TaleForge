@@ -5,10 +5,10 @@ use port::dto::location_dto::LocationDTO;
 
 pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
-        id: location.get_aggregate_id(),
-        title: location.get_title_reference().to_string(),
-        description: location._get_description_reference().to_string(),
-        image_url: location._get_image_url_reference().map(ToOwned::to_owned),
+        id: location.aggregate_id(),
+        title: location.title().to_string(),
+        description: location.description().to_string(),
+        image_url: location.image_url().map(ToOwned::to_owned),
     }
 }
 
@@ -39,10 +39,10 @@ mod tests {
 
         let dto = location_map_domain_to_dto(&location);
 
-        assert_eq!(dto.id, location.get_aggregate_id());
-        assert_eq!(dto.title, location.get_title_reference());
-        assert_eq!(dto.description, location._get_description_reference());
-        assert_eq!(dto.image_url, location._get_image_url_reference().map(ToOwned::to_owned));
+        assert_eq!(dto.id, location.aggregate_id());
+        assert_eq!(dto.title, location.title());
+        assert_eq!(dto.description, location.description());
+        assert_eq!(dto.image_url, location.image_url().map(ToOwned::to_owned));
     }
 
     #[test]
@@ -56,9 +56,9 @@ mod tests {
 
         let location = location_map_dto_to_domain(&dto);
 
-        assert_eq!(location.get_aggregate_id(), dto.id);
-        assert_eq!(location.get_title_reference(), dto.title);
-        assert_eq!(location._get_description_reference(), dto.description);
-        assert_eq!(location._get_image_url_reference().map(ToOwned::to_owned), dto.image_url);
+        assert_eq!(location.aggregate_id(), dto.id);
+        assert_eq!(location.title(), dto.title);
+        assert_eq!(location.description(), dto.description);
+        assert_eq!(location.image_url().map(ToOwned::to_owned), dto.image_url);
     }
 }

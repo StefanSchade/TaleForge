@@ -47,11 +47,11 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
 
             let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction)?;
 
-            player_state.current_location_id = new_location.get_aggregate_id();
+            player_state.current_location_id = new_location.aggregate_id();
             self.player_state_repository.save(player_state);
 
             Ok(MovePlayerResult {
-                player_location: new_location.get_aggregate_id(),
+                player_location: new_location.aggregate_id(),
                 narration: narration,
             })
         } else {
@@ -66,7 +66,6 @@ mod tests {
     use mockall::{mock, predicate::*};
 
     use domain_pure::model::location::{Location, LocationBuilder};
-    use domain_pure::model::passage::Passage;
     use domain_pure::model::player_state::{PlayerState, PlayerStateBuilder};
     use domain_contract::services::navigation_services::NavigationServiceTrait;
     use port::dto::location_dto::LocationDTO;
