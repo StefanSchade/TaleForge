@@ -16,8 +16,8 @@ pub fn location_map_dto_to_domain(dto: LocationDTO) -> Location {
     LocationBuilder::default()
         .aggregate_id(dto.id)
         .title(dto.title)
-        .description(dto.description.clone())
-        .image_url(dto.image_url.clone())
+        .description(dto.description)
+        .image_url(dto.image_url)
         .build()
         .expect("Failed to build Location from DTO")
 }
