@@ -12,14 +12,14 @@ pub fn passage_map_domain_to_dto(passage: &Passage) -> PassageDTO {
     }
 }
 
-pub fn passage_map_dto_to_domain(dto: &PassageDTO) -> Passage {
+pub fn passage_map_dto_to_domain(dto: PassageDTO) -> Passage {
     PassageBuilder::default()
         .aggregate_id(dto.id)
         .from_location_id(dto.from_location_id)
         .to_location_id(dto.to_location_id)
-        .description(dto.description.to_string())
-        .direction(dto.direction.to_string())
-        .narration(dto.narration.to_string())
+        .description(dto.description)
+        .direction(dto.direction)
+        .narration(dto.narration)
         .build()
         .expect("Failed to build Passage from dto")
 }
@@ -42,7 +42,7 @@ mod tests {
             .expect("Failed to build Passage");
 
         let passage_dto = passage_map_domain_to_dto(&original_passage);
-        let converted_back_player_state = passage_map_dto_to_domain(&passage_dto);
+        let converted_back_player_state = passage_map_dto_to_domain(passage_dto);
 
         assert_eq!(original_passage.get_aggregate_id(), converted_back_player_state.get_aggregate_id());
         assert_eq!(original_passage.get_to_location(), converted_back_player_state.get_to_location());

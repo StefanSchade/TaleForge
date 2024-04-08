@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 
-use domain_contract::services::navigation_services::NavigationServiceTrait;
+use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
 use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerResult, MovePlayerDomainStory};
 

@@ -3,11 +3,12 @@
 use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web};
+use actix_web::web::Data;
 
 use crate::web::controllers::player_controller;
 use crate::web::app_state::AppState;
 
-pub async fn start_server(app_state: web::Data<Arc<AppState>>) -> std::io::Result<()> {
+pub async fn start_server(app_state: Data<Arc<AppState>>) -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(app_state.clone())
