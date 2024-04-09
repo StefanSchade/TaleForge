@@ -1,5 +1,3 @@
-// src/server.rs
-
 use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web};

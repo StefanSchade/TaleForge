@@ -7,7 +7,6 @@ use port::context::RequestContext;
 use port::domain_stories::move_player::MovePlayerCommand;
 
 use crate::web::app_state::AppState;
-use crate::web::server;
 
 #[derive(Deserialize)]
 pub struct WebMovePlayerInput {
@@ -45,7 +44,6 @@ impl From<WebMovePlayerInput> for MovePlayerCommand {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use actix_web::{App, http, HttpResponse, test, web};
@@ -59,22 +57,17 @@ mod tests {
     use port::repositories::player_state_repository::MockPlayerStateRepository;
 
     use crate::web::app_state::AppState;
+    use crate::web::server;
 
     use super::*;
 
-    #[test]
-    async fn test_location_retrieval() {
-        let mut mock = MockLocationRepository::new();
-
-        mock.expect_get_location()
-            .with(eq(42))
-            .times(1)
-            .returning(|_| "Secret Base".to_string());
-
-        let result = mock.get_location(42);
-        assert_eq!(result, "Secret Base");
-    }
-
+    // #[test]
+    // async fn test_mock_visibility() {
+    //     let mock_location_repo = Arc::new(MockLocationRepository::new());
+    //
+    //
+    //
+    // }
 
     #[actix_rt::test]
     async fn test_player_move() {

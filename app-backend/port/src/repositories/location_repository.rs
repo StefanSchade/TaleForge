@@ -7,3 +7,4 @@ pub trait LocationRepository: Send + Sync  {
     fn add_location(&self, location: LocationDTO) -> Result<(), String>;
     // Add more methods as needed
 }
+
