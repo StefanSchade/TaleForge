@@ -39,7 +39,7 @@ impl LocationRepository for MockLocationRepository {
         self.all_locations.clone().unwrap()
     }
 
-    fn add_location(&self, location: LocationDTO) -> Result<(), String> {
+    fn add_location(&self, _location: LocationDTO) -> Result<(), String> {
         Ok(())
     }
 }

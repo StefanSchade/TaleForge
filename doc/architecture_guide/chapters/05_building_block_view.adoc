@@ -17,7 +17,7 @@ The diagram shows the architectural layers of the backend that are represented b
 The components represent a simplified system for clarity with the following restricitons>
 
 * just 1 use case (move player)
-* just 2 aggregates in the domain model (location and passage)
+* just 2 aggregates in the domain model (_location and passage)
 * just 1 domain service (navigation service) that relies on 2 query interfaces (passage_queries, location_queries)
 * as there currently is no example for a pure domain service "serivce 1" has been established as a dummy
 

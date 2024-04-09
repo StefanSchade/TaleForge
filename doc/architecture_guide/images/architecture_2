@@ -42,7 +42,7 @@ rectangle "crosscutting" #LightSlateGray {
 rectangle "domain" #LightSlateGray {
 
     package "model" #LightSteelBlue {
-        [location] #Gold
+        [_location] #Gold
         [passage] #Gold
         [player_state] #Gold
     }
@@ -129,7 +129,7 @@ rectangle "entry_point" #LightSlateGray {
 ' ***********************
 
 ' layer domain
-        [location]-[hidden]--[Errors]
+        [_location]-[hidden]--[Errors]
         [passage]-[hidden]--[Errors]
         [navigation_service]-[hidden]--[Errors]
         [location_queries]-[hidden]--[Errors]
@@ -177,7 +177,7 @@ rectangle "entry_point" #LightSlateGray {
 '         [navigation_service] --> [passage_queries]: "    uses"
 
           [passage_mapper] -> [passage]: "    uses"
-         [location_mapper] -> [location]: "    uses"
+         [location_mapper] -> [_location]: "    uses"
 
           [passage_mapper] -> [passage_dto]: "    uses"
          [location_mapper] -> [location_dto]: "    uses"

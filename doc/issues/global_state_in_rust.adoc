@@ -2,7 +2,7 @@
 
 == Problem Description
 
-During the development of our text-based graphic adventure game, we encountered a requirement to make a set of test data globally available across various parts of our application. This test data needed to be mutable to simulate dynamic game states, such as the player's location and interactions within the game world.
+During the development of our text-based graphic adventure game, we encountered a requirement to make a set of test data globally available across various parts of our application. This test data needed to be mutable to simulate dynamic game states, such as the player's _location and interactions within the game world.
 
 == Solution Implemented
 
