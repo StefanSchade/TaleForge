@@ -15,4 +15,4 @@ serde_json = "1.0.114"
 actix-rt = "2.2"
 actix-web = "4.0.0"
 mockall = "0.12.1"
-port = { path = "../port", features = ["mock"] }
+port = { path = "../port", features = ["test-utils"] }
