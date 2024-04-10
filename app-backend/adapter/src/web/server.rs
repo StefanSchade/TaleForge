@@ -8,14 +8,17 @@ use crate::web::controllers::player_controller;
 
 pub async fn start_server(app_state: Data<Arc<AppState>>) -> std::io::Result<()> {
     HttpServer::new(move || {
-        App::new()
-            .app_data(app_state.clone())
-            .service(
-                web::resource("/player/move").route(web::post().to(player_controller::move_player)),
-            )
-        // Add more routes and controllers as needed
+        setup_app(app_state);
     })
         .bind("localhost:8080")?
         .run()
         .await
+}
+
+pub fn setup_app(app_state: Data<Arc<AppState>>) -> App<T> {
+    App::new()
+        .app_data(app_state.clone())
+        .service(
+            web::resource("/player/move").route(web::post().to(player_controller::move_player)),
+        )
 }
