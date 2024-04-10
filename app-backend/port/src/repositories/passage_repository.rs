@@ -72,8 +72,8 @@ fn test_with_mock_repository() {
     };
 
     let mock_repo = MockPassageRepository::new(fixed_passage, None);
-
     let passage = mock_repo.get_passage_by_id(1).unwrap();
+
     assert_eq!(passage.description, "description1");
 }
 
@@ -101,10 +101,8 @@ fn test_get_passages_for_location() {
     ];
 
     let mock_repo = MockPassageRepository::new(fixed_passage, Some(all_passages.clone()));
-
     let passages = mock_repo.get_passages_for_location(1);
 
-    // Serialize both vectors to JSON strings for comparison
     let expected_json = serde_json::to_string(&all_passages).expect("Failed to serialize expected passages");
     let actual_json = serde_json::to_string(&passages).expect("Failed to serialize actual passages");
 

@@ -4,7 +4,6 @@ pub trait LocationRepository: Send + Sync {
     fn get_location_by_id(&self, id: i32) -> Option<LocationDTO>;
     fn get_all_locations(&self) -> Vec<LocationDTO>;
     fn add_location(&self, location: LocationDTO) -> Result<(), String>;
-    // Add more methods as needed
 }
 
 #[cfg(feature = "test-utils")]
@@ -52,8 +51,8 @@ fn test_with_mock_repository() {
     };
 
     let mock_repo = MockLocationRepository::new(fixed_location, None);
-
     let location = mock_repo.get_location_by_id(1).unwrap();
+
     assert_eq!(location.description, "description1");
 }
 
