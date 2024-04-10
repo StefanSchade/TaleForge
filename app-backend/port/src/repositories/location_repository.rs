@@ -9,8 +9,6 @@ pub trait LocationRepository: Send + Sync {
 
 #[cfg(feature = "test-utils")]
 pub struct MockLocationRepository {
-    // Fixed return values for the mock methods.
-    // You could also use Option<LocationDTO> or Vec<LocationDTO> depending on your needs.
     pub fixed_location: LocationDTO,
     pub all_locations: Option<Vec<LocationDTO>>,
 }
@@ -29,7 +27,7 @@ impl LocationRepository for MockLocationRepository {
     #[cfg(feature = "test-utils")]
     fn get_location_by_id(&self, id: i32) -> Option<LocationDTO> {
         if id == self.fixed_location.id {
-            Some(self.fixed_location.clone()) // Ensure LocationDTO derives Clone.
+            Some(self.fixed_location.clone())
         } else {
             None
         }
@@ -43,8 +41,6 @@ impl LocationRepository for MockLocationRepository {
         Ok(())
     }
 }
-
-
 
 #[test]
 fn test_with_mock_repository() {
