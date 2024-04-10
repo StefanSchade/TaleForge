@@ -1,8 +1,7 @@
 use crate::dto::player_state_dto::PlayerStateDTO;
-use crate::repositories::location_repository::LocationRepository;
 
 pub trait PlayerStateRepository: Send + Sync {
-    fn find_by_id(&self, player_id: i32) -> Option<PlayerStateDTO>;
+    fn find_by_player_id(&self, player_id: i32) -> Option<PlayerStateDTO>;
     fn save(&self, player_state: PlayerStateDTO);
 }
 
@@ -22,7 +21,7 @@ impl MockPlayerStateRepository {
 
 impl PlayerStateRepository for MockPlayerStateRepository {
     #[cfg(feature = "test-utils")]
-    fn find_by_id(&self, player_id: i32) -> Option<PlayerStateDTO> {
+    fn find_by_player_id(&self, player_id: i32) -> Option<PlayerStateDTO> {
         if player_id == self.fixed_player_state.player_id {
             Some(self.fixed_player_state.clone())
         } else {
@@ -41,7 +40,7 @@ fn test_with_mock_repository() {
     };
 
     let mock_repo = MockPlayerStateRepository::new(fixed_player_state);
-    let player_state = mock_repo.find_by_id(1).unwrap();
+    let player_state = mock_repo.find_by_player_id(1).unwrap();
 
     assert_eq!(player_state.current_location_id,1);
 }

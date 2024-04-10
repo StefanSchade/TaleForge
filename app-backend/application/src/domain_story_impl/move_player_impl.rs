@@ -9,10 +9,10 @@ use port::repositories::player_state_repository::PlayerStateRepository;
 
 use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
-#[allow(dead_code)] // unused repositories will be used at a later point
+#[allow(dead_code)]
 #[derive(Clone)]
 pub struct MovePlayerDomainStoryImpl {
-    location_repository: Arc<dyn LocationRepository>,
+    location_repository: Arc<dyn LocationRepository>, // unused for the moment
     passage_repository: Arc<dyn PassageRepository>,
     player_state_repository: Arc<dyn PlayerStateRepository>,
     navigation_service: Arc<dyn NavigationServiceTrait>,
@@ -37,7 +37,7 @@ impl MovePlayerDomainStoryImpl {
 impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
         if let Some(player_id) = context.player_id {
-            let mut player_state = match self.player_state_repository.find_by_id(player_id) {
+            let mut player_state = match self.player_state_repository.find_by_player_id(player_id) {
                 Some(state) => state,
                 None => return Err("Player state not found".to_string()),
             };
@@ -105,15 +105,13 @@ mod tests {
         PlayerStateRepository {}
 
         impl PlayerStateRepository for PlayerStateRepository  {
-             fn find_by_id(&self, id: i32) -> Option<PlayerStateDTO>;
+             fn find_by_player_id(&self, id: i32) -> Option<PlayerStateDTO>;
              fn save(&self, player_state: PlayerStateDTO);
         }
     }
 
     #[test]
     fn test_move_player_success() {
-
-        // magic numbers relevant to the test
         let expected_destination_location_id: i32 = 99;
         let expected_passage_narration_text: &str = "You've moved north.";
         let expected_direction_instruction: &str = "north";
@@ -149,7 +147,7 @@ mod tests {
                 Ok(((*loc).clone(), expected_passage_narration_text.to_string()))
             });
 
-        mock_player_state_repo.expect_find_by_id()
+        mock_player_state_repo.expect_find_by_player_id()
             .with(eq(expected_player_id))
             .times(1)
             .returning(move |_| Some(
@@ -157,13 +155,6 @@ mod tests {
                     player_id: expected_player_id,
                     current_location_id: 1,
                 }
-
-
-                // PlayerStateBuilder::default()
-                //     .player_id(expected_player_id)
-                //     .current_location_id(1)
-                //     .build()
-                //     .unwrap()
             ));
 
         // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of

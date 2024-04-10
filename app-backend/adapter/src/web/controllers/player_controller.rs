@@ -46,16 +46,17 @@ impl From<WebMovePlayerInput> for MovePlayerCommand {
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{App, http, HttpResponse, test, web};
-    use actix_web::dev::Service;
+    use actix_web::{HttpMessage, HttpRequest, test};
+    use actix_web::http::header::ContentType;
     use actix_web::web::Data;
-    use serde::{Deserialize, Serialize};
+    use actix_web::App;
+    use port::domain_stories::move_player::{MockMovePlayerDomainStory, MovePlayerCommand, MovePlayerResult};
     use port::dto::location_dto::LocationDTO;
-
-    //   use port::domain_stories::move_player::{MockMovePlayerDomainStory, MovePlayerCommand, MovePlayerResult};
-    use port::repositories::location_repository::{MockLocationRepository};
-    //use port::repositories::passage_repository::MockPassageRepository;
-    //use port::repositories::player_state_repository::MockPlayerStateRepository;
+    use port::dto::passage_dto::PassageDTO;
+    use port::dto::player_state_dto::PlayerStateDTO;
+    use port::repositories::location_repository::MockLocationRepository;
+    use port::repositories::passage_repository::MockPassageRepository;
+    use port::repositories::player_state_repository::MockPlayerStateRepository;
 
     use crate::web::app_state::AppState;
     use crate::web::server;
@@ -64,48 +65,60 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_player_move() {
+        let mock_location = LocationDTO {
+            id: 1,
+            description: "test description".to_string(),
+            title: "test title".to_string(),
+            image_url: None,
+        };
+        let mock_location_repository = Arc::new(MockLocationRepository::new(mock_location, None));
 
-        // let mock_location = LocationDTO{
-        //     id: 1,
-        //     description: "test description",
-        //     title: "test title",
-        //     image_url: None
-        // };
-        //
-        // let mock_repo = MockLocationRepository::new(vec![test_location]);
-        // let mock_repo_shared = Arc::new(Mutex::new(mock_repo));
-        //
+        let mock_passage = PassageDTO {
+            id: 1,
+            from_location_id: 1,
+            to_location_id: 2,
+            direction: "north".to_string(),
+            description: "desc".to_string(),
+            narration: "nar".to_string(),
+        };
+        let mock_passage_repository = Arc::new(MockPassageRepository::new(mock_passage, None));
 
-        //let mock_passage_repo = Arc::new(MockPassageRepository::new());
-        // let mock_player_state_repo = Arc::new(MockPlayerStateRepository::new());
-        // let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new());
+        let mock_player_state = PlayerStateDTO {
+            player_id: 1,
+            current_location_id: 1,
+        };
+        let mock_player_state_repository = Arc::new(MockPlayerStateRepository::new(mock_player_state));
 
+        let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "narration".to_string()));
 
-
-        // let app_state = AppState::new(
-        //     mock_location_repo,
-        //     mock_passage_repo,
-        //     mock_player_state_repo,
-        //     mock_move_player_domain_story,
-        // );
+        let app_state = AppState::new(
+            mock_location_repository,
+            mock_passage_repository,
+            mock_player_state_repository,
+            mock_move_player_domain_story,
+        );
 
        // let app = server::start_server(Data::new(Arc::new(app_state))).await;
 
-        // let req_body = serde_json::to_string(&MovePlayerCommand {
-        //     direction: "north".into(),
-        // }).expect("Failed to serialize request");
-        //
-        // let req = test::TestRequest::post()
-        //     .uri("/player/move")
-        //     .header("Content-Type", "application/json")
-        //     .set_payload(req_body)
-        //     .to_request();
+        let app = test::init_service(App::new()).await;
 
-        // let resp = test::call_service(&app, req).await;
-        // assert!(resp.status().is_success());
-        //
-        // let result: MovePlayerResult = test::read_body_json(resp).await;
-        // assert_eq!(result.player_location, 1);
-        // assert_eq!(result.narration, "You moved north.");
+
+        let req_body = serde_json::to_string(&MovePlayerCommand {
+            direction: "north".into(),
+        }).expect("Failed to serialize request");
+
+        let req = test::TestRequest::post()
+            .insert_header(ContentType::json())
+            .uri("/player/move")
+            .set_payload(req_body)
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+
+        assert!(resp.status().is_success());
+
+        let result: MovePlayerResult = test::read_body_json(resp).await;
+        assert_eq!(result.player_location, 1);
+        assert_eq!(result.narration, "You moved north.");
     }
 }

@@ -43,7 +43,7 @@ impl PassageRepository for MockPassageRepository {
         Ok(())
     }
 
-    fn find_passage_by_location_and_direction(&self, from_location_id: i32, direction: &str) -> Option<PassageDTO> {
+    fn find_passage_by_location_and_direction(&self, from_location_id: i32, _direction: &str) -> Option<PassageDTO> {
         if from_location_id == self.fixed_passage.from_location_id {
             Some(self.fixed_passage.clone())
         } else {

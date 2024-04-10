@@ -105,7 +105,7 @@ impl InMemoryPlayerStateRepository {
 
 
 impl PlayerStateRepository for InMemoryPlayerStateRepository {
-    fn find_by_id(&self, id: i32) -> Option<PlayerStateDTO> {
+    fn find_by_player_id(&self, id: i32) -> Option<PlayerStateDTO> {
         let states = self.states.lock().unwrap();
         states.get(&id).cloned()
     }
