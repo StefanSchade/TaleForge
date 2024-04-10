@@ -78,7 +78,7 @@ fn test_with_mock_repository() {
 }
 
 #[test]
-fn test_get_all_passages() {
+fn test_get_passages_for_location() {
     let fixed_passage = PassageDTO {
         id: 1,
         from_location_id: 1,
@@ -93,7 +93,7 @@ fn test_get_all_passages() {
         PassageDTO {
             id: 2,
             from_location_id: 1,
-            to_location_id: 2,
+            to_location_id: 3,
             description: "description2".to_string(),
             direction: "direction2".to_string(),
             narration: "narration2".to_string(),
@@ -102,7 +102,7 @@ fn test_get_all_passages() {
 
     let mock_repo = MockPassageRepository::new(fixed_passage, Some(all_passages.clone()));
 
-    let passages = mock_repo.get_all_passages();
+    let passages = mock_repo.get_passages_for_location(1);
 
     // Serialize both vectors to JSON strings for comparison
     let expected_json = serde_json::to_string(&all_passages).expect("Failed to serialize expected passages");
