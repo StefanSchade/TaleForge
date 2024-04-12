@@ -8,12 +8,12 @@ use port::domain_stories::move_player::MovePlayerCommand;
 
 use crate::web::app_state::AppState;
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerInput {
     pub direction: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerOutput {
     pub location: i32,
     pub narration: String,
@@ -87,7 +87,7 @@ mod tests {
         };
         let mock_player_state_repository = Arc::new(MockPlayerStateRepository::new(mock_player_state));
 
-        let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "narration".to_string()));
+        let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "You moved north.".to_string()));
 
         let app_state = web::Data::new(Arc::new(AppState::new(
             mock_location_repository,
@@ -102,23 +102,32 @@ mod tests {
                 .configure(crate::web::server::configure_routes) // Ensure correct function use
         ).await;
 
+        // Create an instance of WebMovePlayerInput and serialize it
+        let test_input = WebMovePlayerInput {
+            direction: "north".to_string(),
+        };
+        let request_body = serde_json::to_string(&test_input).expect("Failed to serialize test input");
+
         let req = test::TestRequest::post()
             .uri("/player/move")
-            .set_json({
-                ""
-            })  // Make sure `your_test_data` is defined
+            .set_payload(request_body)
+            .insert_header(("Content-Type", "application/json"))  // Ensure the content type is set
             .to_request();
 
-        let resp = test::call_service(&mut app, req).await;
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success(), "Expected success, got {:?}", resp.status());
 
         let status = resp.status();
 
-        // Then read the body. This consumes the `ServiceResponse`
-        let body = test::read_body(resp).await;
-        println!("Response Body: {:?}", body);
+        // Deserialize the response body to WebMovePlayerOutput
+        let result: WebMovePlayerOutput = test::read_body_json(resp).await;
+
+        println!("Response Body: {:?}", result.clone() );
 
         // Now use the previously captured status
         println!("Response Status: {:?}", status);
-        assert!(status.is_success());
+
+        assert_eq!(result.location, 1, "Expected location to be 1");
+        assert_eq!(result.narration, "You moved north.", "Expected narration to match");
     }
 }
