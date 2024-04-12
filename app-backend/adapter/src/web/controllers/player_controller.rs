@@ -50,7 +50,7 @@ mod tests {
 
     use actix_web::{App, test, web};
 
-    use port::domain_stories::move_player::{MockMovePlayerDomainStory, MovePlayerCommand, MovePlayerResult};
+    use port::domain_stories::move_player::MockMovePlayerDomainStory;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
@@ -96,7 +96,7 @@ mod tests {
             mock_move_player_domain_story,
         )));
 
-        let mut app = test::init_service(
+        let app = test::init_service(
             App::new()
                 .app_data(app_state)
                 .configure(crate::web::server::configure_routes) // Ensure correct function use
