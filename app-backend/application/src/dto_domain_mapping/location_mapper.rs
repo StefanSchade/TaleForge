@@ -6,18 +6,18 @@ use port::dto::location_dto::LocationDTO;
 pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
         id: location.aggregate_id(),
-        title: location.title().to_string(),
-        description: location.description().to_string(),
-        image_url: location.image_url().map(ToOwned::to_owned),
+        title: location.title_owned(),
+        description: location.description_owned(),
+        image_url: location.image_url_owned(),
     }
 }
 
-pub fn location_map_dto_to_domain(dto: &LocationDTO) -> Location {
+pub fn location_map_dto_to_domain(dto: LocationDTO) -> Location {
     LocationBuilder::default()
         .aggregate_id(dto.id)
-        .title(dto.title.clone())
-        .description(dto.description.clone())
-        .image_url(dto.image_url.clone())
+        .title(dto.title)
+        .description(dto.description)
+        .image_url(dto.image_url)
         .build()
         .expect("Failed to build Location from DTO")
 }
@@ -54,11 +54,17 @@ mod tests {
             image_url: Some("https://example.com/ruins.jpg".into()),
         };
 
-        let location = location_map_dto_to_domain(&dto);
+        // Clone the data needed for comparison
+        let id_clone = dto.id;
+        let title_clone = dto.title.clone();
+        let description_clone = dto.description.clone();
+        let image_url_clone = dto.image_url.clone();
 
-        assert_eq!(location.aggregate_id(), dto.id);
-        assert_eq!(location.title(), dto.title);
-        assert_eq!(location.description(), dto.description);
-        assert_eq!(location.image_url().map(ToOwned::to_owned), dto.image_url);
+        let location = location_map_dto_to_domain(dto); // dto is moved here
+
+        assert_eq!(location.aggregate_id(), id_clone);
+        assert_eq!(location.title(), title_clone);
+        assert_eq!(location.description(), description_clone);
+        assert_eq!(location.image_url_owned(), image_url_clone);
     }
 }

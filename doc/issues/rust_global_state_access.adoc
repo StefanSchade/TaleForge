@@ -1,7 +1,7 @@
 = Issue: Compiling Error with Global State Access in Rust Project
 
 == Problem Description
-The Rust project encountered a compilation error when attempting to access global state managed by a `Mutex` using `into_inner()`. This method was used in an attempt to modify the global state, specifically to pop a location from a vector within the global state. The compiler error was as follows:
+The Rust project encountered a compilation error when attempting to access global state managed by a `Mutex` using `into_inner()`. This method was used in an attempt to modify the global state, specifically to pop a _location from a vector within the global state. The compiler error was as follows:
 
 [source,bash]
 ----

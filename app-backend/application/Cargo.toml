@@ -9,4 +9,4 @@ domain_contract = { path = "../domain_contract" }
 domain_pure = { path = "../domain_pure" }
 
 [dev-dependencies]
-mockall = "0.10.2"
+mockall = "0.12.1"

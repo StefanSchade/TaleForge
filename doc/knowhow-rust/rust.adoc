@@ -10,3 +10,4 @@ toc::[]
 :sectnums:
 include::./chapters/mapping/_chapter.adoc[]
 
+include::./chapters/actix/_chapter.adoc[]

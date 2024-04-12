@@ -7,4 +7,4 @@ edition = "2021"
 domain_pure = { path = "../domain_pure" }
 
 [dev-dependencies]
-mockall = "0.10.2"
+mockall = "0.12.1"
