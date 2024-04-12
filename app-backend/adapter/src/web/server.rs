@@ -1,25 +1,25 @@
+use actix_web::{web, App, HttpServer, web::ServiceConfig};
 use std::sync::Arc;
 
-use actix_web::{App, HttpServer, web};
-use actix_web::web::Data;
-
-use crate::web::app_state::AppState;
 use crate::web::controllers::player_controller;
+use crate::web::app_state::AppState;
 
-pub async fn start_server(app_state: Data<Arc<AppState>>) -> std::io::Result<()> {
+// Adjust the function to work with ServiceConfig
+pub fn configure_routes(cfg: &mut ServiceConfig) {
+    cfg.service(
+        web::resource("/player/move").route(web::post().to(player_controller::move_player))
+    );
+    // Add more routes here as needed
+}
+
+// Function to start the server
+pub async fn start_server(app_state: web::Data<Arc<AppState>>) -> std::io::Result<()> {
     HttpServer::new(move || {
-        setup_app(app_state.clone())
+        App::new()
+            .app_data(app_state.clone())
+            .configure(configure_routes)  // Use the new configure_routes function
     })
         .bind("localhost:8080")?
         .run()
         .await
-}
-
-pub fn setup_app(app_state: Data<Arc<AppState>>) -> App {
-    App::new()
-        .app_data(app_state.clone())
-        .service(
-            web::resource("/player/move").route(web::post().to(player_controller::move_player)),
-        )
-    // You can chain more configurations here as needed.
 }
