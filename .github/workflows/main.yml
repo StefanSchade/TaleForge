@@ -1,0 +1,57 @@
+name: Main CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install npm dependencies (Frontend)
+        run: |
+          cd app-frontend
+          npm install
+
+      - name: Generate API client code
+        run: npm run generate-api
+        working-directory: ./app-frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./app-frontend
+
+      - name: Install npm dependencies (Backend for tooling)
+        run: |
+          cd app-backend
+          npm install
+
+      - name: Build backend
+        run: cargo build --release
+        working-directory: ./app-backend
+#
+#      - name: Deploy frontend
+#        run: rsync -avz ./app-frontend/build/ your-deployment-path/
+#        env:
+#          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+#          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+#          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+#
+#      - name: Deploy backend
+#        run: scp ./app-backend/target/release/app-backend $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+#        env:
+#          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+#          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+#          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
