@@ -24,6 +24,7 @@
     "redux": "^5.0.1"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.2",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.2",
     "@types/jest": "^29.5.12",

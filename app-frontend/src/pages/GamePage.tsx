@@ -21,9 +21,9 @@ const initialRoom: RoomData = {
 };
 
 const GamePage: React.FC = () => {
-    const [currentRoom, setCurrentRoom] = useState<RoomData>(initialRoom);
-    const [playerId, setPlayerId] = useState('');
-    const [gameId, setGameId] = useState('');
+    const [currentRoom] = useState<RoomData>(initialRoom);
+    const [, setPlayerId] = useState('');
+    const [, setGameId] = useState('');
 
     const handleNavigate = (direction: string) => {
         // Placeholder for navigation logic
@@ -43,6 +43,11 @@ const GamePage: React.FC = () => {
             <Box my={4}>
                 <Grid container spacing={4}>
                     <Grid item xs={12}>
+                        <PlayerInfo
+                            onSubmit={handleSubmitPlayerInfo}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
                         <Room
                             description={currentRoom.description}
                             imageUrl={currentRoom.imageUrl}
@@ -52,11 +57,6 @@ const GamePage: React.FC = () => {
                         <Navigation
                             directions={currentRoom.directions}
                             onNavigate={handleNavigate}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PlayerInfo
-                            onSubmit={handleSubmitPlayerInfo}
                         />
                     </Grid>
                 </Grid>
