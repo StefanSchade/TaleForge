@@ -128,4 +128,22 @@ image::./images/architecture_backend_domain_split.png[title="Backend Architectur
 
 === Frontend
 
-tbd
+The Compeonts are represented
+
+
+[source, bash]
+------------
+/src
+/components    # UI components
+/services      # API calls and business logic
+/assets        # Static files like images, stylesheets
+/utils         # Utility functions
+/store         # Redux store configuration
+/actions     # Redux action creators
+/reducers    # Redux reducers
+/middlewares # Redux middleware
+/selectors   # Redux state selectors
+App.js         # Main app component
+index.js       # Entry point, setup Redux store, and provide it to React
+------------
+
