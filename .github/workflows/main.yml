@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Install npm dependencies (Frontend)
         run: |
@@ -27,6 +27,10 @@ jobs:
 
       - name: Install OpenAPI Generator CLI
         run: npm install @openapitools/openapi-generator-cli -g
+
+      - name: List files in api-contract directory
+        run: ls -l api-contract
+        working-directory: ./
 
       - name: Generate API client code
         run: openapi-generator-cli generate -i api-contract/openapi.yml -g typescript-axios -o app-frontend/src/api
