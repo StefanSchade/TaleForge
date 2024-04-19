@@ -25,6 +25,9 @@ jobs:
           cd app-frontend
           npm install
 
+      - name: Install OpenAPI Generator CLI
+        run: npm install @openapitools/openapi-generator-cli -g
+
       - name: Generate API client code
         run: npm run generate-api
         working-directory: ./app-frontend
