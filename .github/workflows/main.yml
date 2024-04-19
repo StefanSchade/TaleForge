@@ -29,7 +29,7 @@ jobs:
         run: npm install @openapitools/openapi-generator-cli -g
 
       - name: Generate API client code
-        run: npm run generate-api
+        run: openapi-generator-cli generate -i api-contract/openapi.yml -g typescript-axios -o app-frontend/src/api
         working-directory: ./app-frontend
 
       - name: Build frontend
