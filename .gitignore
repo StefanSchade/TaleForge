@@ -35,3 +35,6 @@ Thumbs.db
 # Custom executable for concatenation and output
 /concatenator.exe
 /*.txt
+
+# Ignore generated code directory
+app-backend/src/

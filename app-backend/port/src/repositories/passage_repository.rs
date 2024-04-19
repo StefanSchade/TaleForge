@@ -25,6 +25,7 @@ impl MockPassageRepository {
     }
 }
 
+#[cfg(feature = "test-utils")]
 impl PassageRepository for MockPassageRepository {
     #[cfg(feature = "test-utils")]
     fn get_passage_by_id(&self, id: i32) -> Option<PassageDTO> {

@@ -1,0 +1,43 @@
+
+@startuml
+skinparam classAttributeIconSize 0
+
+class Client {
+  +base_path: String
+  +try_new_http(base_path: String): Client
+  +try_new_https(base_path: String): Client
+  +players_player_id_move_post(player_id: String, move_post_request: PlayersPlayerIdMovePostRequest): PlayersPlayerIdMovePostResponse
+  +players_player_id_rooms_current_get(player_id: String): PlayersPlayerIdRoomsCurrentGetResponse
+  +rooms_room_id_image_get(room_id: String): RoomsRoomIdImageGetResponse
+}
+
+class Server {
+  +create(addr: String, https: bool)
+  +players_player_id_move_post(player_id: String, move_post_request: PlayersPlayerIdMovePostRequest): PlayersPlayerIdMovePostResponse
+  +players_player_id_rooms_current_get(player_id: String): PlayersPlayerIdRoomsCurrentGetResponse
+  +rooms_room_id_image_get(room_id: String): RoomsRoomIdImageGetResponse
+}
+
+class PlayersPlayerIdMovePostRequest {
+  +direction: String
+  +gameId: String
+}
+
+class PlayersPlayerIdRoomsCurrentGetResponse {
+  +description: String
+  +imageUrl: String
+}
+
+class RoomsRoomIdImageGetResponse {
+  +image: ByteArray
+}
+
+Client "1" -- "n" PlayersPlayerIdMovePostRequest : makes >
+Client "1" -- "n" PlayersPlayerIdRoomsCurrentGetResponse : queries >
+Client "1" -- "n" RoomsRoomIdImageGetResponse : queries >
+
+Server "1" -- "n" PlayersPlayerIdMovePostRequest : receives >
+Server "1" -- "n" PlayersPlayerIdRoomsCurrentGetResponse : serves >
+Server "1" -- "n" RoomsRoomIdImageGetResponse : serves >
+
+@enduml

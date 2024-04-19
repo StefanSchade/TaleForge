@@ -61,3 +61,57 @@ While the primary focus is currently on unit and integration testing within the 
 // TODO: Provide guidelines for contributing to the project, including how to submit pull requests, the code review process, and any criteria for acceptance.
 
 We hope this guide helps you contribute effectively to our project. Your feedback and suggestions for improving this guide are always welcome.
+
+== OpenAPI Code Generation
+
+=== Overview
+
+In our project, we utilize OpenAPI Specifications (OAS) to define the interfaces of our RESTful APIs. This specification is not only a powerful tool for documenting the API but also serves as the single source of truth from which we generate code that forms the backbone of our server implementation.
+
+The use of code generation offers several benefits:
+* *Consistency Between Documentation and Code*: Ensures that our implementation is always synchronized with the API documentation.
+* *Efficiency*: Reduces boilerplate coding, allowing developers to focus on implementing business logic.
+* *Reduced Error Rate*: Minimizes human errors in API implementation, as changes to the API require changes in the specification, which in turn automatically propagates to the generated code.
+
+=== Generating Code
+
+Our backend is built with Rust, and we generate Rust server code from the OpenAPI specification. We use the `openapi-generator-cli`, a flexible command line tool that supports multiple languages and frameworks.
+
+To generate the code, navigate to the root of the backend project and run:
+[source,bash]
+----
+openapi-generator-cli generate -i path_to_your_openapi.yaml -g rust-server -o path_to_output_directory
+----
+
+This command will generate models, APIs, and server stubs based on the specifications defined in the `openapi.yaml` file.
+
+=== Integrating Generated Code
+
+The generated code should be treated as scaffolding on which the business logic can be built. To ensure the longevity and maintainability of our code:
+* The generated code is placed in a specific directory (`src/generated`) that is excluded from source control via `.gitignore`.
+* Custom business logic is added in separate modules that use the generated code but are not overwritten during re-generation.
+
+It is crucial that any modification to the API is first made in the OpenAPI specification file and then re-generated. This ensures that the documentation, client, and server implementations remain in sync.
+
+=== Regeneration Workflow
+
+Due to the nature of our CI/CD pipeline, every merge into the `main` branch triggers a regeneration of the server code if there are changes in the `openapi.yaml` file. This ensures our API implementation is always up-to-date with the latest specification.
+
+Developers are encouraged to regenerate the code locally as well during development if changes are made to the specification, to catch any potential integration issues early in the development cycle.
+
+== Needs to be Edited
+
+* I doubt we can completely avoid manual adaptions to the generated code so the whole concept might have to be changed
+
+== Scratchspace
+
+npm install @openapitools/openapi-generator-cli -g
+openapi-generator-cli generate -i path_to_your_openapi.yaml -g typescript-fetch -o src/api
+
+
+
+npm install @openapitools/openapi-generator-cli --save-dev
+
+
+
+openapi-generator-cli generate -i api-contract/openapi.yaml -g rust-server -o app-backend/openapi_server/

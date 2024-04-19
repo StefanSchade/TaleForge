@@ -4,7 +4,8 @@ members = [
     "app-backend/port",
     "app-backend/application",
     "app-backend/domain_pure",
-    "app-backend/entry_point"
+    "app-backend/entry_point",
+    "app-backend/openapi_adapter"
 ]
 resolver = "2"
 

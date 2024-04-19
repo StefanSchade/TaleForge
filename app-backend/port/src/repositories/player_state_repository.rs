@@ -19,6 +19,7 @@ impl MockPlayerStateRepository {
     }
 }
 
+#[cfg(feature = "test-utils")]
 impl PlayerStateRepository for MockPlayerStateRepository {
     #[cfg(feature = "test-utils")]
     fn find_by_player_id(&self, player_id: i32) -> Option<PlayerStateDTO> {

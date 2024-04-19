@@ -22,6 +22,7 @@ impl MockLocationRepository {
     }
 }
 
+#[cfg(feature = "test-utils")]
 impl LocationRepository for MockLocationRepository {
     #[cfg(feature = "test-utils")]
     fn get_location_by_id(&self, id: i32) -> Option<LocationDTO> {

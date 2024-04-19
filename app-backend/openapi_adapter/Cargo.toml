@@ -1,0 +1,11 @@
+[package]
+name = "openapi_adapter"
+
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+port = { path = "../port" }
+
+[dev-dependencies]
+port = { path = "../port", features = ["test-utils"] }
