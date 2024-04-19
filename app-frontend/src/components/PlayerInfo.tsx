@@ -2,7 +2,7 @@
 import React from 'react';
 import { TextField, Stack } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { setPlayerId, setGameId } from '../features/game/gameSlice'; // Import your action creators
+import { setPlayerId, setGameId } from '../features/game/gameSlice'; // Ensure these are the correct actions
 
 const PlayerInfo: React.FC = () => {
     const dispatch = useDispatch();
@@ -21,11 +21,13 @@ const PlayerInfo: React.FC = () => {
                 label="Player ID"
                 variant="outlined"
                 onChange={handlePlayerIdChange}
+                fullWidth
             />
             <TextField
                 label="Game ID"
                 variant="outlined"
                 onChange={handleGameIdChange}
+                fullWidth
             />
         </Stack>
     );

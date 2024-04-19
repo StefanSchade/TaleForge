@@ -4,6 +4,8 @@ import { Container, Grid, Box } from '@mui/material';
 import Room from '../components/Room';
 import Navigation from '../components/Navigation';
 import PlayerInfo from '../components/PlayerInfo';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store'; // Update path as necessary
 
 interface RoomData {
     id: number;
@@ -12,7 +14,6 @@ interface RoomData {
     directions: string[];
 }
 
-// Example initial room data
 const initialRoom: RoomData = {
     id: 1,
     description: 'You are in a dark, cold room. There are doors to the north and south.',
@@ -22,20 +23,13 @@ const initialRoom: RoomData = {
 
 const GamePage: React.FC = () => {
     const [currentRoom] = useState<RoomData>(initialRoom);
-    const [, setPlayerId] = useState('');
-    const [, setGameId] = useState('');
+    // Select playerId and gameId from Redux store
+    const playerId = useSelector((state: RootState) => state.game.playerId);
+    const gameId = useSelector((state: RootState) => state.game.gameId);
 
     const handleNavigate = (direction: string) => {
-        // Placeholder for navigation logic
-        console.log(`Navigate ${direction}`);
-        // Here you would typically fetch new room data based on the direction
-    };
-
-    const handleSubmitPlayerInfo = (playerId: string, gameId: string) => {
-        setPlayerId(playerId);
-        setGameId(gameId);
-        console.log(`Player ID: ${playerId}, Game ID: ${gameId}`);
-        // Additional logic to handle new player or game session
+        console.log(`Navigate ${direction} with Player ID: ${playerId} and Game ID: ${gameId}`);
+        // Your navigation logic here, using playerId and gameId as context
     };
 
     return (
@@ -43,21 +37,13 @@ const GamePage: React.FC = () => {
             <Box my={4}>
                 <Grid container spacing={4}>
                     <Grid item xs={12}>
-                        <PlayerInfo
-                            onSubmit={handleSubmitPlayerInfo}
-                        />
+                        <PlayerInfo />
                     </Grid>
                     <Grid item xs={12}>
-                        <Room
-                            description={currentRoom.description}
-                            imageUrl={currentRoom.imageUrl}
-                        />
+                        <Room description={currentRoom.description} imageUrl={currentRoom.imageUrl} />
                     </Grid>
                     <Grid item xs={12}>
-                        <Navigation
-                            directions={currentRoom.directions}
-                            onNavigate={handleNavigate}
-                        />
+                        <Navigation directions={currentRoom.directions} onNavigate={handleNavigate} />
                     </Grid>
                 </Grid>
             </Box>
