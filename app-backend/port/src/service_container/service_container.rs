@@ -8,8 +8,8 @@ use crate::repositories::player_state_repository::PlayerStateRepository;
 
 #[derive(Clone)]
 pub struct ServiceContainer {
-    repo_container: OutboundPorts,
-    domain_story_container: InboundPorts,
+    outbound_ports: Arc<OutboundPorts>,
+    inbound_ports: Arc<InboundPorts>,
 }
 
 impl ServiceContainer {
@@ -22,16 +22,16 @@ impl ServiceContainer {
         let repo_container = OutboundPorts::new(location_repo, passage_repo, player_state_repo);
         let domain_story_container = InboundPorts::new(move_player_ds);
         Self {
-            repo_container,
-            domain_story_container,
+            outbound_ports: Arc::new(repo_container),
+            inbound_ports: Arc::new(domain_story_container),
         }
     }
 
-    pub fn repo(&self) -> OutboundPorts {
-        self.repo_container.clone()
+    pub fn outbound(&self) -> Arc<OutboundPorts> {
+        self.outbound_ports.clone()
     }
 
-    pub fn domain_story(&self) -> InboundPorts {
-        self.domain_story_container.clone()
+    pub fn inbound(&self) -> Arc<InboundPorts> {
+        self.inbound_ports.clone()
     }
 }

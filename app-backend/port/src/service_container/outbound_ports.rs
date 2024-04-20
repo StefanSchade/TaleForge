@@ -29,15 +29,15 @@ impl OutboundPorts {
         }
     }
 
-    pub fn location(&self) -> Arc<dyn LocationRepository> {
+    pub fn location_repo(&self) -> Arc<dyn LocationRepository> {
         self.location_repo.clone()
     }
 
-    pub fn passage(&self) -> Arc<dyn PassageRepository> {
+    pub fn passage_repo(&self) -> Arc<dyn PassageRepository> {
         self.passage_repo.clone()
     }
 
-    pub fn player_state(&self) -> Arc<dyn PlayerStateRepository> {
+    pub fn player_state_repo(&self) -> Arc<dyn PlayerStateRepository> {
         self.player_state.clone()
     }
 }

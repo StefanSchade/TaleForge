@@ -1,8 +1,11 @@
+use std::fs::metadata;
 use std::path::Path;
 use std::sync::Arc;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
 use adapter::web::adapter_01_actix::server;
+use adapter::web::adapter_01_actix::server::ActixWebServer;
+use adapter::web::webserver_interface::WebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
@@ -53,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // hand them to a service container instance
 
-    let container = ServiceContainer::new(
+    let service_container = ServiceContainer::new(
         location_repo,
         passage_repo,
         player_state_repo,
@@ -62,9 +65,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // start server
 
-    if let Err(e) = server::start_server(container).await {
-        eprintln!("Server failed to start: {}", e);
-    }
+    let server = ActixWebServer::new(service_container);
+    let result = server.start_server().await;
 
-    Ok(())
+    match result {
+        Ok(_) => println!("Server started successfully."),
+        Err(e) => eprintln!("Server failed to start: {}", e),
+    }
 }
