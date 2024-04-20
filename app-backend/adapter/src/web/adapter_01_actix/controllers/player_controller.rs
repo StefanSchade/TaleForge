@@ -99,7 +99,7 @@ mod tests {
         let app = test::init_service(
             App::new()
                 .app_data(app_state)
-                .configure(crate::web::server::configure_routes) // Ensure correct function use
+                .configure(crate::web::adapter_01_actix::server::configure_routes) // Ensure correct function use
         ).await;
 
         // Create an instance of WebMovePlayerInput and serialize it

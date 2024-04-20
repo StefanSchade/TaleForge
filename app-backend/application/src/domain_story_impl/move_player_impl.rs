@@ -79,14 +79,6 @@ mod tests {
     use super::*;
 
     mock! {
-        NavigationService {}
-
-            impl NavigationServiceTrait for NavigationService {
-                fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
-            }
-        }
-
-    mock! {
         LocationRepository {}
 
         impl LocationRepository for LocationRepository  {
@@ -120,14 +112,13 @@ mod tests {
     #[test]
     fn test_move_player_success() {
         let expected_destination_location_id: i32 = 99;
-        let expected_passage_narration_text: &str = "You've moved north.";
+        let expected_passage_narration_text: &str = "You take the passage and reach the new location.";
         let expected_direction_instruction: &str = "north";
         let expected_player_id: i32 = 42;
 
-        let mock_passage_repo = MockPassageRepository::new();
-        let mock_location_repo = MockLocationRepository::new();
+        let mut mock_location_repo = MockLocationRepository::new();
+        let mut mock_passage_repo = MockPassageRepository::new();
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
-        let mut mock_navigation_service = MockNavigationService::new();
 
         // We need to pass `expected_location` to the closure `.returning()`, but since this closure might
         // be called multiple times we have to clone it first. Wrapping it into Arc reduces the overhead.
@@ -139,20 +130,27 @@ mod tests {
             .build()
             .unwrap());
 
-        mock_navigation_service.expect_navigate()
-            //.with(eq(PlayerState::new(expected_player_id,1)), eq(expected_direction_instruction.to_string()))
-            .with(eq(
-                PlayerStateBuilder::default()
-                    .player_id(expected_player_id)
-                    .current_location_id(1)
-                    .build()
-                    .unwrap()
-            ), eq(expected_direction_instruction.to_string()))
+        mock_passage_repo.expect_find_passage_by_location_and_direction()
+            .with(mockall::predicate::eq(1), mockall::predicate::eq("north"))
+            .times(1)  // You can specify how many times you expect this call
+            .returning(|_, _| Some(PassageDTO {
+                id: 1,
+                description: "north".to_string(),
+                direction: "north".to_string(),
+                narration: "You take the passage".to_string(),
+                from_location_id: 1,
+                to_location_id: 1
+            }));
+
+        mock_location_repo.expect_get_location_by_id()
+            .with(eq(1))
             .times(1)
-            .returning(move |_, _| {
-                let loc = expected_destination_location.clone();
-                Ok(((*loc).clone(), expected_passage_narration_text.to_string()))
-            });
+            .returning(|_| Some(LocationDTO{
+                id:99,
+                title: "the new location".to_string(),
+                description: "destination".to_string(),
+                image_url: None,
+            }));
 
         mock_player_state_repo.expect_find_by_player_id()
             .with(eq(expected_player_id))
@@ -177,8 +175,7 @@ mod tests {
             MovePlayerDomainStoryImpl::new(
                 Arc::new(mock_location_repo),
                 Arc::new(mock_passage_repo),
-                Arc::new(mock_player_state_repo),
-                Arc::new(mock_navigation_service));
+                Arc::new(mock_player_state_repo));
 
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
         let context = RequestContext { player_id: Some(expected_player_id) };
