@@ -1,21 +1,24 @@
-use std::future::Future;
-use std::pin::Pin;
 use std::sync::Arc;
+
+use async_trait::async_trait;
 
 use domain_pure::model::location::Location;
 use domain_pure::model::player_state::PlayerState;
+
 use crate::contracts::location_queries::navigation::LocationQueries;
 use crate::contracts::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
+#[async_trait]
 pub trait NavigationServiceTrait: Send + Sync {
-    fn navigate(
-        &self,
+    async fn navigate<'a>(
+        &'a self,
         player_state: PlayerState,
-        direction: String
-    ) -> Pin<Box<dyn Future<Output = Result<(Location, String), String>> + Send + '_>>;
+        direction: String,
+    ) -> Result<(Location, String), String>;
 }
+
 pub struct NavigationService {
     passage_query: Arc<dyn PassageQueries>,
     location_query: Arc<dyn LocationQueries>,
@@ -24,41 +27,44 @@ pub struct NavigationService {
 impl NavigationService {
     pub fn new(
         location_query: Arc<dyn LocationQueries>,
-        passage_query: Arc<dyn PassageQueries>
+        passage_query: Arc<dyn PassageQueries>,
     ) -> Self {
         NavigationService {
             location_query,
-            passage_query
+            passage_query,
         }
     }
 }
 
+#[async_trait]
 impl NavigationServiceTrait for NavigationService {
-    fn navigate(
-        &self,
+    async fn navigate<'a>(
+        &'a self,
         player_state: PlayerState,
-        direction: String
-    ) -> Pin<Box<dyn Future<Output = Result<(Location, String), String>> + Send + '_>> {
-        Box::pin(async move {
-            if let Some(passage) = self.passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), &direction) {
-                if let Some(target_location) = self.location_query.get_location_by_aggregate_id(passage.get_to_location()) {
-                    let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
-                    Ok((target_location, narration))
-                } else {
-                    Err("Target location not found.".to_string())
-                }
+        direction: String,
+    ) -> Result<(Location, String), String> {
+        // Directly perform your operations and return a Result
+        if let Some(passage) = self.passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), &direction) {
+            if let Some(target_location) = self.location_query.get_location_by_aggregate_id(passage.get_to_location()) {
+                let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
+                Ok((target_location, narration))
             } else {
-                Err("No passage found in that direction.".to_string())
+                Err("Target location not found.".to_string())
             }
-        })
+        } else {
+            Err("No passage found in that direction.".to_string())
+        }
     }
 }
+
 
 #[cfg(test)]
 mod tests {
     use std::sync::Arc;
+
     use mockall::mock;
     use mockall::predicate::*;
+
     use domain_pure::model::location::{Location, LocationBuilder};
     use domain_pure::model::passage::{Passage, PassageBuilder};
     use domain_pure::model::player_state::PlayerStateBuilder;
@@ -96,7 +102,7 @@ mod tests {
         mock_passage_query.expect_find_passage_by_location_and_direction()
             .with(eq(1), eq("north"))
             .times(1)
-            .returning(|_,_| Some(PassageBuilder::default()
+            .returning(|_, _| Some(PassageBuilder::default()
                 .aggregate_id(2)
                 .from_location_id(1)
                 .to_location_id(2)

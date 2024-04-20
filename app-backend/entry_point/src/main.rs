@@ -2,7 +2,6 @@ use std::path::Path;
 use std::sync::Arc;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use adapter::web::adapter_01_actix::server;
 use adapter::web::adapter_01_actix::server::ActixWebServer;
 use adapter::web::webserver_interface::WebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
@@ -41,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         passage_repo.clone(),
         &location_file_path,
         &passage_file_path,
-    )?;
+    ).unwrap();
 
     // initialize player 1
 
@@ -65,10 +64,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // start server
 
     let server = ActixWebServer::new(service_container);
-    let result = server.start_server().await;
+    server.start_server().await?;
 
-    match result {
-        Ok(_) => println!("Server started successfully."),
-        Err(e) => eprintln!("Server failed to start: {}", e),
-    }
+    Ok(())
 }

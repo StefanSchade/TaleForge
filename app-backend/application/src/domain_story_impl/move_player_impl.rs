@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use async_trait::async_trait;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
@@ -41,8 +42,10 @@ impl MovePlayerDomainStoryImpl {
     }
 }
 
+
+#[async_trait]
 impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
-    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
+    async fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
         if let Some(player_id) = context.player_id {
             let mut player_state = match self.player_state_repository.find_by_player_id(player_id) {
                 Some(state) => state,
@@ -50,14 +53,11 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
             };
 
             let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction).await?;
-
-
             player_state.current_location_id = new_location.aggregate_id();
             self.player_state_repository.save(player_state);
-
             Ok(MovePlayerResult {
                 player_location: new_location.aggregate_id(),
-                narration: narration,
+                narration,
             })
         } else {
             Err("Player ID not found in context".to_string())

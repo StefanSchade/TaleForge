@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 domain_pure = { path = "../domain_pure" }
+async-trait = "0.1.80"
 
 [dev-dependencies]
 mockall = "0.12.1"

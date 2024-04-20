@@ -15,7 +15,7 @@ pub struct ActixWebServer {
 
 //#[async_trait]
 impl WebServer for ActixWebServer {
-    async fn start_server(&self) -> std::io::Result<()> {
+    async fn start_server(&self) -> Result<(), std::io::Error> {
         let app_state = Data::new(Arc::new(AppState::new(
             self.port.outbound().location_repo(),
             self.port.outbound().passage_repo(),

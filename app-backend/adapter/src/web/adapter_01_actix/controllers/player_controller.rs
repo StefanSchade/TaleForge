@@ -24,7 +24,9 @@ pub async fn move_player(data: web::Data<Arc<AppState>>, web_input: web::Json<We
 
     let command = MovePlayerCommand::from(web_input.into_inner());
     let context = RequestContext::new(Some(extracted_player_id));
-    let result = data.move_player_domain_story.execute(context, command);
+
+    // Await the async execute method
+    let result = data.move_player_domain_story.execute(context, command).await;
 
     match result {
         Ok(response) => {
@@ -37,7 +39,6 @@ pub async fn move_player(data: web::Data<Arc<AppState>>, web_input: web::Json<We
         Err(error) => HttpResponse::InternalServerError().body(error),
     }
 }
-
 impl From<WebMovePlayerInput> for MovePlayerCommand {
     fn from(input: WebMovePlayerInput) -> Self {
         MovePlayerCommand { direction: input.direction }
