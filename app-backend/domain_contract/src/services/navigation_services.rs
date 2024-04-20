@@ -7,19 +7,25 @@ use crate::contracts::passage_queries::navigation::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
+
 pub trait NavigationServiceTrait: Send + Sync {
-fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
+    fn navigate(&self, player_state: PlayerState, direction: String) -> Result<(Location, String), String>;
 }
 
 pub struct NavigationService {
     passage_query: Arc<dyn PassageQueries>,
     location_query: Arc<dyn LocationQueries>,
-
 }
 
 impl NavigationService {
-    pub fn new(location_query: Arc<dyn LocationQueries> , passage_query: Arc<dyn PassageQueries> ) -> Self {
-        NavigationService { location_query: location_query , passage_query }
+    pub fn new(
+        location_query: Arc<dyn LocationQueries> ,
+        passage_query: Arc<dyn PassageQueries>
+    ) -> Self {
+        NavigationService {
+            location_query,
+            passage_query
+        }
     }
 }
 

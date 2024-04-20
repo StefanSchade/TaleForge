@@ -3,3 +3,4 @@ pub mod context;
 pub mod domain_stories;
 pub mod repositories;
 pub mod dto;
+pub mod service_container;

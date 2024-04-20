@@ -1,4 +1,3 @@
-pub mod server;
-pub mod controllers;
-
-pub mod app_state;
+pub mod adapter_01_actix;
+pub mod adapter_02_openapi;
+pub mod webserver_interface;

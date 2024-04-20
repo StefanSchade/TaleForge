@@ -13,7 +13,6 @@ pub struct LocationQueryImpl {
 
 impl LocationQueryImpl {
     pub fn new(
-//        location_repository: Arc<dyn LocationRepository>,
 location_repository: Arc<dyn LocationRepository>
     ) -> Self {
         LocationQueryImpl {

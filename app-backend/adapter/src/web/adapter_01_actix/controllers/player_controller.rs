@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use port::context::RequestContext;
 use port::domain_stories::move_player::MovePlayerCommand;
 
-use crate::web::app_state::AppState;
+use crate::web::adapter_01_actix::app_state::AppState;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerInput {

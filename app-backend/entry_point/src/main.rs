@@ -1,23 +1,40 @@
 use std::path::Path;
 use std::sync::Arc;
+use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
+use adapter::web::adapter_01_actix::server;
+use application::contract_implementations::location_query_impl::LocationQueryImpl;
+use application::contract_implementations::passage_query_impl::PassageQueryImpl;
+use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
+use domain_contract::services::navigation_services::NavigationService;
 
-use actix_web::web::Data;
-
-use adapter::web::app_state::AppState;
-use adapter::web::server;
 use port::dto::player_state_dto::PlayerStateDTO;
 
-use crate::service_container::service_container::ServiceContainer;
+use port::service_container::service_container::ServiceContainer;
 
 mod data_loader;
-pub mod service_container;
 
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    // initialize dependency injection container
+    let location_repo = Arc::new(InMemoryLocationRepository::new());
+    let passage_repo =Arc::new(InMemoryPassageRepository::new());
+    let player_state_repo =Arc::new(InMemoryPlayerStateRepository::new());
 
-    let container = ServiceContainer::new();
+    // let location_queries = Arc::new(LocationQueryImpl::new(location_repo));
+    // let passage_queries =  Arc::new(PassageQueryImpl::new(passage_repo));
+
+    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
+        location_repo.clone(),
+        passage_repo.clone(),
+        player_state_repo.clone(),
+    ));
+
+    let container = ServiceContainer::new(
+        location_repo,
+        passage_repo,
+        player_state_repo,
+        move_player_ds
+    );
 
     // initialize the repos with data
     let location_file_path = Path::new("resources_test/locations.json");
@@ -39,14 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         );
 
-    let app_state = Data::new(Arc::new(AppState::new(
-        container.repo().location(),
-        container.repo().passage(),
-        container.repo().player_state(),
-        container.domain_story().move_player(),
-    )));
-
-    if let Err(e) = server::start_server(app_state).await {
+    if let Err(e) = server::start_server(container).await {
         eprintln!("Server failed to start: {}", e);
     }
 

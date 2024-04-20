@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
-use domain_contract::services::navigation_services::NavigationServiceTrait;
+use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
 use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
 use port::repositories::player_state_repository::PlayerStateRepository;
+use crate::contract_implementations::location_query_impl::LocationQueryImpl;
+use crate::contract_implementations::passage_query_impl::PassageQueryImpl;
 
 use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
@@ -23,13 +25,18 @@ impl MovePlayerDomainStoryImpl {
         location_repository: Arc<dyn LocationRepository>,
         passage_repository: Arc<dyn PassageRepository>,
         player_state_repository: Arc<dyn PlayerStateRepository>,
-        navigation_service: Arc<dyn NavigationServiceTrait>,
     ) -> Self {
+        // Clone the Arc for use in the NavigationService
+        let location_query = Arc::new(LocationQueryImpl::new(location_repository.clone()));
+        let passage_query = Arc::new(PassageQueryImpl::new(passage_repository.clone()));
+
         Self {
+            // Pass the original Arc to be stored in the struct
             location_repository,
             passage_repository,
             player_state_repository,
-            navigation_service,
+            // Use the clones for creating the NavigationService
+            navigation_service: Arc::new(NavigationService::new(location_query, passage_query)),
         }
     }
 }

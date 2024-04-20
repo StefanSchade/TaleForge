@@ -1,8 +1,7 @@
 use std::sync::Arc;
-use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use port::repositories::location_repository::LocationRepository;
-use port::repositories::passage_repository::PassageRepository;
-use port::repositories::player_state_repository::PlayerStateRepository;
+use crate::repositories::location_repository::LocationRepository;
+use crate::repositories::passage_repository::PassageRepository;
+use crate::repositories::player_state_repository::PlayerStateRepository;
 
 
 #[derive(Clone)]
@@ -14,14 +13,14 @@ pub struct RepositoryContainer {
 
 impl RepositoryContainer {
     pub fn new(
-//        location_repo: Arc<dyn LocationRepository>,
-//        passage_repo: Arc<dyn PassageRepository>,
-//        player_state_repo: Arc<dyn PlayerStateRepository>,
+        location_repo: Arc<dyn LocationRepository>,
+        passage_repo: Arc<dyn PassageRepository>,
+        player_state_repo: Arc<dyn PlayerStateRepository>,
     ) -> Self {
 
-        let location_repo = Arc::new(InMemoryLocationRepository::new());
-        let passage_repo =Arc::new(InMemoryPassageRepository::new());
-        let player_state_repo =Arc::new(InMemoryPlayerStateRepository::new());
+        let location_repo = location_repo;
+        let passage_repo =passage_repo;
+        let player_state_repo =player_state_repo;
 
         RepositoryContainer {
             location: location_repo,
