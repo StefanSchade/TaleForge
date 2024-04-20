@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web, web::ServiceConfig};
 use actix_web::web::Data;
-use async_trait::async_trait;
 
 use port::service_container::service_container::ServiceContainer;
 
@@ -14,7 +13,7 @@ pub struct ActixWebServer {
     pub port: Arc<ServiceContainer>,
 }
 
-#[async_trait]
+//#[async_trait]
 impl WebServer for ActixWebServer {
     async fn start_server(&self) -> std::io::Result<()> {
         let app_state = Data::new(Arc::new(AppState::new(

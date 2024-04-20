@@ -49,7 +49,8 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                 None => return Err("Player state not found".to_string()),
             };
 
-            let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction)?;
+            let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction).await?;
+
 
             player_state.current_location_id = new_location.aggregate_id();
             self.player_state_repository.save(player_state);
