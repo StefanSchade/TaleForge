@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+crosscutting = { path = "../crosscutting" }
 adapter = { path = "../adapter" }
 port = { path = "../port" }
 application = { path = "../application" }

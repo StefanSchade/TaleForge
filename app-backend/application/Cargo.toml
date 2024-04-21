@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+crosscutting = { path = "../crosscutting" }
 port = { path = "../port" }
 domain_contract = { path = "../domain_contract" }
 domain_pure = { path = "../domain_pure" }
