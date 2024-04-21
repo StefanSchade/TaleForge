@@ -48,11 +48,11 @@ jobs:
             override: true
 
       - name: Build
-        run: cargo build --verbose
+        run: cargo build
         working-directory: ./app-backend
 
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test
         working-directory: ./app-backend
 
       - name: Build Rust backend
