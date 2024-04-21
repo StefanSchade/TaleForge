@@ -40,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         );
 
-    // This will be later moved to the internals of service_container it does not need to be externalized
+    // This is externalized because the adapter has no access to the domain and the constructor
 
     let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
         location_repo.clone(),
@@ -48,8 +48,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         player_state_repo.clone(),
     ));
 
-
-    // hand them to a service container instance
+    // hand everything to a container
 
     let service_container = ServiceContainer::new(
         location_repo,

@@ -17,10 +17,10 @@ pub struct ActixWebServer {
 impl WebServer for ActixWebServer {
     async fn start_server(&self) -> Result<(), std::io::Error> {
         let app_state = Data::new(Arc::new(AppState::new(
-            self.port.outbound().location_repo(),
-            self.port.outbound().passage_repo(),
-            self.port.outbound().player_state_repo(),
-            self.port.inbound().move_player(),
+            self.port.outbound_adapters().location_repo(),
+            self.port.outbound_adapters().passage_repo(),
+            self.port.outbound_adapters().player_state_repo(),
+            self.port.port_services().move_player(),
         )));
 
         let server = HttpServer::new(move || {
