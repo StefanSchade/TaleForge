@@ -3,11 +3,11 @@ use std::sync::Arc;
 use crate::domain_stories::move_player::MovePlayerDomainStory;
 
 #[derive(Clone)]
-pub struct InboundPorts {
+pub struct PortServices {
     move_player_domain_story: Arc<dyn MovePlayerDomainStory>,
 }
 
-impl InboundPorts {
+impl PortServices {
     pub fn new(
         move_player: Arc<dyn MovePlayerDomainStory>,
     ) -> Self {

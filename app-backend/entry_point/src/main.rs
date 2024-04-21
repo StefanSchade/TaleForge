@@ -14,23 +14,13 @@ mod data_loader;
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    // initiate the ports we choose
-
-    // outbound
+    // instantiate the outbound adapters ...
 
     let location_repo = Arc::new(InMemoryLocationRepository::new());
     let passage_repo = Arc::new(InMemoryPassageRepository::new());
     let player_state_repo = Arc::new(InMemoryPlayerStateRepository::new());
 
-    // inbound
-
-    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
-        location_repo.clone(),
-        passage_repo.clone(),
-        player_state_repo.clone(),
-    ));
-
-    // initialize the repos with (test) data
+    // ... and initialize them
 
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
@@ -42,8 +32,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &passage_file_path,
     ).unwrap();
 
-    // initialize player 1
-
     player_state_repo
         .save(
             PlayerStateDTO {
@@ -51,6 +39,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 current_location_id: 1,
             }
         );
+
+    // This will be later moved to the internals of service_container it does not need to be externalized
+
+    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
+        location_repo.clone(),
+        passage_repo.clone(),
+        player_state_repo.clone(),
+    ));
+
 
     // hand them to a service container instance
 

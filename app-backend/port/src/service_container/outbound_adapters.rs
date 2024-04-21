@@ -5,13 +5,13 @@ use crate::repositories::player_state_repository::PlayerStateRepository;
 
 
 #[derive(Clone)]
-pub struct OutboundPorts {
+pub struct OutboundAdapters {
     location_repo: Arc<dyn LocationRepository>,
     passage_repo: Arc<dyn PassageRepository>,
     player_state: Arc<dyn PlayerStateRepository>,
 }
 
-impl OutboundPorts {
+impl OutboundAdapters {
     pub fn new(
         location_repo: Arc<dyn LocationRepository>,
         passage_repo: Arc<dyn PassageRepository>,
@@ -22,7 +22,7 @@ impl OutboundPorts {
         let passage_repo =passage_repo;
         let player_state_repo =player_state_repo;
 
-        OutboundPorts {
+        OutboundAdapters {
             location_repo: location_repo,
             passage_repo: passage_repo,
             player_state: player_state_repo,
