@@ -2,7 +2,7 @@ use std::path::Path;
 use std::sync::Arc;
 
 use adapter::persistence::in_memory_repository::{InMemoryLocationRepository, InMemoryPassageRepository, InMemoryPlayerStateRepository};
-use adapter::web::adapter_01_actix::server::ActixWebServer;
+use adapter::web::option_01_actixweb::server::ActixWebServer;
 use adapter::web::webserver_interface::WebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;

@@ -3,7 +3,7 @@ use async_trait::async_trait;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
-use port::domain_stories::move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
+use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
 use port::repositories::player_state_repository::PlayerStateRepository;

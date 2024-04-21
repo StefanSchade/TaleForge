@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use crate::domain_stories::move_player::MovePlayerDomainStory;
+use crate::port_services::domain_story_move_player::MovePlayerDomainStory;
 use crate::service_container::port_services::PortServices;
 use crate::service_container::outbound_adapters::OutboundAdapters;
 use crate::repositories::location_repository::LocationRepository;

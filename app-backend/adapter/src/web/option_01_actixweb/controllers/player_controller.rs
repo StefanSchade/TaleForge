@@ -4,9 +4,9 @@ use actix_web::{HttpResponse, Responder, web};
 use serde::{Deserialize, Serialize};
 
 use port::context::RequestContext;
-use port::domain_stories::move_player::MovePlayerCommand;
+use port::port_services::domain_story_move_player::MovePlayerCommand;
 
-use crate::web::adapter_01_actix::app_state::AppState;
+use crate::web::option_01_actixweb::app_state::AppState;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerInput {
@@ -51,7 +51,7 @@ mod tests {
 
     use actix_web::{App, test, web};
 
-    use port::domain_stories::move_player::MockMovePlayerDomainStory;
+    use port::port_services::domain_story_move_player::MockMovePlayerDomainStory;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
@@ -100,7 +100,7 @@ mod tests {
         let app = test::init_service(
             App::new()
                 .app_data(app_state)
-                .configure(crate::web::adapter_01_actix::server::configure_routes) // Ensure correct function use
+                .configure(crate::web::option_01_actixweb::server::configure_routes) // Ensure correct function use
         ).await;
 
         // Create an instance of WebMovePlayerInput and serialize it

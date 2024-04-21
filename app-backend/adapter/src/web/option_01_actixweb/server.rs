@@ -5,8 +5,8 @@ use actix_web::web::Data;
 
 use port::service_container::service_container::ServiceContainer;
 
-use crate::web::adapter_01_actix::app_state::AppState;
-use crate::web::adapter_01_actix::controllers::player_controller;
+use crate::web::option_01_actixweb::app_state::AppState;
+use crate::web::option_01_actixweb::controllers::player_controller;
 use crate::web::webserver_interface::WebServer;
 
 pub struct ActixWebServer {
