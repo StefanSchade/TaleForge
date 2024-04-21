@@ -34,8 +34,9 @@ impl MockMovePlayerDomainStory {
 }
 
 #[cfg(feature = "test-utils")]
+#[async_trait]
 impl MovePlayerDomainStory for MockMovePlayerDomainStory {
-    fn execute(&self, _context: RequestContext, _command: MovePlayerCommand) -> Result<MovePlayerResult, String> {
+    async fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
         Ok(self.fixed_result.clone())
     }
 }

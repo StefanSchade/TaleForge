@@ -110,8 +110,8 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_move_player_success() {
+    #[tokio::test]
+    async fn test_move_player_success() {
         let expected_destination_location_id: i32 = 99;
         let expected_passage_narration_text: &str = "You take the passage and reach the new location.";
         let expected_direction_instruction: &str = "north";
@@ -181,7 +181,7 @@ mod tests {
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
         let context = RequestContext { player_id: Some(expected_player_id) };
 
-        let result = use_case.execute(context, command);
+        let result = use_case.execute(context, command).await;
 
         assert!(result.is_ok());
 

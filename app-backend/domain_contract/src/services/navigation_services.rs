@@ -81,12 +81,13 @@ mod tests {
     mock! {
         PassageQueries {}
         impl PassageQueries for PassageQueries {
+            fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage>;
             fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage>;
         }
     }
 
-    #[test]
-    fn navigate_to_passage_success() {
+    #[tokio::test]
+    async fn navigate_to_passage_success() {
         let mut mock_passage_query = MockPassageQueries::new();
         let mut mock_location_query = MockLocationQueries::new();
 
@@ -112,13 +113,11 @@ mod tests {
                 .build().unwrap()));
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
-
         let player_state_instance = PlayerStateBuilder::default().player_id(1).current_location_id(1).build().unwrap();
+        let result = navigation_service.navigate(player_state_instance, "north".into()).await;
 
-        let result = navigation_service.navigate(player_state_instance, "north".into());
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
-
         assert_eq!(location.aggregate_id(), 2);
         assert_eq!(narration, "You go north and reach Target Location.");
     }
