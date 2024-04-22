@@ -2,7 +2,6 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use mockall::PredicateBoxExt;
 use crosscutting::error_management::error::Error;
 use crosscutting::error_management::error_kind::ErrorKind;
 
@@ -10,7 +9,7 @@ use domain_pure::model::location::Location;
 use domain_pure::model::player_state::PlayerState;
 
 use crate::contracts::location_query::navigation::LocationQueries;
-use crate::contracts::passage_query::navigation::PassageQueries;
+use crate::contracts::passage_query::PassageQueries;
 
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
