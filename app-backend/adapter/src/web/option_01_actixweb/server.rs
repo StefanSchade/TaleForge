@@ -1,6 +1,7 @@
+use std::future::Future;
 use std::sync::Arc;
 
-use actix_web::{App, HttpServer, web, web::ServiceConfig};
+use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 
 use port::service_container::service_container::ServiceContainer;
@@ -13,15 +14,14 @@ pub struct ActixWebServer {
     pub port: Arc<ServiceContainer>,
 }
 
-//#[async_trait]
 impl WebServer for ActixWebServer {
-    async fn start_server(&self) -> Result<(), std::io::Error> {
-        let app_state = Data::new(Arc::new(AppState::new(
-            self.port.outbound_adapters().location_repo(),
-            self.port.outbound_adapters().passage_repo(),
-            self.port.outbound_adapters().player_state_repo(),
-            self.port.port_services().move_player(),
-        )));
+    fn start_server(&self) -> impl Future<Output=Result<(), std::io::Error>> + Send {
+        let app_state = Data::new(AppState::new(
+            Arc::clone(&self.port.outbound_adapters().location_repo()),
+            Arc::clone(&self.port.outbound_adapters().passage_repo()),
+            Arc::clone(&self.port.outbound_adapters().player_state_repo()),
+            Arc::clone(&self.port.port_services().move_player()),
+        ));
 
         let server = HttpServer::new(move || {
             App::new()
@@ -29,8 +29,12 @@ impl WebServer for ActixWebServer {
                 .configure(configure_routes)
         });
 
-        server.bind("localhost:8080")?.run().await
+        // The server is a future that needs to be boxed to be returned
+        Box::pin(async move {
+            server.bind("localhost:8080")?.run().await
+        })
     }
+
     fn new(container: ServiceContainer) -> Arc<Self> where Self: Sized + Sync + Send {
         Arc::new(ActixWebServer {
             port: Arc::new(container),
@@ -38,9 +42,8 @@ impl WebServer for ActixWebServer {
     }
 }
 
-
 // Function to configure routes
-pub fn configure_routes(cfg: &mut ServiceConfig) {
+fn configure_routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/player/move").route(web::post().to(player_controller::move_player))
     );

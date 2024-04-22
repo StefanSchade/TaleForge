@@ -1,10 +1,11 @@
 use async_trait::async_trait;
+use futures::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;
 
 #[async_trait]
 pub trait MovePlayerDomainStory: Send + Sync {
-    async fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String>;
+    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> ;
 }
 
 #[derive(Serialize, Deserialize, Clone)]

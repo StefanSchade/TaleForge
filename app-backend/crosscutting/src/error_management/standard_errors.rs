@@ -9,6 +9,6 @@ pub static DATABASE_CONNECTION_FAILURE: ErrorTemplate = ErrorTemplate {
 
 pub static NO_ENTRY_FOUND: ErrorTemplate = ErrorTemplate {
     code: "no_entry_found",
-    message: "The query did return no results.",
+    message: "No {} found for {}.",
     kind: ErrorKind::Functional,
 };

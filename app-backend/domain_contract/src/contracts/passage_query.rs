@@ -1,5 +1,4 @@
 use futures::future::BoxFuture;
-use std::pin::Pin;
 use crosscutting::error_management::error::Error;
 use domain_pure::model::passage::Passage;
 

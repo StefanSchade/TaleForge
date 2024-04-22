@@ -1,10 +1,11 @@
+use futures::future::BoxFuture;
+use crosscutting::error_management::error::Error;
 use crate::dto::player_state_dto::PlayerStateDTO;
 
 pub trait PlayerStateRepository: Send + Sync {
-    fn find_by_player_id(&self, player_id: i32) -> Option<PlayerStateDTO>;
-    fn save(&self, player_state: PlayerStateDTO);
+    fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
+    fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>>;
 }
-
 #[cfg(feature = "test-utils")]
 pub struct MockPlayerStateRepository {
     pub fixed_player_state: PlayerStateDTO,

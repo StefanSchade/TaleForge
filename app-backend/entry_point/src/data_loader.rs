@@ -1,18 +1,16 @@
 use domain_pure::model::location::Location;
 use domain_pure::model::passage::Passage;
-
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
-
 use serde_json;
-use std::fs::File;
-use std::io::Read;
+use tokio::fs::File;
 use std::path::Path;
 use std::sync::Arc;
 use application::dto_domain_mapping::location_mapper::location_map_domain_to_dto;
 use application::dto_domain_mapping::passage_mapper::passage_map_domain_to_dto;
+use tokio::io::AsyncReadExt;
 
-pub fn load_data_from_json<R: LocationRepository, P: PassageRepository>(
+pub async fn load_data_from_json<R, P>(
     location_repo: Arc<R>,
     passage_repo: Arc<P>,
     location_file_path: &Path,
@@ -22,32 +20,22 @@ pub fn load_data_from_json<R: LocationRepository, P: PassageRepository>(
         R: LocationRepository + ?Sized,
         P: PassageRepository + ?Sized,
 {
-    // Load and deserialize locations
-    let mut file = File::open(location_file_path)?;
+    let mut file = File::open(location_file_path).await?; // Correct use of Tokio's async file open
     let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
+    file.read_to_string(&mut contents).await?;
     let locations: Vec<Location> = serde_json::from_str(&contents)?;
 
-    println!("Locations loaded");
-
-    // Populate the location repository
     for location in locations {
-        location_repo.add_location(
-            location_map_domain_to_dto(&location)
-        )?;
+        location_repo.add_location(location_map_domain_to_dto(&location)).await?;
     }
 
-    // Load and deserialize passages
-    let mut file = File::open(passage_file_path)?;
+    let mut file = File::open(passage_file_path).await?;
     let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
+    file.read_to_string(&mut contents).await?;
     let passages: Vec<Passage> = serde_json::from_str(&contents)?;
 
-    // Populate the passage repository
     for passage in passages {
-        passage_repo.add_passage(
-            passage_map_domain_to_dto(&passage)
-        )?;
+        passage_repo.add_passage(passage_map_domain_to_dto(&passage)).await?;
     }
 
     Ok(())

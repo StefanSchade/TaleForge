@@ -40,14 +40,12 @@ impl PassageRepository for InMemoryPassageRepository {
 
     fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
-
-        let passages = self.passages.clone();
         let direction = direction.to_owned();  // Clone the direction into a new String
 
         Box::pin(async move {
             let lock = passages.lock().await;
             Ok(lock.values()
-                .find(|&passage| (passage.from_location_id == location_id) && (passage.direction.eq_ignore_ascii_case(direction)))
+                .find(|&passage| (passage.from_location_id == location_id) && (passage.direction.eq_ignore_ascii_case(&direction)))
                 .cloned())
         })
     }

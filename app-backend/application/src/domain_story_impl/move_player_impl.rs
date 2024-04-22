@@ -1,5 +1,6 @@
 use std::sync::Arc;
-use async_trait::async_trait;
+
+use futures::future::BoxFuture;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
@@ -7,15 +8,16 @@ use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlaye
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
 use port::repositories::player_state_repository::PlayerStateRepository;
+
 use crate::contract_implementations::location_query_impl::LocationQueryImpl;
 use crate::contract_implementations::passage_query_impl::PassageQueryImpl;
-
 use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 #[allow(dead_code)]
 #[derive(Clone)]
 pub struct MovePlayerDomainStoryImpl {
-    location_repository: Arc<dyn LocationRepository>, // unused for the moment
+    location_repository: Arc<dyn LocationRepository>,
+    // unused currently
     passage_repository: Arc<dyn PassageRepository>,
     player_state_repository: Arc<dyn PlayerStateRepository>,
     navigation_service: Arc<dyn NavigationServiceTrait>,
@@ -27,41 +29,50 @@ impl MovePlayerDomainStoryImpl {
         passage_repository: Arc<dyn PassageRepository>,
         player_state_repository: Arc<dyn PlayerStateRepository>,
     ) -> Self {
-        // Clone the Arc for use in the NavigationService
-        let location_query = Arc::new(LocationQueryImpl::new(location_repository.clone()));
-        let passage_query = Arc::new(PassageQueryImpl::new(passage_repository.clone()));
-
+        let navigation_service = Arc::new(
+            NavigationService::new(
+                Arc::new(LocationQueryImpl::new(location_repository.clone())),
+                Arc::new(PassageQueryImpl::new(passage_repository.clone())))
+        );
         Self {
-            // Pass the original Arc to be stored in the struct
             location_repository,
             passage_repository,
             player_state_repository,
-            // Use the clones for creating the NavigationService
-            navigation_service: Arc::new(NavigationService::new(location_query, passage_query)),
+            navigation_service,
         }
     }
 }
 
-
-#[async_trait]
 impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
-    async fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
-        if let Some(player_id) = context.player_id {
-            let mut player_state = match self.player_state_repository.find_by_player_id(player_id) {
-                Some(state) => state,
-                None => return Err("Player state not found".to_string()),
-            };
+    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
+        let player_repo_clone = self.player_state_repository.clone();
+        let navigation_service_clone = self.navigation_service.clone();
+        Box::pin(async move {
+            if let Some(player_id) = context.player_id {
+                let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
+                    Ok(Some(state)) => state,
+                    Ok(None) => return Err("Player state not found".to_string()),
+                    Err(e) => return Err(e.to_string()),
+                };
 
-            let (new_location, narration) = self.navigation_service.navigate(player_state_map_dto_to_domain(&player_state), input.direction).await?;
-            player_state.current_location_id = new_location.aggregate_id();
-            self.player_state_repository.save(player_state);
-            Ok(MovePlayerResult {
-                player_location: new_location.aggregate_id(),
-                narration,
-            })
-        } else {
-            Err("Player ID not found in context".to_string())
-        }
+                let player_state = player_state_map_dto_to_domain(&player_state_dto);
+                let (new_location, narration) = match navigation_service_clone.navigate(player_state, input.direction).await {
+                    Ok(result) => result,
+                    Err(e) => return Err(e.to_string()),
+                };
+
+                let mut updated_player_state = player_state_dto;
+                updated_player_state.current_location_id = new_location.aggregate_id();
+                player_repo_clone.save(updated_player_state).await.map_err(|e| e.to_string())?;
+
+                Ok(MovePlayerResult {
+                    player_location: new_location.aggregate_id(),
+                    narration,
+                })
+            } else {
+                Err("Player ID not found in context".to_string())
+            }
+        })
     }
 }
 
@@ -71,11 +82,11 @@ mod tests {
     use mockall::predicate::eq;
 
     use domain_contract::services::navigation_services::NavigationServiceTrait;
-    use domain_pure::model::location::{Location, LocationBuilder};
-    use domain_pure::model::player_state::{PlayerState, PlayerStateBuilder};
+    use domain_pure::model::location::LocationBuilder;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
+    use port::repositories::location_repository::LocationRepository;
 
     use super::*;
 
@@ -140,14 +151,14 @@ mod tests {
                 direction: "north".to_string(),
                 narration: "You take the passage".to_string(),
                 from_location_id: 1,
-                to_location_id: 1
+                to_location_id: 1,
             }));
 
         mock_location_repo.expect_get_location_by_id()
             .with(eq(1))
             .times(1)
-            .returning(|_| Some(LocationDTO{
-                id:99,
+            .returning(|_| Some(LocationDTO {
+                id: 99,
                 title: "the new location".to_string(),
                 description: "destination".to_string(),
                 image_url: None,

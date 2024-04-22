@@ -2,7 +2,8 @@ use std::path::Path;
 use std::sync::Arc;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
-use adapter::persistence::in_memory_repository::{InMemoryPassageRepository, InMemoryPlayerStateRepository};
+use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
+use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
 use adapter::web::option_01_actixweb::server::ActixWebServer;
 use adapter::web::webserver_interface::WebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
@@ -31,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         passage_repo.clone(),
         &location_file_path,
         &passage_file_path,
-    ).unwrap();
+    ).await.unwrap();
 
     player_state_repo
         .save(

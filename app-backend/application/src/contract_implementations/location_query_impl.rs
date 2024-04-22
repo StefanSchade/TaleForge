@@ -1,10 +1,11 @@
 use std::future::Future;
 use std::pin::Pin;
-use domain_pure::model::location::{Location, LocationBuilder};
+use domain_pure::model::location::Location;
 use port::repositories::location_repository::LocationRepository;
 use std::sync::Arc;
 use crosscutting::error_management::error::Error;
 use domain_contract::contracts::location_query::navigation::LocationQueries;
+use crate::dto_domain_mapping::location_mapper::location_map_dto_to_domain;
 
 pub struct LocationQueryImpl {
     location_repository: Arc<dyn LocationRepository>,
@@ -21,10 +22,13 @@ impl LocationQueries for LocationQueryImpl {
         &self,
         location_aggregate_id: i32
     ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>> {
+
+        let location_repository = self.location_repository.clone();
+
         Box::pin(async move {
-            match self.location_repository.get_location_by_id(location_aggregate_id).await {
+            match location_repository.get_location_by_id(location_aggregate_id).await {
                 Ok(Some(location_dto)) => {
-                    let location = LocationBuilder::from_dto(&location_dto).build(); // Assuming a builder pattern for conversion
+                    let location = location_map_dto_to_domain(location_dto);
                     Ok(Some(location))
                 },
                 Ok(None) => Ok(None),

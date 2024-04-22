@@ -1,9 +1,10 @@
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
+use futures::FutureExt;
 
 use crosscutting::error_management::error::Error;
-use crosscutting::error_management::error_kind::ErrorKind;
+use crosscutting::error_management::standard_errors::NO_ENTRY_FOUND;
 
 use domain_pure::model::location::Location;
 use domain_pure::model::player_state::PlayerState;
@@ -64,11 +65,17 @@ impl NavigationServiceTrait for NavigationService {
                             let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
                             Ok((target_location, narration))
                         },
-                        Ok(None) => Err(Error::new("No passage found in that direction", ErrorKind::Functional)),
+                        Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
+                            "location".to_string(),
+                            "current player state".to_string()
+                        ])),
                         Err(e) => Err(e),
                     }
                 },
-                Ok(None) => Err(Error::new("No passage found in that direction", ErrorKind::Functional)),
+                Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
+                    "passage".to_string(),
+                    format!("direction: {}", direction.clone())
+                ])),
                 Err(e) => Err(e),
             }
         }
