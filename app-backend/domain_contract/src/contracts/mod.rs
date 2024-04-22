@@ -1,2 +1,2 @@
-pub mod passage_queries;
-pub mod location_queries;
+pub mod passage_query;
+pub mod location_query;

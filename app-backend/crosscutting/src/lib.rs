@@ -1,1 +1,1 @@
-mod error_management;
+pub mod error_management;

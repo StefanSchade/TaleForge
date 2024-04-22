@@ -1,4 +1,4 @@
 pub mod error;
-mod standard_errors;
-mod error_kind;
-mod error_template;
+pub mod standard_errors;
+pub mod error_kind;
+pub mod error_template;

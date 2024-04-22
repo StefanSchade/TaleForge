@@ -10,6 +10,7 @@ domain_contract = { path = "../domain_contract" }
 domain_pure = { path = "../domain_pure" }
 async-trait = "0.1.80"
 tokio = { version = "1", features = ["full", "macros"] }
+futures = "0.3.30"
 
 [dev-dependencies]
 mockall = "0.12.1"

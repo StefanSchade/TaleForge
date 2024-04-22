@@ -1,4 +1,4 @@
-use domain_contract::contracts::passage_queries::navigation::PassageQueries;
+use domain_contract::contracts::passage_query::navigation::PassageQueries;
 use domain_pure::model::passage::Passage;
 use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
 

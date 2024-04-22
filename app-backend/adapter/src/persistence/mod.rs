@@ -1,1 +1,3 @@
 pub mod in_memory_repository;
+pub mod in_memory_location_repository;
+mod in_memory_passage_repository;
