@@ -28,15 +28,12 @@ async fn main() -> std::io::Result<()> {
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
 
-    let rt = Runtime::new()?;
 
-        data_loader::load_data_from_json(
+    let data = data_loader::load_data_from_json(
             location_repo.clone(),
             passage_repo.clone(),
             &location_file_path,
-            &passage_file_path,
-        ).await.unwrap();
-
+            &passage_file_path).await;
 
 
     player_state_repo
@@ -63,6 +60,7 @@ async fn main() -> std::io::Result<()> {
         player_state_repo,
         move_player_ds,
     );
+
 
 
         let server = ActixWebServer::new(service_container);
