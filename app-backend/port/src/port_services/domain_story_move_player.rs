@@ -3,7 +3,6 @@ use futures::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;
 
-#[async_trait]
 pub trait MovePlayerDomainStory: Send + Sync {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> ;
 }
