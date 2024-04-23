@@ -1,0 +1,17 @@
+==== Boxed Pin Futures
+
+Using `Box<Pin<dyn Future<Output = T>>>` directly in trait methods is a straightforward way to return futures.
+
+===== Pros
+
+* Simplifies the interface without additional traits or wrappers.
+* Fairly easy to implement.
+
+===== Cons
+
+* Involves heap allocation.
+* Dynamic dispatch introduces runtime overhead.
+
+===== Example
+
+Similar to the "Wrapper Types for Futures" example but typically without defining a specific future type in the trait.

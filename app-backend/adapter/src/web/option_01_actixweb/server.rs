@@ -11,17 +11,17 @@ use crate::web::option_01_actixweb::controllers::player_controller;
 use crate::web::webserver_interface::WebServer;
 
 pub struct ActixWebServer {
-    pub port: Arc<ServiceContainer>,
+    pub service_container: Arc<ServiceContainer>,
 }
 
 impl WebServer for ActixWebServer {
     fn start_server(&self) -> impl Future<Output=Result<(), std::io::Error>> + Send {
-        let app_state = Data::new(AppState::new(
-            Arc::clone(&self.port.outbound_adapters().location_repo()),
-            Arc::clone(&self.port.outbound_adapters().passage_repo()),
-            Arc::clone(&self.port.outbound_adapters().player_state_repo()),
-            Arc::clone(&self.port.port_services().move_player()),
-        ));
+        let app_state = Data::new(AppState {
+            location_repository: Arc::clone(&self.service_container.outbound_adapters().location_repo()),
+            passage_repository: Arc::clone(&self.service_container.outbound_adapters().passage_repo()),
+            player_state_repository: Arc::clone(&self.service_container.outbound_adapters().player_state_repo()),
+            move_player_domain_story: Arc::clone(&self.service_container.domain_story().move_player()),
+        });
 
         let server = HttpServer::new(move || {
             App::new()
@@ -37,7 +37,7 @@ impl WebServer for ActixWebServer {
 
     fn new(container: ServiceContainer) -> Arc<Self> where Self: Sized + Sync + Send {
         Arc::new(ActixWebServer {
-            port: Arc::new(container),
+            service_container: Arc::new(container),
         })
     }
 }

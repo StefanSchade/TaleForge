@@ -1,0 +1,54 @@
+==== Using synchronous methods that internally manage asynchronous computations
+
+This is a strategy that can be used in Rust to abstract away the complexities of asynchronous code while providing a simpler, synchronous API to the user. This approach typically involves spawning asynchronous tasks on an executor and then waiting for these tasks to complete synchronously. Here’s how you can implement this pattern:
+
+. Using an Executor +
+Rust doesn't include a built-in async runtime; instead, it relies on external executors like tokio or async-std. These executors are capable of running asynchronous tasks.
+
+. Spawning and Waiting +
+You can define your trait with synchronous methods that internally spawn asynchronous tasks using these executors. The method then waits for the task to complete and returns a result synchronously.
+
+
+
+===== Example
+
+Here is a simplified example using the tokio runtime:
+
+[source,rust]
+----
+use tokio::runtime; // Ensure tokio is added to your dependencies
+use tokio::task;
+
+pub trait MyTrait {
+    fn perform_task(&self) -> Result<(), MyError>;
+}
+
+struct MyStruct;
+
+impl MyStruct {
+    async fn async_perform_task(&self) -> Result<(), MyError> {
+        // Asynchronous logic here
+        Ok(())
+    }
+}
+
+impl MyTrait for MyStruct {
+    fn perform_task(&self) -> Result<(), MyError> {
+        // Create a new Tokio runtime or use a global one
+        let rt = runtime::Runtime::new().unwrap();
+
+        // Block on the async function
+        rt.block_on(self.async_perform_task())
+    }
+}
+----
+
+*Key Points:*
+
+* *Runtime Management:* You have to manage a runtime (like tokio::runtime). This can be either a new runtime for each call (not recommended due to overhead) or a shared runtime accessible throughout your application.
+* *Blocking on Async:* The method rt.block_on() is used to block the current thread until the given future is resolved. This converts the asynchronous execution into a synchronous response, encapsulating the asynchronous complexity inside the trait method.
+* *Design Considerations:* While this approach can simplify usage for clients not designed to handle async code, it also introduces some downsides:
+* *Performance:* Spawning a runtime or blocking on futures can be resource-intensive and may not be efficient, especially if done frequently or on many short tasks.
+* *Thread Blocking:* Blocking a thread can negate the advantages of asynchronous programming, such as scalability and non-blocking I/O operations.
+
+This technique is useful when integrating with codebases that are predominantly synchronous or when gradual refactoring from synchronous to asynchronous code is needed. However, it should be used judiciously considering the potential impact on performance and scalability.

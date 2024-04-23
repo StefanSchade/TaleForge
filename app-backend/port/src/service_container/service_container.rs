@@ -9,7 +9,7 @@ use crate::repositories::player_state_repository::PlayerStateRepository;
 #[derive(Clone)]
 pub struct ServiceContainer {
     outbound_adapters: Arc<OutboundAdapters>,
-    port_services: Arc<PortServices>,
+    domain_story: Arc<PortServices>,
 }
 
 impl ServiceContainer {
@@ -23,7 +23,7 @@ impl ServiceContainer {
         let domain_story_container = PortServices::new(move_player_ds);
         Self {
             outbound_adapters: Arc::new(repo_container),
-            port_services: Arc::new(domain_story_container),
+            domain_story: Arc::new(domain_story_container),
         }
     }
 
@@ -31,7 +31,7 @@ impl ServiceContainer {
         self.outbound_adapters.clone()
     }
 
-    pub fn port_services(&self) -> Arc<PortServices> {
-        self.port_services.clone()
+    pub fn domain_story(&self) -> Arc<PortServices> {
+        self.domain_story.clone()
     }
 }

@@ -1,0 +1,44 @@
+== Converting Synchronous Traits to Asynchronous in Rust
+
+=== Introduction
+
+It is generally good practice to model the behaviour of your services by defining interfaces - therefore transitioning from synchronous to asynchronous Rust code involves adapting traits and their implementations to return futures.
+
+Unfortunately support for asynchronous traits, or the ability to define async functions in traits, is not directly available in the standard library as of the latest stable Rust releases.
+
+This document explores different methods to circumvent this limitation:
+
+=== Methods of Asynchronous Conversion
+
+Several strategies exist for adapting synchronous traits to asynchronous versions:
+
+. *Async Trait*
+. *Wrapper Types for Futures*
+. *Boxed Pin Futures*
+. *BoxFuture Alias*
+. *Custom Alias*
+
+Each approach has unique advantages and challenges.
+
+include::./async_trait.adoc[]
+
+include::./wrapper_types.adoc[]
+
+include::./box_pin_futures.adoc[]
+
+include::./boxfuture_alias.adoc[]
+
+include::./custom_alias.adoc[]
+
+=== Traditional methods to model async behaviour in Rust
+
+. *message passing through channels*
+. *using synchronous  methods that internally manage async computations*
+
+include::./message_passing.adoc[]
+
+include::./internal_async.adoc[]
+
+=== Conclusion
+
+Each method for converting synchronous trait methods to asynchronous forms offers different trade-offs in performance, complexity, and ease of use. Your specific application requirements will guide your choice of method.

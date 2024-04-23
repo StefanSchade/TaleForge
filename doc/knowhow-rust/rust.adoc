@@ -4,10 +4,15 @@
 :sectnums:
 :sectnumlevels: 6
 :source-highlighter: rouge
+:toc-placement: auto
+:numbered:
 
 toc::[]
 
 :sectnums:
+
 include::./chapters/mapping/_chapter.adoc[]
+
+include::./chapters/async/_chapter.adoc[]
 
 include::./chapters/actix/_chapter.adoc[]

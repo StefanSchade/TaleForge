@@ -1,0 +1,40 @@
+==== Wrapper Types for Futures
+
+Manual wrapping of futures in structs or enums provides more control but is more complex.
+
+===== Pros
+
+* Complete control over the future type.
+* No dynamic dispatch overhead.
+
+===== Cons
+
+* Increased complexity and verbosity.
+* Manual future management needed.
+
+===== Example
+
+[source,rust]
+----
+use std::future::Future;
+use std::pin::Pin;
+
+pub trait DataService {
+    type FetchFuture: Future<Output = Result<Option<String>, String>> + Send + 'static;
+
+    fn fetch_data(&self) -> Self::FetchFuture;
+}
+
+pub struct MyService;
+
+impl DataService for MyService {
+    type FetchFuture = Pin<Box<dyn Future<Output = Result<Option<String>, String>> + Send>>;
+
+    fn fetch_data(&self) -> Self::FetchFuture {
+        Box::pin(async move {
+            Ok(Some("data".to_string()))
+        })
+    }
+}
+----
+

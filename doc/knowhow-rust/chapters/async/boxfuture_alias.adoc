@@ -1,0 +1,50 @@
+==== BoxFuture Alias
+
+Using `BoxFuture` from the `futures` crate simplifies syntax by abstracting over `Pin<Box<dyn Future + Send>>`.
+
+===== Pros
+
+* Simplifies the trait method signature.
+* Eases implementation with a clear and concise syntax.
+
+===== Cons
+
+* Heap allocation and dynamic dispatch.
+* Potential performance overhead.
+
+===== Example
+
+[source,rust]
+----
+use futures::future::BoxFuture;
+use std::pin::Pin;
+
+pub trait PassageQueries: Send + Sync {
+    fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+}
+
+pub struct MyQueryHandler;
+
+impl PassageQueries for MyQueryHandler {
+    fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
+        Box::pin(async move {
+            if from_location_id == to_location_id {
+                Ok(Some(Passage {}))
+            } else {
+                Ok(None)
+            }
+        })
+    }
+
+    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
+        Box::pin(async move {
+            if direction == "north" {
+                Ok(Some(Passage {}))
+            } else {
+                Ok(None)
+            }
+        })
+    }
+}
+----
