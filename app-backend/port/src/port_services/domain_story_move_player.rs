@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use futures::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;

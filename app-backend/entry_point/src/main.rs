@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::sync::Arc;
+use tokio::runtime::Runtime;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
@@ -13,8 +14,7 @@ use port::service_container::service_container::ServiceContainer;
 
 mod data_loader;
 
-#[actix_web::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // instantiate the outbound adapters ...
 
@@ -27,13 +27,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
 
-    data_loader::load_data_from_json(
-        location_repo.clone(),
-        passage_repo.clone(),
-        &location_file_path,
-        &passage_file_path,
-    ).await.unwrap();
+    let rt = Runtime::new()?;
 
+    // Use the runtime to block on the async function
+    rt.block_on(async {
+        data_loader::load_data_from_json(
+            location_repo.clone(),
+            passage_repo.clone(),
+            &location_file_path,
+            &passage_file_path,
+        ).await.unwrap();
+    });
     player_state_repo
         .save(
             PlayerStateDTO {
@@ -62,7 +66,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // start server
 
     let server = ActixWebServer::new(service_container);
-    server.start_server().await?;
+    //server.start_server().await?;
+
+    if let Err(e) = server.start_server() {
+        eprintln!("Server failed to start: {}", e);
+    }
 
     Ok(())
 }
