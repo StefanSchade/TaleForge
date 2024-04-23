@@ -1,8 +1,6 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use tokio::runtime::Runtime;
-
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
@@ -29,12 +27,24 @@ async fn main() -> std::io::Result<()> {
     let passage_file_path = Path::new("resources_test/passages.json");
 
 
-    let data = data_loader::load_data_from_json(
-            location_repo.clone(),
-            passage_repo.clone(),
-            &location_file_path,
-            &passage_file_path).await;
+    // If `load_data_from_json` returns a known error type that already implements `Send + Sync`, use that.
+// Otherwise, wrap the error into `std::io::Error` like this:
 
+    let data = data_loader::load_data_from_json(
+        location_repo.clone(),
+        passage_repo.clone(),
+        &location_file_path,
+        &passage_file_path
+    ).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)));
+
+
+    match data {
+        Ok(_) => println!("Data loaded successfully."),
+        Err(e) => {
+            eprintln!("Failed to load data: {:?}", e);
+            return Err(e); // Return the error to stop further execution
+        }
+    }
 
     player_state_repo
         .save(
@@ -62,9 +72,6 @@ async fn main() -> std::io::Result<()> {
     );
 
 
-
-        let server = ActixWebServer::new(service_container);
-        server.start_server().await
-
-
+    let server = ActixWebServer::new(service_container);
+    server.start_server().await
 }
