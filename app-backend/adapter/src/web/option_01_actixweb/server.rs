@@ -1,8 +1,8 @@
-use std::future::Future;
 use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
+use async_trait::async_trait;
 
 use port::service_container::service_container::ServiceContainer;
 
@@ -14,9 +14,18 @@ pub struct ActixWebServer {
     pub service_container: Arc<ServiceContainer>,
 }
 
-impl ActixWebServer {
+// #[async_trait]
+// impl WebServer for ActixWebServer {
+//     async fn start_server(&self) -> Result<(), std::io::Error> {
+//         self.start_actix_server().await
+//     }
+//
+// }
+
+#[async_trait]
+impl WebServer for ActixWebServer {
     #[actix_web::main]
-    pub async fn start_actix_server(&self) -> Result<(), std::io::Error> {
+    async fn start_server(&self) -> Result<(), std::io::Error> {
         let app_state = Data::new(AppState {
             location_repository: Arc::clone(&self.service_container.outbound_adapters().location_repo()),
             passage_repository: Arc::clone(&self.service_container.outbound_adapters().passage_repo()),
@@ -36,27 +45,13 @@ impl ActixWebServer {
             Ok(server) => {
                 // If the server is successfully bound, run it
                 server.run().await
-            },
+            }
             Err(e) => {
                 // If an error occurs, return the error
                 Err(e)
             }
         }
     }
-
-    fn configure_routes(cfg: &mut web::ServiceConfig) {
-        cfg.service(
-            web::resource("/player/move").route(web::post().to(player_controller::move_player))
-        );
-        // Additional routes can be added here
-    }
-}
-
-impl WebServer for ActixWebServer {
-    fn start_server(&self) -> impl Future<Output=Result<(), std::io::Error>> + Send {
-
-    }
-
     fn new(container: ServiceContainer) -> Arc<Self> where Self: Sized + Sync + Send {
         Arc::new(ActixWebServer {
             service_container: Arc::new(container),
@@ -64,4 +59,8 @@ impl WebServer for ActixWebServer {
     }
 }
 
-// Function to configure routes
+fn configure_routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::resource("/player/move").route(web::post().to(player_controller::move_player))
+    );
+}

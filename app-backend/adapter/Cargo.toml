@@ -11,9 +11,9 @@ port = { path = "../port" }
 actix-web = "4.5.1"
 actix-rt = "2.2"
 serde_json = "1.0.114"
-async-trait = "^0.1.52" # Update to a specific newer version if available
 futures = "0.3"
 tokio = { version = "1", features = ["full"] }
+async-trait = "^0.1"
 
 [dev-dependencies]
 actix-web = "4"
