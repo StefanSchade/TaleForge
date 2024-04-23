@@ -9,11 +9,15 @@ use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
 use port::service_container::service_container::ServiceContainer;
+use env_logger::Env;
+
 
 mod data_loader;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    env_logger::init_from_env(Env::default().default_filter_or("info"));  // Adjust log level as needed
 
     // instantiate the outbound adapters ...
 
