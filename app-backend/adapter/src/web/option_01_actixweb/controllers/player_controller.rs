@@ -25,8 +25,8 @@ pub async fn move_player(
     data: web::Data<Arc<AppState>>,
     web_input: web::Json<WebMovePlayerInput>
 ) -> impl Responder {
-    info!("Handling move_player request: {:?}", web_input);
-    debug!("Attempting to extract AppState...");
+
+    info!("entering controller...");
 
     let extracted_player_id = 1;
 
