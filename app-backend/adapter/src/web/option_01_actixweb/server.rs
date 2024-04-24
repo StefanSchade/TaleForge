@@ -1,17 +1,18 @@
+use std::future::Future;
+use std::pin::Pin;
 use std::sync::Arc;
 
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
+use log::info;
 
 use port::service_container::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
-use crate::web::option_01_actixweb::controllers::player_controller;
+use crate::web::option_01_actixweb::controllers::{debug_controller, player_controller};
 
-
-use std::future::Future;
-use std::pin::Pin;
-use log::info;
+#[derive(Clone)]
+pub struct SimpleState;
 
 
 pub struct ActixWebServer {
@@ -19,15 +20,16 @@ pub struct ActixWebServer {
 }
 
 impl ActixWebServer {
-    pub fn start_server(&self) -> Pin<Box<dyn Future<Output = Result<(), std::io::Error>> + Send>> {
-
+    pub fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
         info!("starting actix");
 
-        let app_state = Data::new(AppState {
-            move_player_domain_story: Arc::clone(&self.service_container.domain_story().move_player()),
-        });
+        // let app_state = Data::new(AppState {
+        //     move_player_domain_story: Arc::clone(&self.service_container.move_player()),
+        // });
 
-        info!("configured: {:?}", &self.service_container.domain_story().move_player());
+        let app_state = Data::new(Arc::new(SimpleState));
+
+        info!("Configured App Data for Actix: {:?}", &self.service_container.move_player());
 
         let server_future = async move {
             let server = HttpServer::new(move || {
@@ -38,6 +40,9 @@ impl ActixWebServer {
                 .bind("localhost:8080")?;
             server.run().await
         };
+
+        info!("actix has been started");
+
         Box::pin(server_future)
     }
 
@@ -45,7 +50,9 @@ impl ActixWebServer {
         cfg.service(
             web::resource("/player/move").route(web::post().to(player_controller::move_player))
         );
-        // Additional routes can be added here
+        cfg.service(
+            web::resource("/index").route(web::post().to(debug_controller::index))
+        );
     }
 
     pub fn new(container: ServiceContainer) -> Arc<Self> {

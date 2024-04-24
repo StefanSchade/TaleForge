@@ -7,7 +7,7 @@ use port::context::RequestContext;
 use port::port_services::domain_story_move_player::MovePlayerCommand;
 
 use crate::web::option_01_actixweb::app_state::AppState;
-use log::{info, debug, error};
+use log::{info, debug};
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -26,6 +26,7 @@ pub async fn move_player(
     web_input: web::Json<WebMovePlayerInput>
 ) -> impl Responder {
     info!("Handling move_player request: {:?}", web_input);
+    debug!("Attempting to extract AppState...");
 
     let extracted_player_id = 1;
 

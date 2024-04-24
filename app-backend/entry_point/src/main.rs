@@ -69,9 +69,6 @@ async fn main() -> std::io::Result<()> {
     // hand everything to a container
 
     let service_container = ServiceContainer::new(
-        location_repo,
-        passage_repo,
-        player_state_repo,
         move_player_ds,
     );
 
