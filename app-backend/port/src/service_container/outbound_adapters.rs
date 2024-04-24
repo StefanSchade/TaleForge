@@ -4,7 +4,7 @@ use crate::repositories::passage_repository::PassageRepository;
 use crate::repositories::player_state_repository::PlayerStateRepository;
 
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct OutboundAdapters {
     location_repo: Arc<dyn LocationRepository>,
     passage_repo: Arc<dyn PassageRepository>,

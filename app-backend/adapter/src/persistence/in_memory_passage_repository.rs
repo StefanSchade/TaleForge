@@ -1,11 +1,14 @@
 use std::collections::HashMap;
+use std::fmt;
 use tokio::sync::Mutex;
 use std::sync::Arc;
 use futures::future::BoxFuture;
 use port::dto::passage_dto::PassageDTO;
 use port::repositories::passage_repository::PassageRepository;
 use crosscutting::error_management::error::Error;
+use crate::persistence::in_memory_location_repository::InMemoryLocationRepository;
 
+#[derive(Clone)]
 pub struct InMemoryPassageRepository {
     passages: Arc<Mutex<HashMap<i32, PassageDTO>>>,
 }
@@ -15,6 +18,13 @@ impl InMemoryPassageRepository {
         Self {
             passages: Arc::new(Mutex::new(HashMap::new())),
         }
+    }
+}
+
+impl fmt::Debug for InMemoryPassageRepository {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("InMemoryPassageRepository")
+            .finish()
     }
 }
 

@@ -1,8 +1,9 @@
+use std::fmt::Debug;
 use futures::future::BoxFuture;
 use crosscutting::error_management::error::Error;
 use crate::dto::passage_dto::PassageDTO;
 
-pub trait PassageRepository: Send + Sync {
+pub trait PassageRepository: Send + Sync + Debug {
     fn get_passage_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
     fn get_passages_for_location(&self, location_id: i32) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
     // New method to find a passage by direction and current passage

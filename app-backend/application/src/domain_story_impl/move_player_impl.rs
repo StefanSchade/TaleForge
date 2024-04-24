@@ -14,7 +14,7 @@ use crate::contract_implementations::passage_query_impl::PassageQueryImpl;
 use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 #[allow(dead_code)]
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct MovePlayerDomainStoryImpl {
     location_repository: Arc<dyn LocationRepository>,
     // unused currently

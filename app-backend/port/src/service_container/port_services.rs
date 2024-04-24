@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::port_services::domain_story_move_player::MovePlayerDomainStory;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PortServices {
     move_player_domain_story: Arc<dyn MovePlayerDomainStory>,
 }

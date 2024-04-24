@@ -11,19 +11,23 @@ use crate::web::option_01_actixweb::controllers::player_controller;
 
 use std::future::Future;
 use std::pin::Pin;
+use log::info;
 
 
 pub struct ActixWebServer {
     pub service_container: Arc<ServiceContainer>,
 }
+
 impl ActixWebServer {
     pub fn start_server(&self) -> Pin<Box<dyn Future<Output = Result<(), std::io::Error>> + Send>> {
+
+        info!("starting actix");
+
         let app_state = Data::new(AppState {
-            location_repository: Arc::clone(&self.service_container.outbound_adapters().location_repo()),
-            passage_repository: Arc::clone(&self.service_container.outbound_adapters().passage_repo()),
-            player_state_repository: Arc::clone(&self.service_container.outbound_adapters().player_state_repo()),
             move_player_domain_story: Arc::clone(&self.service_container.domain_story().move_player()),
         });
+
+        info!("configured: {:?}", &self.service_container.domain_story().move_player());
 
         let server_future = async move {
             let server = HttpServer::new(move || {
@@ -32,10 +36,8 @@ impl ActixWebServer {
                     .configure(Self::configure_routes)
             })
                 .bind("localhost:8080")?;
-
             server.run().await
         };
-
         Box::pin(server_future)
     }
 

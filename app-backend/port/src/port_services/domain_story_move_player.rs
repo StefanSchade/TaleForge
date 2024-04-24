@@ -2,17 +2,18 @@ use async_trait::async_trait;
 use futures::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;
+use std::fmt::Debug;
 
 #[async_trait]
-pub trait MovePlayerDomainStory: Send + Sync {
+pub trait MovePlayerDomainStory: Send + Sync + Debug {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> ;
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MovePlayerCommand {
     pub direction: String,
 }
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MovePlayerResult {
     pub player_location: i32,
     pub narration: String,

@@ -6,7 +6,7 @@ use crate::repositories::location_repository::LocationRepository;
 use crate::repositories::passage_repository::PassageRepository;
 use crate::repositories::player_state_repository::PlayerStateRepository;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ServiceContainer {
     outbound_adapters: Arc<OutboundAdapters>,
     domain_story: Arc<PortServices>,

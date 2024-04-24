@@ -6,6 +6,7 @@ use futures::future::BoxFuture;
 use crosscutting::error_management::error::Error;
 use domain_contract::contracts::passage_query::PassageQueries;
 
+#[derive(Clone, Debug)]
 pub struct PassageQueryImpl {
     passage_repository: Arc<dyn PassageRepository>,
 }

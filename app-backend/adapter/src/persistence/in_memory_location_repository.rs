@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use futures::future::BoxFuture;
@@ -6,6 +7,7 @@ use crosscutting::error_management::error::Error;
 use port::dto::location_dto::LocationDTO;
 use port::repositories::location_repository::LocationRepository;
 
+#[derive(Clone)]
 pub struct InMemoryLocationRepository {
     locations: Arc<Mutex<HashMap<i32, LocationDTO>>>,
 }
@@ -15,6 +17,13 @@ impl InMemoryLocationRepository {
         Self {
             locations: Arc::new(Mutex::new(HashMap::new())),
         }
+    }
+}
+
+impl fmt::Debug for InMemoryLocationRepository {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("InMemoryLocationRepository")
+            .finish()
     }
 }
 

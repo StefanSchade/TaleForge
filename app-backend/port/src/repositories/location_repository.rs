@@ -1,8 +1,9 @@
+use std::fmt::Debug;
 use futures::future::BoxFuture;
 use crosscutting::error_management::error::Error;
 use crate::dto::location_dto::LocationDTO;
 
-pub trait LocationRepository: Send + Sync  {
+pub trait LocationRepository: Send + Sync + Debug {
     fn get_location_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
     fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
     fn add_location(&self, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;

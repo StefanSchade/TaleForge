@@ -7,6 +7,7 @@ use crosscutting::error_management::error::Error;
 use domain_contract::contracts::location_query::navigation::LocationQueries;
 use crate::dto_domain_mapping::location_mapper::location_map_dto_to_domain;
 
+#[derive(Clone, Debug)]
 pub struct LocationQueryImpl {
     location_repository: Arc<dyn LocationRepository>,
 }

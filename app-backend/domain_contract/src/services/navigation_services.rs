@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -15,7 +16,7 @@ use crate::contracts::passage_query::PassageQueries;
 // Wrap Service in a Trait to allow mocking for tests
 // Send + Sync traits for threads safely
 
-pub trait NavigationServiceTrait: Send + Sync {
+pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
         &self,
         player_state: PlayerState,
@@ -23,6 +24,7 @@ pub trait NavigationServiceTrait: Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(Location, String), Error>> + Send>>;
 }
 
+#[derive(Clone, Debug)]
 pub struct NavigationService {
     passage_query: Arc<dyn PassageQueries>,
     location_query: Arc<dyn LocationQueries>,

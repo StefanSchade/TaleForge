@@ -1,8 +1,9 @@
+use std::fmt::Debug;
 use futures::future::BoxFuture;
 use crosscutting::error_management::error::Error;
 use crate::dto::player_state_dto::PlayerStateDTO;
 
-pub trait PlayerStateRepository: Send + Sync {
+pub trait PlayerStateRepository: Send + Sync + Debug {
     fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
     fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>>;
 }

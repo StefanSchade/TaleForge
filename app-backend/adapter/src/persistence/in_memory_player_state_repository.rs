@@ -1,11 +1,14 @@
 use futures::future::BoxFuture;
 use tokio::sync::Mutex;
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 use crosscutting::error_management::error::Error;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
+use crate::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 
+#[derive(Clone)]
 pub struct InMemoryPlayerStateRepository {
     states: Arc<Mutex<HashMap<i32, PlayerStateDTO>>>,
 }
@@ -15,6 +18,13 @@ impl InMemoryPlayerStateRepository {
         InMemoryPlayerStateRepository {
             states: Arc::new(Mutex::new(HashMap::new())),
         }
+    }
+}
+
+impl fmt::Debug for InMemoryPlayerStateRepository {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("InMemoryPlayerStateRepository")
+            .finish()
     }
 }
 
