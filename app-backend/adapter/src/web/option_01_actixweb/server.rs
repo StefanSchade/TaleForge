@@ -9,11 +9,7 @@ use log::info;
 use port::service_container::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
-use crate::web::option_01_actixweb::controllers::{debug_controller, player_controller};
-
-#[derive(Clone)]
-pub struct SimpleState;
-
+use crate::web::option_01_actixweb::controllers::player_controller;
 
 pub struct ActixWebServer {
     pub service_container: Arc<ServiceContainer>,
@@ -21,27 +17,25 @@ pub struct ActixWebServer {
 
 impl ActixWebServer {
     pub fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
-        info!("starting actix");
+        info!("Starting Actix server...");
 
+        // Creating and configuring the application state
         let app_state = Data::new(AppState {
             move_player_domain_story: Arc::clone(&self.service_container.move_player()),
         });
 
-        // let app_state = Data::new(Arc::new(SimpleState));
-
-        info!("Configured App Data for Actix: {:?}", &self.service_container.move_player());
+        info!("App State configured with MovePlayerDomainStory");
 
         let server_future = async move {
-            let server = HttpServer::new(move || {
+            HttpServer::new(move || {
                 App::new()
-                    .app_data(app_state.clone())
-                    .configure(Self::configure_routes)
+                    .app_data(app_state.clone())  // Ensure app state is accessible across routes
+                    .configure(Self::configure_routes)  // Configuring routes
             })
-                .bind("localhost:8080")?;
-            server.run().await
+                .bind("localhost:8080")?  // Binding to a server port
+                .run()
+                .await
         };
-
-        info!("actix has been started");
 
         Box::pin(server_future)
     }
@@ -49,9 +43,6 @@ impl ActixWebServer {
     fn configure_routes(cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::resource("/player/move").route(web::post().to(player_controller::move_player))
-        );
-        cfg.service(
-            web::resource("/index").route(web::post().to(debug_controller::index))
         );
     }
 
