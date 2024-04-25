@@ -4,7 +4,7 @@ use futures::future::BoxFuture;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
-use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
+use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerResult};
 use port::port_services::domain_story_move_player2::MovePlayerDomainStory2;
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;

@@ -6,7 +6,6 @@ use std::sync::Arc;
 use crosscutting::error_management::error::Error;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
-use crate::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 
 #[derive(Clone)]
 pub struct InMemoryPlayerStateRepository {

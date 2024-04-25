@@ -6,7 +6,6 @@ use futures::future::BoxFuture;
 use port::dto::passage_dto::PassageDTO;
 use port::repositories::passage_repository::PassageRepository;
 use crosscutting::error_management::error::Error;
-use crate::persistence::in_memory_location_repository::InMemoryLocationRepository;
 
 #[derive(Clone)]
 pub struct InMemoryPassageRepository {

@@ -66,7 +66,7 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
-    player_state_repo
+    let _= player_state_repo
         .save(
             PlayerStateDTO {
                 player_id: 1,
