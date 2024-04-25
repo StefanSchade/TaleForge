@@ -16,11 +16,11 @@ use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_doma
 #[allow(dead_code)]
 #[derive(Clone, Debug)]
 pub struct MovePlayerDomainStoryImpl {
-    location_repository: Arc<dyn LocationRepository>,
+    pub(crate) location_repository: Arc<dyn LocationRepository>,
     // unused currently
-    passage_repository: Arc<dyn PassageRepository>,
-    player_state_repository: Arc<dyn PlayerStateRepository>,
-    navigation_service: Arc<dyn NavigationServiceTrait>,
+    pub(crate) passage_repository: Arc<dyn PassageRepository>,
+    pub(crate) player_state_repository: Arc<dyn PlayerStateRepository>,
+    pub(crate) navigation_service: Arc<dyn NavigationServiceTrait>,
 }
 
 impl MovePlayerDomainStoryImpl {
