@@ -12,7 +12,6 @@ use port::service_container::service_container::ServiceContainer;
 use env_logger::Env;
 use application::contract_implementations::location_query_impl::LocationQueryImpl;
 use application::contract_implementations::passage_query_impl::PassageQueryImpl;
-use application::domain_story_impl::move_player_impl2::MovePlayerDomainStoryImpl2;
 use crosscutting::error_management::error::Error;
 use domain_contract::services::navigation_services::NavigationService;
 
@@ -76,7 +75,7 @@ async fn main() -> std::io::Result<()> {
 
     // This is externalized because the adapter has no access to the domain and the constructor
 
-    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl2::new(
+    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
         location_repo.clone(),
         passage_repo.clone(),
         player_state_repo.clone(),
