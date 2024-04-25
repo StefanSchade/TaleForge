@@ -10,12 +10,28 @@ use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
 use port::service_container::service_container::ServiceContainer;
 use env_logger::Env;
+use application::contract_implementations::location_query_impl::LocationQueryImpl;
+use application::contract_implementations::passage_query_impl::PassageQueryImpl;
+use application::domain_story_impl::move_player_impl2::MovePlayerDomainStoryImpl2;
+use crosscutting::error_management::error::Error;
+use domain_contract::services::navigation_services::NavigationService;
 
 
 mod data_loader;
 
+fn assert_send<T: Send>() {}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+
+    assert_send::<MovePlayerDomainStoryImpl>();
+    assert_send::<InMemoryPlayerStateRepository>();
+    assert_send::<InMemoryLocationRepository>();
+    assert_send::<InMemoryLocationRepository>();
+    assert_send::<NavigationService>();
+    assert_send::<Error>();
+    assert_send::<LocationQueryImpl>();
+    assert_send::<PassageQueryImpl>();
 
     env_logger::init_from_env(Env::default().default_filter_or("info"));  // Adjust log level as needed
 
@@ -60,7 +76,7 @@ async fn main() -> std::io::Result<()> {
 
     // This is externalized because the adapter has no access to the domain and the constructor
 
-    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl::new(
+    let move_player_ds = Arc::new(MovePlayerDomainStoryImpl2::new(
         location_repo.clone(),
         passage_repo.clone(),
         player_state_repo.clone(),

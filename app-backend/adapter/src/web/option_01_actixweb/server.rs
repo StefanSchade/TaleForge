@@ -27,7 +27,11 @@ impl ActixWebServer {
         //     move_player_domain_story: Arc::clone(&self.service_container.move_player()),
         // });
 
-        let app_state = Data::new(Arc::new(SimpleState));
+        let app_state = Data::new(AppState {
+            move_player_domain_story: Arc::clone(&self.service_container.move_player()),
+        });
+
+        // let app_state = Data::new(Arc::new(SimpleState));
 
         info!("Configured App Data for Actix: {:?}", &self.service_container.move_player());
 
