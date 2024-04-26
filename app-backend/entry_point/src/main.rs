@@ -78,33 +78,49 @@ async fn main() -> std::io::Result<()> {
 
     let service_container = ServiceContainer::new(move_player_ds);
 
+    let actix = ActixWebServer::new(service_container);
 
-      start_server(service_container).await
+      actix.start_server().await
 
 }
 
-pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
 
-    info!("starting actix");
+impl ActixWebServer {
+    // pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+    pub fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+        info!("starting actix");
 
-    let app_state = AppState {
-        move_player_domain_story: sc.move_player(),
-    };
+        let app_state = AppState {
+            move_player_domain_story: self.service_container.move_player(),
+        };
 
-    let server_future = async move {
-        let server = HttpServer::new(move || {
-            App::new()
-                .app_data(Data::new(Arc::new(app_state.clone())))
-                .service(
-                    web::resource("/player/move").route(web::post().to(player_controller::move_player))
-                )
-            // Add other services and configuration as needed
-        })
-            .bind("localhost:8080")?;
+        let server_future = async move {
+            let server = HttpServer::new(move || {
+                App::new()
+                    .app_data(Data::new(Arc::new(app_state.clone())))
+                    .service(
+                        web::resource("/player/move").route(web::post().to(player_controller::move_player))
+                    )
+                // Add other services and configuration as needed
+            })
+                .bind("localhost:8080")?;
             server.run()
-            .await
-    };
+                .await
+        };
 
-    Box::pin(server_future)
+        Box::pin(server_future)
+    }
+}
 
+
+pub struct ActixWebServer {
+    pub service_container: ServiceContainer,
+}
+
+impl ActixWebServer {
+    pub fn new(container: ServiceContainer) -> Arc<Self> {
+        Arc::new(ActixWebServer {
+            service_container: container,
+        })
+    }
 }
