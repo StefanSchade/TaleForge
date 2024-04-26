@@ -7,10 +7,11 @@ use port::context::RequestContext;
 use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
-use port::repositories::player_state_repository::PlayerStateRepository;
+use port::repositories::player_state_repository::{PlayerStateRepository};
 
 use crate::contract_implementations::location_query_impl::LocationQueryImpl;
 use crate::contract_implementations::passage_query_impl::PassageQueryImpl;
+use crate::domain_story_impl::mock_objects_to_debug::{MockForDebugLocationRepo, MockForDebugPassageRepo, MockForDebugNavigationService, MockForDebugPlayerStateRepo};
 use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 #[allow(dead_code)]
@@ -34,11 +35,17 @@ impl MovePlayerDomainStoryImpl {
                 Arc::new(LocationQueryImpl::new(location_repository.clone())),
                 Arc::new(PassageQueryImpl::new(passage_repository.clone())))
         );
+
+        let mock_for_debug_location_repo = MockForDebugLocationRepo::new();
+        let mock_for_debug_passage_repo = MockForDebugPassageRepo::new();
+        let mock_for_debug_player_state_repo = MockForDebugPlayerStateRepo::new();
+        let moc_for_debug_navigation_service = MockForDebugNavigationService::new();
+
         Self {
-            location_repository,
-            passage_repository,
-            player_state_repository,
-            navigation_service,
+            location_repository: Arc::new(mock_for_debug_location_repo),
+            player_state_repository: Arc::new(mock_for_debug_player_state_repo),
+            passage_repository: Arc::new(mock_for_debug_passage_repo),
+            navigation_service: Arc::new(moc_for_debug_navigation_service),
         }
     }
 }
