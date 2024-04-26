@@ -36,16 +36,11 @@ impl MovePlayerDomainStoryImpl {
                 Arc::new(PassageQueryImpl::new(passage_repository.clone())))
         );
 
-        let mock_for_debug_location_repo = MockForDebugLocationRepo::new();
-        let mock_for_debug_passage_repo = MockForDebugPassageRepo::new();
-        let mock_for_debug_player_state_repo = MockForDebugPlayerStateRepo::new();
-        let moc_for_debug_navigation_service = MockForDebugNavigationService::new();
-
         Self {
-            location_repository: Arc::new(mock_for_debug_location_repo),
-            player_state_repository: Arc::new(mock_for_debug_player_state_repo),
-            passage_repository: Arc::new(mock_for_debug_passage_repo),
-            navigation_service: Arc::new(moc_for_debug_navigation_service),
+            location_repository,
+            player_state_repository,
+            passage_repository,
+            navigation_service,
         }
     }
 }
@@ -55,10 +50,11 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
         Box::pin(async move {
+
             if let Some(player_id) = context.player_id {
                 let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
                     Ok(Some(state)) => state,
-                    Ok(None) => return Err("Player state not found".to_string()),
+                    Ok(None) => return Err(format!("Player state not found for player {:?}", player_id)),
                     Err(e) => return Err(e.to_string()),
                 };
 
