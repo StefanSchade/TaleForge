@@ -14,22 +14,15 @@ use application::contract_implementations::location_query_impl::LocationQueryImp
 use application::contract_implementations::passage_query_impl::PassageQueryImpl;
 use crosscutting::error_management::error::Error;
 use domain_contract::services::navigation_services::NavigationService;
+use actix_web::{App, HttpServer, web};
+use actix_web::web::Data;
+use adapter::web::option_01_actixweb::app_state::AppState;
+use adapter::web::option_01_actixweb::controllers::player_controller;
 
 mod data_loader;
 
-fn assert_send<T: Send>() {}
-
-#[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
-    assert_send::<MovePlayerDomainStoryImpl>();
-    assert_send::<InMemoryPlayerStateRepository>();
-    assert_send::<InMemoryLocationRepository>();
-    assert_send::<InMemoryLocationRepository>();
-    assert_send::<NavigationService>();
-    assert_send::<Error>();
-    assert_send::<LocationQueryImpl>();
-    assert_send::<PassageQueryImpl>();
 
     env_logger::init_from_env(Env::default().default_filter_or("info"));  // Adjust log level as needed
 
@@ -80,13 +73,20 @@ async fn main() -> std::io::Result<()> {
         player_state_repo.clone(),
     ));
 
-    // hand everything to a container
+    let app_state = AppState {
+        move_player_domain_story: move_player_ds,
+    };
 
-    let service_container = ServiceContainer::new(
-        move_player_ds,
-    );
+    HttpServer::new(move || {
+        App::new()
+            .app_data(Data::new(Arc::new(app_state.clone())))
+            .service(
+                web::resource("/player/move").route(web::post().to(player_controller::move_player))
+            )
+        // Add other services and configuration as needed
+    })
+        .bind("localhost:8080")?
+        .run()
+        .await
 
-
-    let server = ActixWebServer::new(service_container);
-    server.start_server().await
 }
