@@ -48,8 +48,10 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
+        let game_id = context.player_id;
+
         Box::pin(async move {
-            if let Some(player_id) = context.player_id {
+            if let player_id = context.player_id {
                 let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
                     Ok(Some(state)) => state,
                     Ok(None) => return Err(format!("Player state not found for player {:?}", player_id)),
@@ -57,7 +59,7 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                 };
 
                 let player_state = player_state_map_dto_to_domain(&player_state_dto);
-                let (new_location, narration) = match navigation_service_clone.navigate(player_state, input.direction).await {
+                let (new_location, narration) = match navigation_service_clone.navigate(game_id, player_state, input.direction).await {
                     Ok(result) => result,
                     Err(e) => return Err(e.to_string()),
                 };
@@ -99,9 +101,9 @@ mod tests {
         LocationRepository {}
 
         impl LocationRepository for LocationRepository  {
-            fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
-            fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
-            fn add_location(&self, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
+            fn get_location_by_id(&self, game: u64,  id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
+            fn get_all_locations(&self, game: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
+            fn add_location(&self, game: u64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
         }
     }
 

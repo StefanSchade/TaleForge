@@ -26,7 +26,10 @@ pub async fn load_data_from_json<R, P>(
     let locations: Vec<Location> = serde_json::from_str(&contents)?;
 
     for location in locations {
-        location_repo.add_location(location_map_domain_to_dto(&location)).await?;
+        location_repo.add_location(
+            location.game_id(),
+            location_map_domain_to_dto(&location)
+        ).await?;
     }
 
     let mut file = File::open(passage_file_path).await?;

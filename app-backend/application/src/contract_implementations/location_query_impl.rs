@@ -21,13 +21,14 @@ impl LocationQueryImpl {
 impl LocationQueries for LocationQueryImpl {
     fn get_location_by_aggregate_id(
         &self,
+        game_id: u64,
         location_aggregate_id: u64
     ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>> {
 
         let location_repository = self.location_repository.clone();
 
         Box::pin(async move {
-            match location_repository.get_location_by_id(location_aggregate_id).await {
+            match location_repository.get_location_by_id(game_id, location_aggregate_id).await {
                 Ok(Some(location_dto)) => {
                     let location = location_map_dto_to_domain(location_dto);
                     Ok(Some(location))

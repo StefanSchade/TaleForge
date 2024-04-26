@@ -1,15 +1,15 @@
 use std::collections::HashMap;
-use std::fmt;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use futures::future::BoxFuture;
+use serde::{Deserialize, Serialize};
 use crosscutting::error_management::error::Error;
 use port::dto::location_dto::LocationDTO;
 use port::repositories::location_repository::LocationRepository;
 
 #[derive(Clone)]
 pub struct InMemoryLocationRepository {
-    locations: Arc<Mutex<HashMap<u64, LocationDTO>>>,
+    locations: Arc<Mutex<HashMap<u64, HashMap<u64, LocationDTO>>>>,
 }
 
 impl InMemoryLocationRepository {
@@ -20,37 +20,42 @@ impl InMemoryLocationRepository {
     }
 }
 
-impl fmt::Debug for InMemoryLocationRepository {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("InMemoryLocationRepository")
-            .finish()
+impl LocationRepository for InMemoryLocationRepository {
+    fn get_location_by_id(&self, game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+        let locations = self.locations.clone();
+
+        Box::pin(async move {
+            let locations = locations.lock().await;
+            Ok(locations.get(&game_id).and_then(|game_locations| game_locations.get(&location_id).cloned()))
+        })
+    }
+
+    fn get_all_locations(&self, game_id: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
+        let locations = self.locations.clone();
+
+        Box::pin(async move {
+            let locations = locations.lock().await;
+            match locations.get(&game_id) {
+                Some(game_locations) => Ok(game_locations.values().cloned().collect()),
+                None => Ok(vec![]), // Return an empty vector if no locations are found for the game
+            }
+        })
+    }
+
+    fn add_location(&self, game_id: u64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
+        let locations = self.locations.clone();
+
+        Box::pin(async move {
+            let mut locations = locations.lock().await;
+            let game_locations = locations.entry(game_id).or_insert_with(HashMap::new);
+            game_locations.insert(location.id, location);
+            Ok(())
+        })
     }
 }
 
-impl LocationRepository for InMemoryLocationRepository {
-    fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
-        let locations = Arc::clone(&self.locations);
-
-        Box::pin(async move {
-            let guard = locations.lock().await; // directly gets a MutexGuard
-            Ok(guard.get(&id).cloned())  // No need for match or Result handling here
-        })
-    }
-
-    fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
-        let locations = Arc::clone(&self.locations);
-        Box::pin(async move {
-            let guard = locations.lock().await; // directly gets a MutexGuard
-            Ok(guard.values().cloned().collect())  // Collect all locations
-        })
-    }
-
-    fn add_location(&self, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
-        let locations = Arc::clone(&self.locations);
-        Box::pin(async move {
-            let mut guard = locations.lock().await; // directly gets a MutexGuard
-            guard.insert(location.id, location);
-            Ok(())
-        })
+impl std::fmt::Debug for InMemoryLocationRepository {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("InMemoryLocationRepository").finish()
     }
 }

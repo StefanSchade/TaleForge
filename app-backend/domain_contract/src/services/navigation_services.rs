@@ -19,6 +19,7 @@ use crate::contracts::passage_query::PassageQueries;
 pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
         &self,
+        game_id: u64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>>;
@@ -45,6 +46,7 @@ impl NavigationService {
 impl NavigationServiceTrait for NavigationService {
     fn navigate(
         &self,
+        game_id: u64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>> {
@@ -59,8 +61,10 @@ impl NavigationServiceTrait for NavigationService {
             match passage_result {
                 Ok(Some(passage)) => {
                     let location_result = location_query_clone
-                        .get_location_by_aggregate_id(passage.get_to_location())
-                        .await;
+                        .get_location_by_aggregate_id(
+                            game_id,
+                            passage.get_to_location()
+                        ).await;
 
                     match location_result {
                         Ok(Some(target_location)) => {
@@ -105,6 +109,7 @@ mod tests {
             fn get_location_by_aggregate_id
                 (
                     &self,
+                    game_id: u64,
                     location_aggregate_id: u64
                 ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>>;
         }

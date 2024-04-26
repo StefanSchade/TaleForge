@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Location {
     aggregate_id: u64,
+    game_id: u64,
     title: String,
     description: String,
     #[builder(default)]
@@ -14,6 +15,9 @@ pub struct Location {
 impl Location {
     pub fn aggregate_id(&self) -> u64 {
         self.aggregate_id
+    }
+    pub fn game_id(&self) -> u64 {
+        self.game_id
     }
     pub fn title(&self) -> &str {
         &*self.title
