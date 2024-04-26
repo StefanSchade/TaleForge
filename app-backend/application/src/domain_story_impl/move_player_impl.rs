@@ -7,7 +7,7 @@ use port::context::RequestContext;
 use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
-use port::repositories::player_state_repository::{PlayerStateRepository};
+use port::repositories::player_state_repository::PlayerStateRepository;
 
 use crate::contract_implementations::location_query_impl::LocationQueryImpl;
 use crate::contract_implementations::passage_query_impl::PassageQueryImpl;
@@ -49,7 +49,6 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
         Box::pin(async move {
-
             if let Some(player_id) = context.player_id {
                 let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
                     Ok(Some(state)) => state,
@@ -80,17 +79,19 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
 
 #[cfg(test)]
 mod tests {
+    use fmt::Debug;
     use std::fmt;
+
+    use futures::FutureExt;
     use mockall::{mock, predicate::*};
     use mockall::predicate::eq;
 
-    use domain_contract::services::navigation_services::NavigationServiceTrait;
+    use crosscutting::error_management::error::Error;
     use domain_pure::model::location::LocationBuilder;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
     use port::repositories::location_repository::LocationRepository;
-    use crosscutting::error_management::error::Error;
 
     use super::*;
 
@@ -98,13 +99,13 @@ mod tests {
         LocationRepository {}
 
         impl LocationRepository for LocationRepository  {
-            fn get_location_by_id(&self, id: i32) -> Option<LocationDTO>;
-            fn get_all_locations(&self) -> Vec<LocationDTO>;
-            fn add_location(&self, location: LocationDTO) -> Result<(), String>;
+            fn get_location_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
+            fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
+            fn add_location(&self, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
         }
     }
 
-    impl fmt::Debug for MockLocationRepository {
+    impl Debug for MockLocationRepository {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             f.debug_struct("MockLocationRepository")
                 .finish()  // Adjust according to what you might want to show in debug
@@ -123,20 +124,10 @@ mod tests {
         }
     }
 
-    impl fmt::Debug for MockPassageRepository {
+    impl Debug for MockPassageRepository {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             f.debug_struct("MockPassageRepository")
                 .finish()  // Adjust according to what you might want to show in debug
-        }
-    }
-
-
-    mock! {
-        PlayerStateRepository {}
-
-        impl PlayerStateRepository for PlayerStateRepository  {
-             fn find_by_player_id(&self, id: i32) -> Option<PlayerStateDTO>;
-             fn save(&self, player_state: PlayerStateDTO);
         }
     }
 
@@ -144,6 +135,15 @@ mod tests {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             f.debug_struct("MockPlayerStateRepository")
                 .finish()  // Adjust according to what you might want to show in debug
+        }
+    }
+
+    mock! {
+        PlayerStateRepository {}
+
+        impl PlayerStateRepository for PlayerStateRepository  {
+             fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
+             fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
         }
     }
 
@@ -171,34 +171,52 @@ mod tests {
         mock_passage_repo.expect_find_passage_by_location_and_direction()
             .with(mockall::predicate::eq(1), mockall::predicate::eq("north"))
             .times(1)  // You can specify how many times you expect this call
-            .returning(|_, _| Some(PassageDTO {
-                id: 1,
-                description: "north".to_string(),
-                direction: "north".to_string(),
-                narration: "You take the passage".to_string(),
-                from_location_id: 1,
-                to_location_id: 1,
-            }));
+            .returning(|_, _|
+                async move {
+                    Ok(
+                        Some(PassageDTO {
+                            id: 1,
+                            description: "north".to_string(),
+                            direction: "north".to_string(),
+                            narration: "You take the passage".to_string(),
+                            from_location_id: 1,
+                            to_location_id: 1,
+                        })
+                    )
+                }.boxed()
+            );
 
         mock_location_repo.expect_get_location_by_id()
             .with(eq(1))
             .times(1)
-            .returning(|_| Some(LocationDTO {
-                id: 99,
-                title: "the new location".to_string(),
-                description: "destination".to_string(),
-                image_url: None,
-            }));
+            .returning(|_|
+                async move {
+                    Ok(
+                        Some(LocationDTO {
+                            id: 99,
+                            title: "the new location".to_string(),
+                            description: "destination".to_string(),
+                            image_url: None,
+                        })
+                    )
+                }.boxed()
+            );
 
         mock_player_state_repo.expect_find_by_player_id()
             .with(eq(expected_player_id))
             .times(1)
-            .returning(move |_| Some(
-                PlayerStateDTO {
-                    player_id: expected_player_id,
-                    current_location_id: 1,
-                }
-            ));
+            .returning(move |_|
+                async move {
+                    Ok(
+                        Some(
+                            PlayerStateDTO {
+                                player_id: expected_player_id,
+                                current_location_id: 1,
+                            }
+                        )
+                    )
+                }.boxed()
+            );
 
         // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of
         // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`
@@ -207,7 +225,7 @@ mod tests {
         mock_player_state_repo.expect_save()
             .withf(move |ps| ps.player_id == expected_player_id)
             .times(1)
-            .returning(|_| ());
+            .returning(|_| async { Ok(None) }.boxed());
 
         let use_case =
             MovePlayerDomainStoryImpl::new(

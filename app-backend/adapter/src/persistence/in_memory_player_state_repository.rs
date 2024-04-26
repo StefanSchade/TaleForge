@@ -36,13 +36,13 @@ impl PlayerStateRepository for InMemoryPlayerStateRepository {
         })
     }
 
-    fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
         let states = self.states.clone();
         Box::pin(async move {
             let mut states = states.lock().await;
             println!("Updating InMemoryRepositoryPlayerState with {:?}", &player_state);
-            states.insert(player_state.player_id, player_state);
-            Ok(())
+            states.insert(player_state.player_id, player_state.clone());
+            Ok(Some(player_state))
         })
     }
 }

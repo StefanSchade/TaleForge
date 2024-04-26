@@ -89,7 +89,7 @@ impl NavigationServiceTrait for NavigationService {
 mod tests {
     use std::{fmt, future};
     use futures::future::BoxFuture;
-    use mockall::{mock, PredicateBoxExt};
+    use mockall::mock;
     use mockall::predicate::eq;
 
     use domain_pure::model::location::{Location, LocationBuilder};

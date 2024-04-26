@@ -41,7 +41,7 @@ impl MockMovePlayerDomainStory {
 #[cfg(feature = "test-utils")]
 #[async_trait]
 impl MovePlayerDomainStory for MockMovePlayerDomainStory {
-    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
+    fn execute(&self, _context: RequestContext, _input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
         future::ready(Ok(self.fixed_result.clone())).boxed()
     }
 }

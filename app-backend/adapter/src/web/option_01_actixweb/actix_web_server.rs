@@ -44,7 +44,7 @@ impl WebServer for ActixWebServer {
 
 
 impl ActixWebServer {
-    fn configure_routes(cfg: &mut web::ServiceConfig) {
+    pub(crate) fn configure_routes(cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::resource("/player/move").route(web::post().to(player_controller::move_player))
         );

@@ -7,7 +7,7 @@ use crate::dto::player_state_dto::PlayerStateDTO;
 
 pub trait PlayerStateRepository: Send + Sync + Debug {
     fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
-    fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>>;
+    fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
 }
 #[cfg(feature = "test-utils")]
 pub struct MockPlayerStateRepository {
@@ -46,8 +46,8 @@ impl PlayerStateRepository for MockPlayerStateRepository {
         ).boxed()
     }
 
-    fn save(&self, _player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>> {
-        future::ready(Ok(())).boxed()
+    fn save(&self, _player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+        future::ready(Ok(None)).boxed()  // Indicates a successful operation with no actual player state returned
     }
 }
 

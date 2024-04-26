@@ -83,7 +83,7 @@ mod tests {
             image_url: None,
         };
 
-        let mock_location_repository = Arc::new(MockLocationRepository::new(mock_location, None));
+        let _mock_location_repository = Arc::new(MockLocationRepository::new(mock_location, None));
 
         let mock_passage = PassageDTO {
             id: 1,
@@ -93,7 +93,7 @@ mod tests {
             description: "desc".to_string(),
             narration: "nar".to_string(),
         };
-        let mock_passage_repository = Arc::new(MockPassageRepository::new(mock_passage, None));
+        let _mock_passage_repository = Arc::new(MockPassageRepository::new(mock_passage, None));
 
         let mock_player_state = PlayerStateDTO {
             player_id: 1,
@@ -104,10 +104,7 @@ mod tests {
         let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "You moved north.".to_string()));
 
         let app_state = web::Data::new(Arc::new(AppState::new(
-            mock_location_repository,
-            mock_passage_repository,
-            mock_player_state_repository,
-            mock_move_player_domain_story,
+            mock_move_player_domain_story
         )));
 
         let app = test::init_service(
