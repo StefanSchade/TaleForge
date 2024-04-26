@@ -4,10 +4,9 @@ use std::sync::Arc;
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 use log::info;
-use adapter::web::option_01_actixweb::app_state::AppState;
-use adapter::web::option_01_actixweb::controllers::player_controller;
 use port::service_container::service_container::ServiceContainer;
-
+use crate::web::option_01_actixweb::app_state::AppState;
+use crate::web::option_01_actixweb::controllers::player_controller;
 
 
 pub struct ActixWebServer {

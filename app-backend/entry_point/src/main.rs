@@ -21,10 +21,9 @@ use actix_web::web::Data;
 use log::info;
 use adapter::web::option_01_actixweb::app_state::AppState;
 use adapter::web::option_01_actixweb::controllers::player_controller;
-use crate::actix_web_server::ActixWebServer;
+use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
 
 mod data_loader;
-mod actix_web_server;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
