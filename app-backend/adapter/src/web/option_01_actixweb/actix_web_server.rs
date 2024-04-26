@@ -1,11 +1,14 @@
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
+
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 use log::info;
+
 use port::servers::web_server::WebServer;
 use port::service_container::service_container::ServiceContainer;
+
 use crate::web::option_01_actixweb::app_state::AppState;
 use crate::web::option_01_actixweb::controllers::player_controller;
 
@@ -27,10 +30,8 @@ impl WebServer for ActixWebServer {
             let server = HttpServer::new(move || {
                 App::new()
                     .app_data(Data::new(Arc::new(app_state.clone())))
-                    .service(
-                        web::resource("/player/move").route(web::post().to(player_controller::move_player))
-                    )
-                // Add other services and configuration as needed
+                    .configure(Self::configure_routes)
+                    //.service(web::resource("/player/move").route(web::post().to(player_controller::move_player))) alternative cfg
             })
                 .bind("localhost:8080")?;
             server.run()
@@ -43,9 +44,16 @@ impl WebServer for ActixWebServer {
 
 
 impl ActixWebServer {
+    fn configure_routes(cfg: &mut web::ServiceConfig) {
+        cfg.service(
+            web::resource("/player/move").route(web::post().to(player_controller::move_player))
+        );
+    }
+
     pub fn new(container: ServiceContainer) -> Arc<Self> {
         Arc::new(ActixWebServer {
             service_container: container,
         })
     }
 }
+

@@ -94,8 +94,8 @@ impl PassageRepository for MockPassageRepository {
     }
 }
 
-#[test]
-fn test_with_mock_repository() {
+#[tokio::test]
+async fn test_with_mock_repository() {
     let fixed_passage = PassageDTO {
         id: 1,
         from_location_id: 1,
@@ -106,13 +106,14 @@ fn test_with_mock_repository() {
     };
 
     let mock_repo = MockPassageRepository::new(fixed_passage, None);
-    let passage = mock_repo.get_passage_by_id(1).unwrap();
+    let passage_future = mock_repo.get_passage_by_id(1);
+    let passage = passage_future.await.expect("Failed to get passage");
 
-    assert_eq!(passage.description, "description1");
+    assert_eq!(passage.unwrap().description, "description1");
 }
 
-#[test]
-fn test_get_passages_for_location() {
+#[tokio::test]
+async fn test_get_passages_for_location() {
     let fixed_passage = PassageDTO {
         id: 1,
         from_location_id: 1,
@@ -135,7 +136,8 @@ fn test_get_passages_for_location() {
     ];
 
     let mock_repo = MockPassageRepository::new(fixed_passage, Some(all_passages.clone()));
-    let passages = mock_repo.get_passages_for_location(1);
+    let passages_future = mock_repo.get_passages_for_location(1);
+    let passages = passages_future.await.expect("Failed to get passages");
 
     let expected_json = serde_json::to_string(&all_passages).expect("Failed to serialize expected passages");
     let actual_json = serde_json::to_string(&passages).expect("Failed to serialize actual passages");
