@@ -4,18 +4,19 @@ use std::sync::Arc;
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 use log::info;
+use port::servers::web_server::WebServer;
 use port::service_container::service_container::ServiceContainer;
 use crate::web::option_01_actixweb::app_state::AppState;
 use crate::web::option_01_actixweb::controllers::player_controller;
 
-
+#[derive(Debug)]
 pub struct ActixWebServer {
     pub service_container: ServiceContainer,
 }
 
-impl ActixWebServer {
+impl WebServer for ActixWebServer {
     // pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
-    pub fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+    fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
         info!("starting actix");
 
         let app_state = AppState {

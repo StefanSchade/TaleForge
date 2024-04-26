@@ -20,6 +20,7 @@ pub struct MovePlayerResult {
 }
 
 #[cfg(feature = "test-utils")]
+#[derive(Debug)]
 pub struct MockMovePlayerDomainStory {
     pub fixed_result: MovePlayerResult,
 }
