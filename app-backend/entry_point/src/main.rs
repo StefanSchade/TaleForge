@@ -1,33 +1,22 @@
 use std::future::Future;
 use std::path::Path;
-use std::pin::Pin;
 use std::sync::Arc;
+
+use env_logger::Env;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
-use adapter::web::option_01_actixweb::server2::ActixWebServer2;
+use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
 use port::service_container::service_container::ServiceContainer;
-use env_logger::Env;
-use application::contract_implementations::location_query_impl::LocationQueryImpl;
-use application::contract_implementations::passage_query_impl::PassageQueryImpl;
-use crosscutting::error_management::error::Error;
-use domain_contract::services::navigation_services::NavigationService;
-use actix_web::{App, HttpServer, web};
-use actix_web::web::Data;
-use log::info;
-use adapter::web::option_01_actixweb::app_state::AppState;
-use adapter::web::option_01_actixweb::controllers::player_controller;
-use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
 
 mod data_loader;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-
     env_logger::init_from_env(Env::default().default_filter_or("info"));  // Adjust log level as needed
 
     // instantiate the outbound adapters ...
@@ -49,7 +38,7 @@ async fn main() -> std::io::Result<()> {
         location_repo.clone(),
         passage_repo.clone(),
         &location_file_path,
-        &passage_file_path
+        &passage_file_path,
     ).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)));
 
 
@@ -61,7 +50,7 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
-    let _= player_state_repo
+    let _ = player_state_repo
         .save(
             PlayerStateDTO {
                 player_id: 1,
@@ -81,8 +70,7 @@ async fn main() -> std::io::Result<()> {
 
     let actix = ActixWebServer::new(service_container);
 
-      actix.start_server().await
-
+    actix.start_server().await
 }
 
 
