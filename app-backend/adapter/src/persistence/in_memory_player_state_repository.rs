@@ -9,7 +9,7 @@ use port::repositories::player_state_repository::PlayerStateRepository;
 
 #[derive(Clone)]
 pub struct InMemoryPlayerStateRepository {
-    states: Arc<Mutex<HashMap<i32, PlayerStateDTO>>>,
+    states: Arc<Mutex<HashMap<u64, PlayerStateDTO>>>,
 }
 
 impl InMemoryPlayerStateRepository {
@@ -28,7 +28,7 @@ impl fmt::Debug for InMemoryPlayerStateRepository {
 }
 
 impl PlayerStateRepository for InMemoryPlayerStateRepository {
-    fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+    fn find_by_player_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
         let states = self.states.clone();
         Box::pin(async move {
             let states = states.lock().await;

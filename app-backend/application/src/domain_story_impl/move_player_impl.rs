@@ -99,7 +99,7 @@ mod tests {
         LocationRepository {}
 
         impl LocationRepository for LocationRepository  {
-            fn get_location_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
+            fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
             fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
             fn add_location(&self, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
         }
@@ -116,11 +116,11 @@ mod tests {
         PassageRepository {}
 
          impl  PassageRepository for PassageRepository {
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-            fn get_passage_by_id(&self, id: i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-            fn get_passages_for_location(&self, location_id: i32) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
+            fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passage_by_id(&self, id: u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passages_for_location(&self, location_id: u64) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
             fn add_passage(&self, passage: PassageDTO) ->  BoxFuture<'static, Result<(), Error>>;
-            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id:u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
         }
     }
 
@@ -142,17 +142,17 @@ mod tests {
         PlayerStateRepository {}
 
         impl PlayerStateRepository for PlayerStateRepository  {
-             fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
+             fn find_by_player_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
              fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
         }
     }
 
     #[tokio::test]
     async fn test_move_player_success() {
-        let expected_destination_location_id: i32 = 99;
+        let expected_destination_location_id: u64 = 99;
         let expected_passage_narration_text: &str = "You take the passage and reach the new location.";
         let expected_direction_instruction: &str = "north";
-        let expected_player_id: i32 = 42;
+        let expected_player_id: u64 = 42;
 
         let mut mock_location_repo = MockLocationRepository::new();
         let mut mock_passage_repo = MockPassageRepository::new();
@@ -218,7 +218,7 @@ mod tests {
                 }.boxed()
             );
 
-        // `expected_player_id` is of type i32 and thus implements the `Copy` trait, implying that instead of
+        // `expected_player_id` is of type u64 and thus implements the `Copy` trait, implying that instead of
         // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`
         // However doing so results in an [E0373], so we apply what we would do with non-Copy data and move
         // ownership explicitly to the closure.

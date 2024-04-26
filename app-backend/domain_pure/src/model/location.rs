@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Location {
-    aggregate_id: i32,
+    aggregate_id: u64,
     title: String,
     description: String,
     #[builder(default)]
@@ -12,7 +12,7 @@ pub struct Location {
 }
 
 impl Location {
-    pub fn aggregate_id(&self) -> i32 {
+    pub fn aggregate_id(&self) -> u64 {
         self.aggregate_id
     }
     pub fn title(&self) -> &str {

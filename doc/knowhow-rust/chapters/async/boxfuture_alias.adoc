@@ -20,14 +20,14 @@ use futures::future::BoxFuture;
 use std::pin::Pin;
 
 pub trait PassageQueries: Send + Sync {
-    fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
-    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+    fn find_passage_between_locations(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+    fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
 }
 
 pub struct MyQueryHandler;
 
 impl PassageQueries for MyQueryHandler {
-    fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
+    fn find_passage_between_locations(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
         Box::pin(async move {
             if from_location_id == to_location_id {
                 Ok(Some(Passage {}))
@@ -37,7 +37,7 @@ impl PassageQueries for MyQueryHandler {
         })
     }
 
-    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
+    fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>> {
         Box::pin(async move {
             if direction == "north" {
                 Ok(Some(Passage {}))

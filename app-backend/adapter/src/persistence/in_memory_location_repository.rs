@@ -9,7 +9,7 @@ use port::repositories::location_repository::LocationRepository;
 
 #[derive(Clone)]
 pub struct InMemoryLocationRepository {
-    locations: Arc<Mutex<HashMap<i32, LocationDTO>>>,
+    locations: Arc<Mutex<HashMap<u64, LocationDTO>>>,
 }
 
 impl InMemoryLocationRepository {
@@ -28,7 +28,7 @@ impl fmt::Debug for InMemoryLocationRepository {
 }
 
 impl LocationRepository for InMemoryLocationRepository {
-    fn get_location_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+    fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
         let locations = Arc::clone(&self.locations);
 
         Box::pin(async move {

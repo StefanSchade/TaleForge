@@ -6,7 +6,7 @@ use crosscutting::error_management::error::Error;
 use crate::dto::player_state_dto::PlayerStateDTO;
 
 pub trait PlayerStateRepository: Send + Sync + Debug {
-    fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
+    fn find_by_player_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
     fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
 }
 #[cfg(feature = "test-utils")]
@@ -34,7 +34,7 @@ impl fmt::Debug for MockPlayerStateRepository {
 #[cfg(feature = "test-utils")]
 impl PlayerStateRepository for MockPlayerStateRepository {
     #[cfg(feature = "test-utils")]
-    fn find_by_player_id(&self, player_id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+    fn find_by_player_id(&self, player_id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
         future::ready(
             Ok(
                 if player_id == self.fixed_player_state.player_id {

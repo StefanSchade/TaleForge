@@ -17,7 +17,7 @@ pub struct WebMovePlayerInput {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerOutput {
-    pub location: i32,
+    pub location: u64,
     pub narration: String,
 }
 

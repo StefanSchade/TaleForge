@@ -21,7 +21,7 @@ impl LocationQueryImpl {
 impl LocationQueries for LocationQueryImpl {
     fn get_location_by_aggregate_id(
         &self,
-        location_aggregate_id: i32
+        location_aggregate_id: u64
     ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>> {
 
         let location_repository = self.location_repository.clone();

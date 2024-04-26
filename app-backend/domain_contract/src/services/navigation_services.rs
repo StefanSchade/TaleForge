@@ -105,7 +105,7 @@ mod tests {
             fn get_location_by_aggregate_id
                 (
                     &self,
-                    location_aggregate_id: i32
+                    location_aggregate_id: u64
                 ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>>;
         }
     }
@@ -120,8 +120,8 @@ mod tests {
     mock! {
         PassageQueries {}
         impl PassageQueries for PassageQueries {
-            fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_between_locations(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
         }
     }
 
@@ -139,7 +139,7 @@ mod tests {
         let mut mock_location_query = MockLocationQueries::new();
 
         mock_location_query.expect_get_location_by_aggregate_id()
-            .with(eq(2_i32))
+            .with(eq(2_u64))
             .times(1)
             .returning(|_|
                 future::ready(

@@ -8,7 +8,7 @@ pub mod navigation {
     pub trait LocationQueries: Send + Sync + Debug {
         fn get_location_by_aggregate_id(
             &self,
-            location_aggregate_id: i32
+            location_aggregate_id: u64
         ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>>;
     }
 }

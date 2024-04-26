@@ -9,7 +9,7 @@ use crosscutting::error_management::error::Error;
 
 #[derive(Clone)]
 pub struct InMemoryPassageRepository {
-    passages: Arc<Mutex<HashMap<i32, PassageDTO>>>,
+    passages: Arc<Mutex<HashMap<u64, PassageDTO>>>,
 }
 
 impl InMemoryPassageRepository {
@@ -28,7 +28,7 @@ impl fmt::Debug for InMemoryPassageRepository {
 }
 
 impl PassageRepository for InMemoryPassageRepository {
-    fn get_passage_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn get_passage_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let lock = passages.lock().await;
@@ -36,7 +36,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn get_passages_for_location(&self, location_id: i32) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
+    fn get_passages_for_location(&self, location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let lock = passages.lock().await;
@@ -47,7 +47,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         let direction = direction.to_owned();  // Clone the direction into a new String
 
@@ -68,7 +68,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let lock = passages.lock().await;

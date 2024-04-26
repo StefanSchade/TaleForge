@@ -17,7 +17,7 @@ pub struct MovePlayerCommand {
 }
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MovePlayerResult {
-    pub player_location: i32,
+    pub player_location: u64,
     pub narration: String,
 }
 
@@ -28,7 +28,7 @@ pub struct MockMovePlayerDomainStory {
 }
 #[cfg(feature = "test-utils")]
 impl MockMovePlayerDomainStory {
-    pub fn new(player_location: i32, narration: String) -> Self {
+    pub fn new(player_location: u64, narration: String) -> Self {
         MockMovePlayerDomainStory{
             fixed_result: MovePlayerResult{
                 player_location,

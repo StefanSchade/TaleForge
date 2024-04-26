@@ -3,23 +3,23 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Passage {
-    aggregate_id: i32,
-    from_location_id: i32,
-    to_location_id: i32,
+    aggregate_id: u64,
+    from_location_id: u64,
+    to_location_id: u64,
     description: String,
     direction: String,
     narration: String,
 }
 
 impl Passage {
-    pub fn get_aggregate_id(&self) -> i32 {
+    pub fn get_aggregate_id(&self) -> u64 {
         self.aggregate_id
     }
 
-    pub fn get_from_location(&self) -> i32 {
+    pub fn get_from_location(&self) -> u64 {
         self.from_location_id
     }
-    pub fn get_to_location(&self) -> i32 {
+    pub fn get_to_location(&self) -> u64 {
         self.to_location_id
     }
 
