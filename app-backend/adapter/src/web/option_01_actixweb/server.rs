@@ -9,7 +9,7 @@ use log::info;
 use port::service_container::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
-use crate::web::option_01_actixweb::controllers::{debug_controller, player_controller};
+use crate::web::option_01_actixweb::controllers::{player_controller};
 
 #[derive(Clone)]
 pub struct SimpleState;
@@ -49,9 +49,6 @@ impl ActixWebServer {
     fn configure_routes(cfg: &mut web::ServiceConfig) {
         cfg.service(
             web::resource("/player/move").route(web::post().to(player_controller::move_player))
-        );
-        cfg.service(
-            web::resource("/index").route(web::post().to(debug_controller::index))
         );
     }
 
