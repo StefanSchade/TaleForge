@@ -21,7 +21,7 @@ use adapter::web::option_01_actixweb::controllers::player_controller;
 
 mod data_loader;
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
 
     env_logger::init_from_env(Env::default().default_filter_or("info"));  // Adjust log level as needed
