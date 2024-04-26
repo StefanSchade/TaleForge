@@ -15,12 +15,11 @@ use application::contract_implementations::passage_query_impl::PassageQueryImpl;
 use crosscutting::error_management::error::Error;
 use domain_contract::services::navigation_services::NavigationService;
 
-
 mod data_loader;
 
 fn assert_send<T: Send>() {}
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
 
     assert_send::<MovePlayerDomainStoryImpl>();
