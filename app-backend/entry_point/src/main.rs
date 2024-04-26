@@ -1,10 +1,12 @@
+use std::future::Future;
 use std::path::Path;
+use std::pin::Pin;
 use std::sync::Arc;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
-use adapter::web::option_01_actixweb::server::ActixWebServer;
+use adapter::web::option_01_actixweb::server2::ActixWebServer2;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
@@ -16,6 +18,7 @@ use crosscutting::error_management::error::Error;
 use domain_contract::services::navigation_services::NavigationService;
 use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
+use log::info;
 use adapter::web::option_01_actixweb::app_state::AppState;
 use adapter::web::option_01_actixweb::controllers::player_controller;
 
@@ -73,20 +76,35 @@ async fn main() -> std::io::Result<()> {
         player_state_repo.clone(),
     ));
 
+    let service_container = ServiceContainer::new(move_player_ds);
+
+
+      start_server(service_container).await
+
+}
+
+pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+
+    info!("starting actix");
+
     let app_state = AppState {
-        move_player_domain_story: move_player_ds,
+        move_player_domain_story: sc.move_player(),
     };
 
-    HttpServer::new(move || {
-        App::new()
-            .app_data(Data::new(Arc::new(app_state.clone())))
-            .service(
-                web::resource("/player/move").route(web::post().to(player_controller::move_player))
-            )
-        // Add other services and configuration as needed
-    })
-        .bind("localhost:8080")?
-        .run()
-        .await
+    let server_future = async move {
+        let server = HttpServer::new(move || {
+            App::new()
+                .app_data(Data::new(Arc::new(app_state.clone())))
+                .service(
+                    web::resource("/player/move").route(web::post().to(player_controller::move_player))
+                )
+            // Add other services and configuration as needed
+        })
+            .bind("localhost:8080")?;
+            server.run()
+            .await
+    };
+
+    Box::pin(server_future)
 
 }

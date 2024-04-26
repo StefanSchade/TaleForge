@@ -15,11 +15,11 @@ use crate::web::option_01_actixweb::controllers::{player_controller};
 pub struct SimpleState;
 
 
-pub struct ActixWebServer {
+pub struct ActixWebServer2 {
     pub service_container: Arc<ServiceContainer>,
 }
 
-impl ActixWebServer {
+impl ActixWebServer2 {
     pub fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
         info!("starting actix");
 
@@ -51,7 +51,7 @@ impl ActixWebServer {
     }
 
     pub fn new(container: ServiceContainer) -> Arc<Self> {
-        Arc::new(ActixWebServer {
+        Arc::new(ActixWebServer2 {
             service_container: Arc::new(container),
         })
     }
