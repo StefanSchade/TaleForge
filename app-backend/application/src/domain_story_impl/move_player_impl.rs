@@ -90,6 +90,7 @@ mod tests {
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
     use port::repositories::location_repository::LocationRepository;
+    use crosscutting::error_management::error::Error;
 
     use super::*;
 
@@ -117,7 +118,7 @@ mod tests {
             fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
             fn get_passage_by_id(&self, id: i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
             fn get_passages_for_location(&self, location_id: i32) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
-            fn add_passage(&self, passage: PassageDTO) -> Result<(), String>;
+            fn add_passage(&self, passage: PassageDTO) ->  BoxFuture<'static, Result<(), Error>>;
             fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
         }
     }
