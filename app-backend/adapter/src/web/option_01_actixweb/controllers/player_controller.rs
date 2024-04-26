@@ -22,7 +22,7 @@ pub struct WebMovePlayerOutput {
 }
 
 pub async fn move_player(
-    data: web::Data<Arc<AppState>>,
+    app_state: web::Data<Arc<AppState>>, // Use web::Data for proper extraction
     web_input: web::Json<WebMovePlayerInput>
 ) -> impl Responder {
     info!("Handling move_player request: {:?}", web_input);
@@ -33,8 +33,11 @@ pub async fn move_player(
     let command = MovePlayerCommand::from(web_input.into_inner());
     let context = RequestContext::new(Some(extracted_player_id));
 
+    // Properly access the domain story through the app state
+    let domain_story = app_state.move_player_domain_story.clone();
+
     // Await the async execute method
-    let result = data.move_player_domain_story.execute(context, command).await;
+    let result = domain_story.execute(context, command).await;
 
     match result {
         Ok(response) => {
@@ -43,10 +46,12 @@ pub async fn move_player(
                 narration: response.narration,
             };
             HttpResponse::Ok().json(web_output)
-        }
+        },
         Err(error) => HttpResponse::InternalServerError().body(error),
     }
 }
+
+
 impl From<WebMovePlayerInput> for MovePlayerCommand {
     fn from(input: WebMovePlayerInput) -> Self {
         MovePlayerCommand { direction: input.direction }
