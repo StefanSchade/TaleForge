@@ -1,8 +1,8 @@
-use std::future::Future;
 use std::path::Path;
 use std::sync::Arc;
 
 use env_logger::Env;
+use log::info;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
@@ -11,6 +11,7 @@ use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
+use port::servers::web_server::WebServer;
 use port::service_container::service_container::ServiceContainer;
 
 mod data_loader;
@@ -27,8 +28,19 @@ async fn main() -> std::io::Result<()> {
 
     // ... and initialize them
 
+    let _ = player_state_repo
+        .save(
+            PlayerStateDTO {
+                player_id: 1,
+                current_location_id: 1,
+            }
+        ).await;
+
+    info!("player state initialized");
+
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");
+
 
 
     // If `load_data_from_json` returns a known error type that already implements `Send + Sync`, use that.
@@ -50,13 +62,7 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
-    let _ = player_state_repo
-        .save(
-            PlayerStateDTO {
-                player_id: 1,
-                current_location_id: 1,
-            }
-        );
+
 
     // This is externalized because the adapter has no access to the domain and the constructor
 
@@ -72,5 +78,3 @@ async fn main() -> std::io::Result<()> {
 
     actix.start_server().await
 }
-
-
