@@ -1,14 +1,15 @@
+use std::fmt;
+use std::fmt::{Debug, Formatter};
+use serde::Serialize;
 use crate::error_management::error_kind::ErrorKind;
 
+#[derive(Serialize)]
 pub struct Error {
     pub code: String,
     pub message: String,
     pub parameters: Vec<String>,
     pub kind: ErrorKind,
 }
-
-use std::fmt;
-use std::fmt::{Debug, Formatter};
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

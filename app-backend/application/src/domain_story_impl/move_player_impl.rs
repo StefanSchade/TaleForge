@@ -80,6 +80,7 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
 
 #[cfg(test)]
 mod tests {
+    use std::fmt;
     use mockall::{mock, predicate::*};
     use mockall::predicate::eq;
 
@@ -102,17 +103,32 @@ mod tests {
         }
     }
 
+    impl fmt::Debug for MockLocationRepository {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("MockLocationRepository")
+                .finish()  // Adjust according to what you might want to show in debug
+        }
+    }
+
     mock! {
         PassageRepository {}
 
          impl  PassageRepository for PassageRepository {
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<PassageDTO>;
-            fn get_passage_by_id(&self, id: i32) -> Option<PassageDTO>;
-            fn get_passages_for_location(&self, location_id: i32) -> Vec<PassageDTO>;
+            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passage_by_id(&self, id: i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passages_for_location(&self, location_id: i32) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
             fn add_passage(&self, passage: PassageDTO) -> Result<(), String>;
-            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) -> Option<PassageDTO>;
+            fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id:i32) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
         }
     }
+
+    impl fmt::Debug for MockPassageRepository {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("MockPassageRepository")
+                .finish()  // Adjust according to what you might want to show in debug
+        }
+    }
+
 
     mock! {
         PlayerStateRepository {}
@@ -120,6 +136,13 @@ mod tests {
         impl PlayerStateRepository for PlayerStateRepository  {
              fn find_by_player_id(&self, id: i32) -> Option<PlayerStateDTO>;
              fn save(&self, player_state: PlayerStateDTO);
+        }
+    }
+
+    impl fmt::Debug for MockPlayerStateRepository {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("MockPlayerStateRepository")
+                .finish()  // Adjust according to what you might want to show in debug
         }
     }
 

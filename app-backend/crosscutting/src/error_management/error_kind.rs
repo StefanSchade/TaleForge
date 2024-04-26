@@ -1,6 +1,7 @@
 use std::fmt;
+use serde::Serialize;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Serialize)]
 pub enum ErrorKind {
     Technical,
     Functional,

@@ -1,7 +1,10 @@
+use std::{fmt, future};
 use std::fmt::Debug;
 use futures::future::BoxFuture;
+use futures::FutureExt;
 use crosscutting::error_management::error::Error;
 use crate::dto::player_state_dto::PlayerStateDTO;
+use crate::repositories::location_repository::MockLocationRepository;
 
 pub trait PlayerStateRepository: Send + Sync + Debug {
     fn find_by_player_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
@@ -22,17 +25,31 @@ impl MockPlayerStateRepository {
 }
 
 #[cfg(feature = "test-utils")]
+impl fmt::Debug for MockPlayerStateRepository {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("MockPlayerStateRepository")
+            .finish()  // Adjust according to what you might want to show in debug
+    }
+}
+
+#[cfg(feature = "test-utils")]
 impl PlayerStateRepository for MockPlayerStateRepository {
     #[cfg(feature = "test-utils")]
-    fn find_by_player_id(&self, player_id: i32) -> Option<PlayerStateDTO> {
-        if player_id == self.fixed_player_state.player_id {
-            Some(self.fixed_player_state.clone())
-        } else {
-            None
-        }
+    fn find_by_player_id(&self, player_id: i32) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+        future::ready(
+            Ok(
+                if player_id == self.fixed_player_state.player_id {
+                    Some(self.fixed_player_state.clone())
+                } else {
+                    None
+                }
+            )
+        ).boxed()
     }
 
-    fn save(&self, _player_state: PlayerStateDTO) {  }
+    fn save(&self, _player_state: PlayerStateDTO) -> BoxFuture<'static, Result<(), Error>> {
+        future::ready(Ok(())).boxed()
+    }
 }
 
 #[test]

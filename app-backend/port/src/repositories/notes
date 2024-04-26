@@ -1,0 +1,5 @@
+fn debug_trait<T: MyTrait + Debug>(item: &T) {
+    println!("{:?}", item);
+}
+
+generate a generic repo interface?

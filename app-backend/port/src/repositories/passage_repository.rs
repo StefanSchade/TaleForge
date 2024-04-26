@@ -1,6 +1,11 @@
+use std::{fmt, future};
 use std::fmt::Debug;
+
 use futures::future::BoxFuture;
+use futures::FutureExt;
+
 use crosscutting::error_management::error::Error;
+
 use crate::dto::passage_dto::PassageDTO;
 
 pub trait PassageRepository: Send + Sync + Debug {
@@ -29,38 +34,63 @@ impl MockPassageRepository {
 }
 
 #[cfg(feature = "test-utils")]
+impl fmt::Debug for MockPassageRepository {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("MockPassageRepository")
+            .finish()  // Adjust according to what you might want to show in debug
+    }
+}
+
+#[cfg(feature = "test-utils")]
 impl PassageRepository for MockPassageRepository {
     #[cfg(feature = "test-utils")]
-    fn get_passage_by_id(&self, id: i32) -> Option<PassageDTO> {
-        if id == self.fixed_passage.id {
-            Some(self.fixed_passage.clone())
-        } else {
-            None
-        }
+    fn get_passage_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+        let fixed_passage = self.fixed_passage.clone();
+        future::ready(
+            Ok(
+                if id == self.fixed_passage.id {
+                    Some(fixed_passage)
+                } else {
+                    None
+                }
+            )
+        ).boxed()
     }
 
-    fn get_passages_for_location(&self, _from_location_id: i32) -> Vec<PassageDTO> {
-        self.all_passages_for_one_location.clone().unwrap()
+    fn get_passages_for_location(&self, _from_location_id: i32) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
+        future::ready(
+            Ok(
+                self.all_passages_for_one_location.clone().unwrap()
+            )
+        ).boxed()
     }
 
-    fn add_passage(&self, _passage: PassageDTO) -> Result<(), String> {
-        Ok(())
+    fn add_passage(&self, _passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>> {
+        future::ready(Ok(())).boxed()
     }
 
-    fn find_passage_by_location_and_direction(&self, from_location_id: i32, _direction: &str) -> Option<PassageDTO> {
-        if from_location_id == self.fixed_passage.from_location_id {
-            Some(self.fixed_passage.clone())
-        } else {
-            None
-        }
+    fn find_passage_by_location_and_direction(&self, from_location_id: i32, _direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+        future::ready(
+            Ok(
+                if from_location_id == self.fixed_passage.from_location_id {
+                    Some(self.fixed_passage.clone())
+                } else {
+                    None
+                }
+            )
+        ).boxed()
     }
 
-    fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id: i32) -> Option<PassageDTO> {
-        if from_location_id == self.fixed_passage.from_location_id && to_location_id == self.fixed_passage.to_location_id {
-            Some(self.fixed_passage.clone())
-        } else {
-            None
-        }
+    fn find_by_start_and_end_id(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+        future::ready(
+            Ok(
+                if from_location_id == self.fixed_passage.from_location_id && to_location_id == self.fixed_passage.to_location_id {
+                    Some(self.fixed_passage.clone())
+                } else {
+                    None
+                }
+            )
+        ).boxed()
     }
 }
 

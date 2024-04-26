@@ -1,6 +1,11 @@
+use std::{fmt, future};
 use std::fmt::Debug;
+
 use futures::future::BoxFuture;
+use futures::FutureExt;
+
 use crosscutting::error_management::error::Error;
+
 use crate::dto::location_dto::LocationDTO;
 
 pub trait LocationRepository: Send + Sync + Debug {
@@ -28,25 +33,37 @@ impl MockLocationRepository {
 #[cfg(feature = "test-utils")]
 impl LocationRepository for MockLocationRepository {
     #[cfg(feature = "test-utils")]
-    fn get_location_by_id(&self, id: i32) -> Option<LocationDTO> {
-        if id == self.fixed_location.id {
-            Some(self.fixed_location.clone())
-        } else {
-            None
-        }
+    fn get_location_by_id(&self, id: i32) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+        let fixed_location = self.fixed_location.clone();
+        future::ready(
+            Ok(
+            if id == fixed_location.id {
+                Some(fixed_location)
+            } else {
+                None
+            }
+        )).boxed()
     }
 
-    fn get_all_locations(&self) -> Vec<LocationDTO> {
-        self.all_locations.clone().unwrap()
+    fn get_all_locations(&self) ->  BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
+        future::ready(Ok(self.all_locations.clone().unwrap())).boxed()
     }
 
-    fn add_location(&self, _location: LocationDTO) -> Result<(), String> {
-        Ok(())
+    fn add_location(&self, _location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
+        future::ready(Ok(())).boxed()
     }
 }
 
-#[test]
-fn test_with_mock_repository() {
+#[cfg(feature = "test-utils")]
+impl fmt::Debug for MockLocationRepository {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("MockLocationRepository")
+            .finish()  // Adjust according to what you might want to show in debug
+    }
+}
+
+#[tokio::test]
+async fn test_with_mock_repository() {
     let fixed_location = LocationDTO {
         id: 1,
         title: "title1".to_string(),
@@ -54,14 +71,15 @@ fn test_with_mock_repository() {
         image_url: None,
     };
 
-    let mock_repo = MockLocationRepository::new(fixed_location, None);
-    let location = mock_repo.get_location_by_id(1).unwrap();
+    let mock_repo = MockLocationRepository::new(fixed_location.clone(), None);
+    let future = mock_repo.get_location_by_id(1); // Get the future
+    let location = future.await.expect("Failed to get location"); // Await the future
 
-    assert_eq!(location.description, "description1");
+    assert_eq!(location.unwrap().description, fixed_location.description);
 }
 
-#[test]
-fn test_get_all_locations() {
+#[tokio::test]
+async fn test_get_all_locations() {
     let fixed_location = LocationDTO {
         id: 1,
         title: "title1".to_string(),
@@ -80,8 +98,8 @@ fn test_get_all_locations() {
     ];
 
     let mock_repo = MockLocationRepository::new(fixed_location, Some(all_locations.clone()));
-
-    let locations = mock_repo.get_all_locations();
+    let locations_future = mock_repo.get_all_locations();
+    let locations = locations_future.await.expect("Failed to get locations");
 
     // Serialize both vectors to JSON strings for comparison
     let expected_json = serde_json::to_string(&all_locations).expect("Failed to serialize expected locations");

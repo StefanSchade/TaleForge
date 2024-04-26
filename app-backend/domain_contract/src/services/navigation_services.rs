@@ -2,11 +2,11 @@ use std::fmt::Debug;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
+
 use futures::FutureExt;
 
 use crosscutting::error_management::error::Error;
 use crosscutting::error_management::standard_errors::NO_ENTRY_FOUND;
-
 use domain_pure::model::location::Location;
 use domain_pure::model::player_state::PlayerState;
 
@@ -21,7 +21,7 @@ pub trait NavigationServiceTrait: Send + Sync + Debug {
         &self,
         player_state: PlayerState,
         direction: String,
-    ) -> Pin<Box<dyn Future<Output = Result<(Location, String), Error>> + Send>>;
+    ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>>;
 }
 
 #[derive(Clone, Debug)]
@@ -47,7 +47,7 @@ impl NavigationServiceTrait for NavigationService {
         &self,
         player_state: PlayerState,
         direction: String,
-    ) -> Pin<Box<dyn Future<Output = Result<(Location, String), Error>> + Send>> {
+    ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>> {
         let passage_query_clone = self.passage_query.clone();
         let location_query_clone = self.location_query.clone();
 
@@ -66,17 +66,17 @@ impl NavigationServiceTrait for NavigationService {
                         Ok(Some(target_location)) => {
                             let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
                             Ok((target_location, narration))
-                        },
+                        }
                         Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
                             "location".to_string(),
-                            "current player state".to_string()
+                            "current player state".to_string(),
                         ])),
                         Err(e) => Err(e),
                     }
-                },
+                }
                 Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
                     "passage".to_string(),
-                    format!("direction: {}", direction.clone())
+                    format!("direction: {}", direction.clone()),
                 ])),
                 Err(e) => Err(e),
             }
@@ -87,13 +87,14 @@ impl NavigationServiceTrait for NavigationService {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
-
-    use mockall::mock;
-    use mockall::predicate::*;
+    use std::{fmt, future};
+    use futures::future::BoxFuture;
+    use mockall::{mock, PredicateBoxExt};
+    use mockall::predicate::eq;
 
     use domain_pure::model::location::{Location, LocationBuilder};
-    use domain_pure::model::passage::{Passage, PassageBuilder};
+    use domain_pure::model::passage::PassageBuilder;
+    use domain_pure::model::passage::Passage;
     use domain_pure::model::player_state::PlayerStateBuilder;
 
     use super::*;
@@ -101,17 +102,36 @@ mod tests {
     mock! {
         LocationQueries {}
         impl LocationQueries for LocationQueries {
-             fn get_location_by_aggregate_id(&self, location_aggregate_id: i32) -> Option<Location>;
+            fn get_location_by_aggregate_id
+                (
+                    &self,
+                    location_aggregate_id: i32
+                ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>>;
+        }
+    }
+
+    impl fmt::Debug for MockLocationQueries {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("MockLocationQueries")
+                .finish()  // Adjust according to what you might want to show in debug
         }
     }
 
     mock! {
         PassageQueries {}
         impl PassageQueries for PassageQueries {
-            fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> Option<Passage>;
-            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> Option<Passage>;
+            fn find_passage_between_locations(&self, from_location_id: i32, to_location_id: i32) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_by_location_and_direction(&self, location_id: i32, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
         }
     }
+
+    impl fmt::Debug for MockPassageQueries {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("PassageQueries")
+                .finish()  // Adjust according to what you might want to show in debug
+        }
+    }
+
 
     #[tokio::test]
     async fn navigate_to_passage_success() {
@@ -121,23 +141,33 @@ mod tests {
         mock_location_query.expect_get_location_by_aggregate_id()
             .with(eq(2_i32))
             .times(1)
-            .returning(|_| Some(LocationBuilder::default()
-                .aggregate_id(2)
-                .title("Target Location".into())
-                .description("Description of Target Location".into())
-                .build().unwrap()));
+            .returning(|_|
+                future::ready(
+                    Ok(
+                        Some(LocationBuilder::default()
+                            .aggregate_id(2)
+                            .title("Target Location".into())
+                            .description("Description of Target Location".into())
+                            .build().unwrap())
+                    )
+                ).boxed()
+            );
 
         mock_passage_query.expect_find_passage_by_location_and_direction()
             .with(eq(1), eq("north"))
             .times(1)
-            .returning(|_, _| Some(PassageBuilder::default()
-                .aggregate_id(2)
-                .from_location_id(1)
-                .to_location_id(2)
-                .description("Description of passage".into())
-                .direction("north".into())
-                .narration("You go north".into())
-                .build().unwrap()));
+            .returning(|_, _|
+                future::ready(Ok(
+                    Some(PassageBuilder::default()
+                        .aggregate_id(2)
+                        .from_location_id(1)
+                        .to_location_id(2)
+                        .description("Description of passage".into())
+                        .direction("north".into())
+                        .narration("You go north".into())
+                        .build().unwrap())
+                )).boxed()
+            );
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
         let player_state_instance = PlayerStateBuilder::default().player_id(1).current_location_id(1).build().unwrap();

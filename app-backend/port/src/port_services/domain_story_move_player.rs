@@ -3,6 +3,8 @@ use futures::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use crate::context::RequestContext;
 use std::fmt::Debug;
+use std::future;
+use futures::FutureExt;
 
 #[async_trait]
 pub trait MovePlayerDomainStory: Send + Sync + Debug {
@@ -39,7 +41,7 @@ impl MockMovePlayerDomainStory {
 #[cfg(feature = "test-utils")]
 #[async_trait]
 impl MovePlayerDomainStory for MockMovePlayerDomainStory {
-    async fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> Result<MovePlayerResult, String> {
-        Ok(self.fixed_result.clone())
+    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
+        future::ready(Ok(self.fixed_result.clone())).boxed()
     }
 }
