@@ -1,11 +1,13 @@
 [
   {
+    "game_id": 1,
     "aggregate_id": 1,
     "title": "Old Bridge",
     "description": "An ancient stone bridge crossing over a quiet river. Moss covers its sides, and the water below flows gently.",
     "image_url": "http://example.com/images/old_bridge.png"
   },
   {
+    "game_id": 1,
     "aggregate_id": 2,
     "title": "Hilltop",
     "description": "The top of a high hill, offering a panoramic view of the surrounding lands. The wind is stronger here, carrying the scent of distant places.",

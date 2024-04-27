@@ -3,13 +3,37 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
+#[builder(setter(into), build_fn(validate = "Self::validate"))]
 pub struct Location {
+    #[builder(setter(into))]
     aggregate_id: u64,
+    #[builder(setter(into))]
     game_id: u64,
+    #[builder(setter(into))]
     title: String,
+    #[builder(setter(into))]
     description: String,
-    #[builder(default)]
+    #[builder(default, setter(into, strip_option))]
     image_url: Option<String>,
+}
+
+impl LocationBuilder {
+    // Custom validation function to ensure all fields are properly initialized
+    fn validate(&self) -> Result<(), String> {
+        if self.aggregate_id.is_none() {
+            return Err("aggregate_id must be set".to_string());
+        }
+        if self.game_id.is_none() {
+            return Err("game_id must be set".to_string());
+        }
+        if self.title.is_none() {
+            return Err("title must be set".to_string());
+        }
+        if self.description.is_none() {
+            return Err("description must be set".to_string());
+        }
+        Ok(())
+    }
 }
 
 impl Location {

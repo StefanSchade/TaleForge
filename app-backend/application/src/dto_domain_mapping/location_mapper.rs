@@ -6,6 +6,7 @@ use port::dto::location_dto::LocationDTO;
 pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
         id: location.aggregate_id(),
+        game_id: location.game_id(),
         title: location.title_owned(),
         description: location.description_owned(),
         image_url: location.image_url_owned(),
@@ -15,9 +16,11 @@ pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
 pub fn location_map_dto_to_domain(dto: LocationDTO) -> Location {
     LocationBuilder::default()
         .aggregate_id(dto.id)
+//        .game_id(dto.game_id)
         .title(dto.title)
         .description(dto.description)
-        .image_url(dto.image_url)
+        // the domain does expect an option, but the builder does not due to the 'strip_option' annotation
+        .image_url(dto.image_url.unwrap_or_default())
         .build()
         .expect("Failed to build Location from DTO")
 }
