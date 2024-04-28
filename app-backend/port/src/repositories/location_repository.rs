@@ -33,11 +33,11 @@ impl MockLocationRepository {
 #[cfg(feature = "test-utils")]
 impl LocationRepository for MockLocationRepository {
     #[cfg(feature = "test-utils")]
-    fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+    fn get_location_by_id(&self, _game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
         let fixed_location = self.fixed_location.clone();
         future::ready(
             Ok(
-                if id == fixed_location.id {
+                if location_id == fixed_location.id {
                     Some(fixed_location)
                 } else {
                     None
@@ -45,11 +45,11 @@ impl LocationRepository for MockLocationRepository {
             )).boxed()
     }
 
-    fn get_all_locations(&self) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
+    fn get_all_locations(&self, _game_id: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
         future::ready(Ok(self.all_locations.clone().unwrap())).boxed()
     }
 
-    fn add_location(&self, _location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn add_location(&self, _game_id: u64, _location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
         future::ready(Ok(())).boxed()
     }
 }
@@ -66,13 +66,14 @@ impl fmt::Debug for MockLocationRepository {
 async fn test_with_mock_repository() {
     let fixed_location = LocationDTO {
         id: 1,
+        game_id: 1,
         title: "title1".to_string(),
         description: "description1".to_string(),
         image_url: None,
     };
 
     let mock_repo = MockLocationRepository::new(fixed_location.clone(), None);
-    let future = mock_repo.get_location_by_id(1); // Get the future
+    let future = mock_repo.get_location_by_id(1, 1); // Get the future
     let location = future.await.expect("Failed to get location"); // Await the future
 
     assert_eq!(location.unwrap().description, fixed_location.description);
@@ -82,6 +83,7 @@ async fn test_with_mock_repository() {
 async fn test_get_all_locations() {
     let fixed_location = LocationDTO {
         id: 1,
+        game_id: 1,
         title: "title1".to_string(),
         description: "description1".to_string(),
         image_url: None,
@@ -91,6 +93,7 @@ async fn test_get_all_locations() {
         fixed_location.clone(),
         LocationDTO {
             id: 2,
+            game_id: 1,
             title: "title2".to_string(),
             description: "description2".to_string(),
             image_url: None,
@@ -98,7 +101,7 @@ async fn test_get_all_locations() {
     ];
 
     let mock_repo = MockLocationRepository::new(fixed_location, Some(all_locations.clone()));
-    let locations_future = mock_repo.get_all_locations();
+    let locations_future = mock_repo.get_all_locations(1);
     let locations = locations_future.await.expect("Failed to get locations");
 
     // Serialize both vectors to JSON strings for comparison

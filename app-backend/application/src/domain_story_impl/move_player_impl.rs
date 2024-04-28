@@ -48,7 +48,8 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
-        let game_id = context.player_id;
+        let game_id = context.game_id;
+        let _player_id = context.player_id;
 
         Box::pin(async move {
             if let player_id = context.player_id {
@@ -165,8 +166,9 @@ mod tests {
         // We thus guarantee immutability and just have to clone the reference, but not the struct itself.
         let expected_destination_location = Arc::new(LocationBuilder::default()
             .aggregate_id(expected_destination_location_id)
-            .title("Destination - This could be anything".into())
-            .description("Destinatinon Decription - This could be anything".into())
+            .game_id(1_u64)
+            .title("Destination - This could be anything".to_string())
+            .description("Destinatinon Decription - This could be anything".to_string())
             .build()
             .unwrap());
 
@@ -189,13 +191,14 @@ mod tests {
             );
 
         mock_location_repo.expect_get_location_by_id()
-            .with(eq(1))
+            .with(eq(43), eq(1)) // this is an error 42 should be the game id not the player id
             .times(1)
-            .returning(|_|
+            .returning(|_, _|
                 async move {
                     Ok(
                         Some(LocationDTO {
                             id: 99,
+                            game_id: 1,
                             title: "the new location".to_string(),
                             description: "destination".to_string(),
                             image_url: None,
@@ -236,7 +239,7 @@ mod tests {
                 Arc::new(mock_player_state_repo));
 
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
-        let context = RequestContext { player_id: Some(expected_player_id) };
+        let context = RequestContext {game_id: 43,  player_id: expected_player_id};
 
         let result = use_case.execute(context, command).await;
 

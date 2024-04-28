@@ -79,6 +79,7 @@ mod tests {
     async fn test_player_move() {
         let mock_location = LocationDTO {
             id: 1,
+            game_id: 1,
             description: "test description".to_string(),
             title: "test title".to_string(),
             image_url: None,

@@ -75,9 +75,10 @@ mod tests {
 
     #[test]
     fn test_location_builder() {
-        let location = LocationBuilder::default().aggregate_id(1)
-            .title("Test Location Title".into())
-            .description("Test Location Description".into())
+        let location = LocationBuilder::default().aggregate_id(1_u64)
+            .game_id(1_u64)
+            .title("Test Location Title".to_string())
+            .description("Test Location Description".to_string())
             .build()
             .unwrap();
 

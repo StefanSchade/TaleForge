@@ -16,7 +16,7 @@ pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
 pub fn location_map_dto_to_domain(dto: LocationDTO) -> Location {
     LocationBuilder::default()
         .aggregate_id(dto.id)
-//        .game_id(dto.game_id)
+        .game_id(dto.game_id)
         .title(dto.title)
         .description(dto.description)
         // the domain does expect an option, but the builder does not due to the 'strip_option' annotation
@@ -33,10 +33,11 @@ mod tests {
     #[test]
     fn test_location_to_dto_mapping() {
         let location = LocationBuilder::default()
-            .aggregate_id(1)
-            .title("Mysterious Forest".into())
-            .description("A forest full of mysteries.".into())
-            .image_url(Some("https://example.com/forest.jpg".into()))
+            .aggregate_id(1_u64)
+            .game_id(1_u64)
+            .title("Mysterious Forest".to_string())
+            .description("A forest full of mysteries.".to_string())
+            .image_url("https://example.com/forest.jpg".to_string())
             .build()
             .unwrap();
 
@@ -52,6 +53,7 @@ mod tests {
     fn test_dto_to_location_mapping() {
         let dto = LocationDTO {
             id: 2,
+            game_id: 1,
             title: "Ancient Ruins".into(),
             description: "Ruins of an ancient civilization.".into(),
             image_url: Some("https://example.com/ruins.jpg".into()),

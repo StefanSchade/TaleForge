@@ -144,15 +144,16 @@ mod tests {
         let mut mock_location_query = MockLocationQueries::new();
 
         mock_location_query.expect_get_location_by_aggregate_id()
-            .with(eq(2_u64))
+            .with(eq(1_u64), eq(2_u64))
             .times(1)
-            .returning(|_|
+            .returning(|_, _|
                 future::ready(
                     Ok(
                         Some(LocationBuilder::default()
-                            .aggregate_id(2)
-                            .title("Target Location".into())
-                            .description("Description of Target Location".into())
+                            .aggregate_id(2_u64)
+                            .game_id(1_u64)
+                            .title("Target Location".to_string())
+                            .description("Description of Target Location".to_string())
                             .build().unwrap())
                     )
                 ).boxed()
@@ -176,7 +177,7 @@ mod tests {
 
         let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
         let player_state_instance = PlayerStateBuilder::default().player_id(1).current_location_id(1).build().unwrap();
-        let result = navigation_service.navigate(player_state_instance, "north".into()).await;
+        let result = navigation_service.navigate(1, player_state_instance, "north".to_string()).await;
 
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
