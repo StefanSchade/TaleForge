@@ -12,3 +12,8 @@ pub static NO_ENTRY_FOUND: ErrorTemplate = ErrorTemplate {
     message: "No {} found for {}.",
     kind: ErrorKind::Functional,
 };
+pub static BOUT_NOT_RUNNING: ErrorTemplate = ErrorTemplate {
+    code: "bout_not_running",
+    message: "The bout_id: {} has status {}.",
+    kind: ErrorKind::Functional,
+};

@@ -2,8 +2,10 @@ use std::sync::Arc;
 
 use futures::future::BoxFuture;
 
+use crosscutting::error_management::standard_errors::BOUT_NOT_RUNNING;
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
+use port::dto::bout_dto::BoutStatusDTO;
 use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
 use port::repositories::bout_repository::BoutRepository;
 use port::repositories::location_repository::LocationRepository;
@@ -18,7 +20,6 @@ use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_doma
 #[derive(Clone, Debug)]
 pub struct MovePlayerDomainStoryImpl {
     pub(crate) location_repository: Arc<dyn LocationRepository>,
-    // unused currently
     pub(crate) passage_repository: Arc<dyn PassageRepository>,
     pub(crate) player_state_repository: Arc<dyn PlayerStateRepository>,
     pub(crate) navigation_service: Arc<dyn NavigationServiceTrait>,
@@ -56,43 +57,45 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
 
         Box::pin(async move {
             let current_bout = bout_repo_clone.get_bout_by_id(context.bout_id).await;
-            if let Ok(bout) = current_bout {
-                let game_id = bout.unwrap().game_id;
+            match current_bout {
+                Ok(Some(bout)) if bout.status == BoutStatusDTO::Running => {
+                    let game_id = bout.game_id;
+                    let player_id = context.player_id;
 
-                let player_id = context.player_id;
+                    let player_state_dto = player_repo_clone.find_by_player_id(player_id).await;
+                    match player_state_dto {
+                        Ok(Some(state)) => {
+                            let player_state = player_state_map_dto_to_domain(&state);
 
-                let player_state_dto = player_repo_clone.find_by_player_id(player_id).await;
-                match player_state_dto {
-                    Ok(Some(state)) => {
-                        let player_state = player_state_map_dto_to_domain(&state);
+                            let navigation_result = navigation_service_clone.navigate(
+                                game_id,
+                                player_state,
+                                input.direction,
+                            ).await;
 
-                        let navigation_result = navigation_service_clone.navigate(
-                            game_id,
-                            player_state,
-                            input.direction,
-                        ).await;
-
-                        match navigation_result {
-                            Ok((new_location, narration)) => {
-                                let mut updated_player_state = state;
-                                updated_player_state.current_location_id = new_location.aggregate_id();
-                                let save_result = player_repo_clone.save(updated_player_state).await;
-                                match save_result {
-                                    Ok(_) => Ok(MovePlayerResult {
-                                        player_location: new_location.aggregate_id(),
-                                        narration,
-                                    }),
-                                    Err(e) => Err(e.to_string()),
-                                }
+                            match navigation_result {
+                                Ok((new_location, narration)) => {
+                                    let mut updated_player_state = state;
+                                    updated_player_state.current_location_id = new_location.aggregate_id();
+                                    player_repo_clone.save(updated_player_state).await
+                                        .map(|_| MovePlayerResult {
+                                            player_location: new_location.aggregate_id(),
+                                            narration,
+                                        })
+                                        .map_err(|e| e.to_string())
+                                },
+                                Err(e) => Err(e.to_string()),
                             }
-                            Err(e) => Err(e.to_string()),
-                        }
+                        },
+                        Ok(None) => Err(format!("Player state not found for player {:?}", player_id)),
+                        Err(e) => Err(e.to_string()),
                     }
-                    Ok(None) => Err(format!("Player state not found for player {:?}", player_id)),
-                    Err(e) => Err(e.to_string()),
-                }
-            } else {
-                Err("Could not access bout repo".to_string())
+                },
+                Ok(Some(bout)) => {
+                    Err(format!("Bout with ID {} is not running, status is {:?}", bout.id, bout.status))
+                },
+                Ok(None) => Err("Bout not found".to_string()),
+                Err(e) => Err(e.to_string()),
             }
         })
     }
@@ -254,52 +257,52 @@ mod tests {
                         )
                     )
                 }.boxed()
-                );
+            );
 
-                mock_player_state_repo.expect_find_by_player_id()
-                    .with(eq(expected_player_id))
-                    .times(1)
-                    .returning(move |_|
-                        async move {
-                            Ok(
-                                Some(
-                                    PlayerStateDTO {
-                                        player_id: expected_player_id,
-                                        current_location_id: expected_current_location_id,
-                                    }
-                                )
-                            )
-                        }.boxed()
-                    );
+        mock_player_state_repo.expect_find_by_player_id()
+            .with(eq(expected_player_id))
+            .times(1)
+            .returning(move |_|
+                async move {
+                    Ok(
+                        Some(
+                            PlayerStateDTO {
+                                player_id: expected_player_id,
+                                current_location_id: expected_current_location_id,
+                            }
+                        )
+                    )
+                }.boxed()
+            );
 
-                // `expected_player_id` is of type u64 and thus implements the `Copy` trait, implying that instead of
-                // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`
-                // However doing so results in an [E0373], so we apply what we would do with non-Copy data and move
-                // ownership explicitly to the closure.
-                mock_player_state_repo.expect_save()
-                    .withf(move |ps| ps.player_id == expected_player_id)
-                    .times(1)
-                    .returning(|_| async { Ok(None) }.boxed());
+        // `expected_player_id` is of type u64 and thus implements the `Copy` trait, implying that instead of
+        // borrowing it, it will be copied by simply passing it without explicitly calling `.clone()`
+        // However doing so results in an [E0373], so we apply what we would do with non-Copy data and move
+        // ownership explicitly to the closure.
+        mock_player_state_repo.expect_save()
+            .withf(move |ps| ps.player_id == expected_player_id)
+            .times(1)
+            .returning(|_| async { Ok(None) }.boxed());
 
 
-                let use_case =
-                    MovePlayerDomainStoryImpl::new(
-                        Arc::new(mock_location_repo),
-                        Arc::new(mock_passage_repo),
-                        Arc::new(mock_bout_repo),
-                        Arc::new(mock_player_state_repo),
-                    );
+        let use_case =
+            MovePlayerDomainStoryImpl::new(
+                Arc::new(mock_location_repo),
+                Arc::new(mock_passage_repo),
+                Arc::new(mock_bout_repo),
+                Arc::new(mock_player_state_repo),
+            );
 
-                let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
-                let context = RequestContext { bout_id: 43, player_id: expected_player_id };
+        let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
+        let context = RequestContext { bout_id: 43, player_id: expected_player_id };
 
-                let result = use_case.execute(context, command).await;
+        let result = use_case.execute(context, command).await;
 
-                assert!(result.is_ok());
+        assert!(result.is_ok());
 
-                let move_player_result = result.unwrap();
+        let move_player_result = result.unwrap();
 
-                assert_eq!(move_player_result.player_location, expected_destination_location_id);
-                assert_eq!(move_player_result.narration, expected_passage_narration_text.to_string());
-            }
+        assert_eq!(move_player_result.player_location, expected_destination_location_id);
+        assert_eq!(move_player_result.narration, expected_passage_narration_text.to_string());
     }
+}
