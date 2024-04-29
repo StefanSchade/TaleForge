@@ -1,0 +1,32 @@
+[
+  {
+    "aggregate_id": 1,
+    "game_id": 101,
+    "registered_participants": [
+      1001,
+      1002,
+      1003
+    ],
+    "status": "Scheduled"
+  },
+  {
+    "aggregate_id": 2,
+    "game_id": 102,
+    "registered_participants": [
+      1004,
+      1005
+    ],
+    "status": "Started"
+  },
+  {
+    "aggregate_id": 3,
+    "game_id": 103,
+    "registered_participants": [
+      1006,
+      1007,
+      1008,
+      1009
+    ],
+    "status": "Finished"
+  }
+]

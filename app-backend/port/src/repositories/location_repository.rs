@@ -1,5 +1,5 @@
-use std::{fmt, future};
 use std::fmt::Debug;
+use std::{fmt, future};
 
 use futures::future::BoxFuture;
 use futures::FutureExt;

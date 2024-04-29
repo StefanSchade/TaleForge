@@ -15,7 +15,7 @@ use crate::contracts::passage_query::PassageQueries;
 pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
         &self,
-        game_id: u64,
+        bout_id: u64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>>;

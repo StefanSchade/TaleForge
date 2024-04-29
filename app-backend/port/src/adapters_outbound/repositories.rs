@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use crate::repositories::bout_repository::BoutRepository;
 
 use crate::repositories::location_repository::LocationRepository;
 use crate::repositories::passage_repository::PassageRepository;
@@ -9,6 +10,7 @@ pub struct OutboundAdapters {
     location_repo: Arc<dyn LocationRepository>,
     passage_repo: Arc<dyn PassageRepository>,
     player_state: Arc<dyn PlayerStateRepository>,
+    bout_repo: Arc<dyn BoutRepository>
 }
 
 impl OutboundAdapters {
@@ -16,6 +18,7 @@ impl OutboundAdapters {
         location_repo: Arc<dyn LocationRepository>,
         passage_repo: Arc<dyn PassageRepository>,
         player_state_repo: Arc<dyn PlayerStateRepository>,
+        bout_repo: Arc<dyn BoutRepository>,
     ) -> Self {
         let location_repo = location_repo;
         let passage_repo = passage_repo;
@@ -25,6 +28,7 @@ impl OutboundAdapters {
             location_repo: location_repo,
             passage_repo: passage_repo,
             player_state: player_state_repo,
+            bout_repo: bout_repo
         }
     }
 

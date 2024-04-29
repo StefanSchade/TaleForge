@@ -2,20 +2,26 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
-pub struct Match {
+pub struct Bout {
     #[builder(setter(into))]
-    aggregate_id: u64,
+    pub aggregate_id: u64,
     #[builder(setter(into))]
-    game_id: u64,
+    pub game_id: u64,
     #[builder(setter(into))]
-    registered_participants: Vec<u64>,
+    pub registered_participants: Vec<u64>,
     #[builder(setter(into))]
-    status: MatchStatus,
+    pub status: BoutStatus,
 }
 
 #[derive(PartialEq, Clone, Debug, Deserialize, Serialize)]
-pub enum MatchStatus {
+pub enum BoutStatus {
     Scheduled,
-    Started,
+    Running,
     Finished,
+}
+
+impl Bout {
+    pub fn get_game_id_for_bout(&self) -> u64 {
+        self.game_id
+    }
 }

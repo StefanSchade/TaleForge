@@ -7,7 +7,7 @@ use actix_web::web::Data;
 use log::info;
 
 use port::adapters_inbound::web_server::WebServer;
-use port::outbound_adapters::service_container::ServiceContainer;
+use port::adapters_outbound::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
 use crate::web::option_01_actixweb::controllers::player_controller;

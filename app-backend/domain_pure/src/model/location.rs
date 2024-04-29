@@ -48,14 +48,12 @@ impl Location {
     pub fn description(&self) -> &str {
         &*self.description
     }
-
     // self.image_url.as_ref() converts from &Option<String> to Option<&String>.
     // .map(AsRef::as_ref) takes each &String inside the Option and converts it to a &str,
     // resulting in an Option<&str>.
     pub fn image_url(&self) -> Option<&str> {
         self.image_url.as_ref().map(AsRef::as_ref)
     }
-
     // these getters return a clone that will be owned by the receiver
     pub fn title_owned(&self) -> String {
         self.title.clone()

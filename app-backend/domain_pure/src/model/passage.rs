@@ -15,7 +15,6 @@ impl Passage {
     pub fn get_aggregate_id(&self) -> u64 {
         self.aggregate_id
     }
-
     pub fn get_from_location(&self) -> u64 {
         self.from_location_id
     }

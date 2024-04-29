@@ -28,15 +28,13 @@ pub async fn move_player(
     debug!("Attempting to extract AppState...");
 
     let extracted_player_id = 1;
-    let extracted_game_id = 1;
+    let extracted_bout_id = 1;
 
     let command = MovePlayerCommand::from(web_input.into_inner());
-    let context = RequestContext::new(extracted_game_id, extracted_player_id);
+    let context = RequestContext::new(extracted_bout_id, extracted_player_id);
 
-    // Properly access the domain story through the app state
     let domain_story = app_state.move_player_domain_story.clone();
 
-    // Await the async execute method
     let result = domain_story.execute(context, command).await;
 
     match result {
