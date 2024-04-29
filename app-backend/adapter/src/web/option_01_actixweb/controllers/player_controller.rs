@@ -66,11 +66,9 @@ mod tests {
 
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
-    use port::dto::player_state_dto::PlayerStateDTO;
     use port::port_services::domain_story_move_player::MockMovePlayerDomainStory;
     use port::repositories::location_repository::MockLocationRepository;
     use port::repositories::passage_repository::MockPassageRepository;
-    use port::repositories::player_state_repository::MockPlayerStateRepository;
 
     use super::*;
 
@@ -96,11 +94,12 @@ mod tests {
         };
         let _mock_passage_repository = Arc::new(MockPassageRepository::new(mock_passage, None));
 
-        let mock_player_state = PlayerStateDTO {
-            player_id: 1,
-            current_location_id: 1,
-        };
-        let mock_player_state_repository = Arc::new(MockPlayerStateRepository::new(mock_player_state));
+        // let mock_player_state = PlayerStateDTO {
+        //     player_id: 1,
+        //     current_location_id: 1,
+        // };
+        //
+        //let mock_player_state_repository = Arc::new(MockPlayerStateRepository::new(mock_player_state));
 
         let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "You moved north.".to_string()));
 

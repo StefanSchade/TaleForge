@@ -52,30 +52,27 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
         let _player_id = context.player_id; // currently not used
 
         Box::pin(async move {
-            if let player_id = context.player_id {
-                let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
-                    Ok(Some(state)) => state,
-                    Ok(None) => return Err(format!("Player state not found for player {:?}", player_id)),
-                    Err(e) => return Err(e.to_string()),
-                };
+            let player_id = context.player_id;
+            let player_state_dto = match player_repo_clone.find_by_player_id(player_id).await {
+                Ok(Some(state)) => state,
+                Ok(None) => return Err(format!("Player state not found for player {:?}", player_id)),
+                Err(e) => return Err(e.to_string()),
+            };
 
-                let player_state = player_state_map_dto_to_domain(&player_state_dto);
-                let (new_location, narration) = match navigation_service_clone.navigate(game_id, player_state, input.direction).await {
-                    Ok(result) => result,
-                    Err(e) => return Err(e.to_string()),
-                };
+            let player_state = player_state_map_dto_to_domain(&player_state_dto);
+            let (new_location, narration) = match navigation_service_clone.navigate(game_id, player_state, input.direction).await {
+                Ok(result) => result,
+                Err(e) => return Err(e.to_string()),
+            };
 
-                let mut updated_player_state = player_state_dto;
-                updated_player_state.current_location_id = new_location.aggregate_id();
-                player_repo_clone.save(updated_player_state).await.map_err(|e| e.to_string())?;
+            let mut updated_player_state = player_state_dto;
+            updated_player_state.current_location_id = new_location.aggregate_id();
+            player_repo_clone.save(updated_player_state).await.map_err(|e| e.to_string())?;
 
-                Ok(MovePlayerResult {
-                    player_location: new_location.aggregate_id(),
-                    narration,
-                })
-            } else {
-                Err("Player ID not found in context".to_string())
-            }
+            Ok(MovePlayerResult {
+                player_location: new_location.aggregate_id(),
+                narration,
+            })
         })
     }
 }
@@ -90,7 +87,6 @@ mod tests {
     use mockall::predicate::eq;
 
     use crosscutting::error_management::error::Error;
-    use domain_pure::model::location::LocationBuilder;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
@@ -164,13 +160,14 @@ mod tests {
         // We need to pass `expected_location` to the closure `.returning()`, but since this closure might
         // be called multiple times we have to clone it first. Wrapping it into Arc reduces the overhead.
         // We thus guarantee immutability and just have to clone the reference, but not the struct itself.
-        let expected_destination_location = Arc::new(LocationBuilder::default()
-            .aggregate_id(expected_destination_location_id)
-            .game_id(1_u64)
-            .title("Destination - This could be anything".to_string())
-            .description("Destinatinon Decription - This could be anything".to_string())
-            .build()
-            .unwrap());
+
+        // let expected_destination_location = Arc::new(LocationBuilder::default()
+        //     .aggregate_id(expected_destination_location_id)
+        //     .game_id(1_u64)
+        //     .title("Destination - This could be anything".to_string())
+        //     .description("Destinatinon Decription - This could be anything".to_string())
+        //     .build()
+        //     .unwrap());
 
         mock_passage_repo.expect_find_passage_by_location_and_direction()
             .with(mockall::predicate::eq(1), mockall::predicate::eq("north"))

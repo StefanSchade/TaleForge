@@ -3,18 +3,14 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use futures::FutureExt;
-
 use crosscutting::error_management::error::Error;
 use crosscutting::error_management::standard_errors::NO_ENTRY_FOUND;
 use domain_pure::model::location::Location;
+use domain_pure::model::passage::Passage;
 use domain_pure::model::player_state::PlayerState;
 
 use crate::contracts::location_query::navigation::LocationQueries;
 use crate::contracts::passage_query::PassageQueries;
-
-// Wrap Service in a Trait to allow mocking for tests
-// Send + Sync traits for threads safely
 
 pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
@@ -53,39 +49,56 @@ impl NavigationServiceTrait for NavigationService {
         let passage_query_clone = self.passage_query.clone();
         let location_query_clone = self.location_query.clone();
 
-        async move {
-            let passage_result = passage_query_clone
-                .find_passage_by_location_and_direction(player_state.current_location_id(), &direction)
-                .await;
+        Box::pin(async move {
+            let passage_result = Self::find_passage(passage_query_clone, &player_state, &direction).await;
+            Self::process_passage_result(passage_result, game_id, location_query_clone, direction).await
+        })
+    }
+}
 
-            match passage_result {
-                Ok(Some(passage)) => {
-                    let location_result = location_query_clone
-                        .get_location_by_aggregate_id(
-                            game_id,
-                            passage.get_to_location(),
-                        ).await;
+impl NavigationService {
+    async fn find_passage(
+        passage_query: Arc<dyn PassageQueries>,
+        player_state: &PlayerState,
+        direction: &str,
+    ) -> Result<Option<Passage>, Error> {
+        passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), direction).await
+    }
 
-                    match location_result {
-                        Ok(Some(target_location)) => {
-                            let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
-                            Ok((target_location, narration))
-                        }
-                        Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
-                            "location".to_string(),
-                            "current player state".to_string(),
-                        ])),
-                        Err(e) => Err(e),
-                    }
-                }
-                Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
-                    "passage".to_string(),
-                    format!("direction: {}", direction.clone()),
-                ])),
-                Err(e) => Err(e),
+    async fn process_passage_result(
+        passage_result: Result<Option<Passage>, Error>,
+        game_id: u64,
+        location_query: Arc<dyn LocationQueries>,
+        direction: String,
+    ) -> Result<(Location, String), Error> {
+        match passage_result {
+            Ok(Some(passage)) => {
+                let location_result = location_query.get_location_by_aggregate_id(game_id, passage.get_to_location()).await;
+                NavigationService::handle_location_result(location_result, passage)
             }
+            Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
+                "passage".to_string(),
+                format!("direction: {}", direction),
+            ])),
+            Err(e) => Err(e),
         }
-            .boxed()
+    }
+
+    fn handle_location_result(
+        location_result: Result<Option<Location>, Error>,
+        passage: Passage,
+    ) -> Result<(Location, String), Error> {
+        match location_result {
+            Ok(Some(target_location)) => {
+                let narration = format!("{} and reach {}.", passage.narration(), target_location.title());
+                Ok((target_location, narration))
+            }
+            Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
+                "location".to_string(),
+                "current player state".to_string(),
+            ])),
+            Err(e) => Err(e),
+        }
     }
 }
 
@@ -94,6 +107,7 @@ mod tests {
     use std::{fmt, future};
 
     use futures::future::BoxFuture;
+    use futures::FutureExt;
     use mockall::mock;
     use mockall::predicate::eq;
 

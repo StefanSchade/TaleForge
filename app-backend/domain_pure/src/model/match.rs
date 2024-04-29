@@ -13,9 +13,9 @@ pub struct Match {
     status: MatchStatus,
 }
 
-#[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
+#[derive(PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub enum MatchStatus {
-    scheduled,
-    started,
-    finished,
+    Scheduled,
+    Started,
+    Finished,
 }
