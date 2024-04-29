@@ -49,7 +49,7 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
         let game_id = context.game_id;
-        let _player_id = context.player_id;
+        let _player_id = context.player_id; // currently not used
 
         Box::pin(async move {
             if let player_id = context.player_id {
@@ -239,7 +239,7 @@ mod tests {
                 Arc::new(mock_player_state_repo));
 
         let command = MovePlayerCommand { direction: expected_direction_instruction.into() };
-        let context = RequestContext {game_id: 43,  player_id: expected_player_id};
+        let context = RequestContext { game_id: 43, player_id: expected_player_id };
 
         let result = use_case.execute(context, command).await;
 
