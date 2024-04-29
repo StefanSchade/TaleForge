@@ -8,4 +8,3 @@ pub struct LocationDTO {
     pub description: String,
     pub image_url: Option<String>,
 }
-

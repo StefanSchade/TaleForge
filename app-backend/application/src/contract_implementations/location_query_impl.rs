@@ -1,10 +1,12 @@
 use std::future::Future;
 use std::pin::Pin;
-use domain_pure::model::location::Location;
-use port::repositories::location_repository::LocationRepository;
 use std::sync::Arc;
+
 use crosscutting::error_management::error::Error;
 use domain_contract::contracts::location_query::navigation::LocationQueries;
+use domain_pure::model::location::Location;
+use port::repositories::location_repository::LocationRepository;
+
 use crate::dto_domain_mapping::location_mapper::location_map_dto_to_domain;
 
 #[derive(Clone, Debug)]
@@ -22,9 +24,8 @@ impl LocationQueries for LocationQueryImpl {
     fn get_location_by_aggregate_id(
         &self,
         game_id: u64,
-        location_aggregate_id: u64
-    ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>> {
-
+        location_aggregate_id: u64,
+    ) -> Pin<Box<dyn Future<Output=Result<Option<Location>, Error>> + Send>> {
         let location_repository = self.location_repository.clone();
 
         Box::pin(async move {
@@ -32,7 +33,7 @@ impl LocationQueries for LocationQueryImpl {
                 Ok(Some(location_dto)) => {
                     let location = location_map_dto_to_domain(location_dto);
                     Ok(Some(location))
-                },
+                }
                 Ok(None) => Ok(None),
                 Err(e) => Err(e)
             }

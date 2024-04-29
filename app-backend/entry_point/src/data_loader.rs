@@ -1,14 +1,16 @@
+use std::path::Path;
+use std::sync::Arc;
+
+use serde_json;
+use tokio::fs::File;
+use tokio::io::AsyncReadExt;
+
+use application::dto_domain_mapping::location_mapper::location_map_domain_to_dto;
+use application::dto_domain_mapping::passage_mapper::passage_map_domain_to_dto;
 use domain_pure::model::location::Location;
 use domain_pure::model::passage::Passage;
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
-use serde_json;
-use tokio::fs::File;
-use std::path::Path;
-use std::sync::Arc;
-use application::dto_domain_mapping::location_mapper::location_map_domain_to_dto;
-use application::dto_domain_mapping::passage_mapper::passage_map_domain_to_dto;
-use tokio::io::AsyncReadExt;
 
 pub async fn load_data_from_json<R, P>(
     location_repo: Arc<R>,
@@ -28,7 +30,7 @@ pub async fn load_data_from_json<R, P>(
     for location in locations {
         location_repo.add_location(
             location.game_id(),
-            location_map_domain_to_dto(&location)
+            location_map_domain_to_dto(&location),
         ).await?;
     }
 

@@ -1,14 +1,18 @@
 use std::{fmt, future};
 use std::fmt::Debug;
+
 use futures::future::BoxFuture;
 use futures::FutureExt;
+
 use crosscutting::error_management::error::Error;
+
 use crate::dto::player_state_dto::PlayerStateDTO;
 
 pub trait PlayerStateRepository: Send + Sync + Debug {
     fn find_by_player_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
     fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
 }
+
 #[cfg(feature = "test-utils")]
 pub struct MockPlayerStateRepository {
     pub fixed_player_state: PlayerStateDTO,

@@ -5,6 +5,6 @@ pub struct RequestContext {
 
 impl RequestContext {
     pub fn new(game_id: u64, player_id: u64) -> Self {
-        RequestContext { game_id,  player_id }
+        RequestContext { game_id, player_id }
     }
 }

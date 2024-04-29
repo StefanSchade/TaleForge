@@ -1,8 +1,10 @@
-use futures::future::BoxFuture;
-use tokio::sync::Mutex;
 use std::collections::HashMap;
 use std::fmt;
 use std::sync::Arc;
+
+use futures::future::BoxFuture;
+use tokio::sync::Mutex;
+
 use crosscutting::error_management::error::Error;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;

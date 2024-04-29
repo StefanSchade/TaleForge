@@ -1,6 +1,8 @@
 use std::fmt;
 use std::fmt::{Debug, Formatter};
+
 use serde::Serialize;
+
 use crate::error_management::error_kind::ErrorKind;
 
 #[derive(Serialize)]
@@ -33,4 +35,3 @@ impl Debug for Error {
 }
 
 impl std::error::Error for Error {}
-

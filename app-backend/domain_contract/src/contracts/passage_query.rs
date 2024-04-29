@@ -1,5 +1,7 @@
 use std::fmt::Debug;
+
 use futures::future::BoxFuture;
+
 use crosscutting::error_management::error::Error;
 use domain_pure::model::passage::Passage;
 

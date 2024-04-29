@@ -63,7 +63,7 @@ impl NavigationServiceTrait for NavigationService {
                     let location_result = location_query_clone
                         .get_location_by_aggregate_id(
                             game_id,
-                            passage.get_to_location()
+                            passage.get_to_location(),
                         ).await;
 
                     match location_result {
@@ -92,13 +92,14 @@ impl NavigationServiceTrait for NavigationService {
 #[cfg(test)]
 mod tests {
     use std::{fmt, future};
+
     use futures::future::BoxFuture;
     use mockall::mock;
     use mockall::predicate::eq;
 
     use domain_pure::model::location::{Location, LocationBuilder};
-    use domain_pure::model::passage::PassageBuilder;
     use domain_pure::model::passage::Passage;
+    use domain_pure::model::passage::PassageBuilder;
     use domain_pure::model::player_state::PlayerStateBuilder;
 
     use super::*;

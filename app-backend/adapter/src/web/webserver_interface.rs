@@ -1,6 +1,6 @@
 // use std::sync::Arc;
 // use async_trait::async_trait;
-// use port::service_container::service_container::ServiceContainer;
+// use port::outbound_adapters::outbound_adapters::ServiceContainer;
 //
 // #[async_trait]
 // pub trait WebServer: Send + Sync {

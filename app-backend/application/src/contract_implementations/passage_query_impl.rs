@@ -1,10 +1,13 @@
-use domain_pure::model::passage::Passage;
-use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
-use port::repositories::passage_repository::PassageRepository;
 use std::sync::Arc;
+
 use futures::future::BoxFuture;
+
 use crosscutting::error_management::error::Error;
 use domain_contract::contracts::passage_query::PassageQueries;
+use domain_pure::model::passage::Passage;
+use port::repositories::passage_repository::PassageRepository;
+
+use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
 
 #[derive(Clone, Debug)]
 pub struct PassageQueryImpl {

@@ -11,8 +11,8 @@ use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
 use application::domain_story_impl::move_player_impl::MovePlayerDomainStoryImpl;
 use port::dto::player_state_dto::PlayerStateDTO;
 use port::repositories::player_state_repository::PlayerStateRepository;
-use port::servers::web_server::WebServer;
-use port::service_container::service_container::ServiceContainer;
+use port::adapters_inbound::web_server::WebServer;
+use port::outbound_adapters::service_container::ServiceContainer;
 
 mod data_loader;
 
@@ -42,7 +42,6 @@ async fn main() -> std::io::Result<()> {
     let passage_file_path = Path::new("resources_test/passages.json");
 
 
-
     // If `load_data_from_json` returns a known error type that already implements `Send + Sync`, use that.
 // Otherwise, wrap the error into `std::io::Error` like this:
 
@@ -61,7 +60,6 @@ async fn main() -> std::io::Result<()> {
             return Err(e); // Return the error to stop further execution
         }
     }
-
 
 
     // This is externalized because the adapter has no access to the domain and the constructor

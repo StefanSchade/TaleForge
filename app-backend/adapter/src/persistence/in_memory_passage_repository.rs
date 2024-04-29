@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use std::fmt;
-use tokio::sync::Mutex;
 use std::sync::Arc;
+
 use futures::future::BoxFuture;
+use tokio::sync::Mutex;
+
+use crosscutting::error_management::error::Error;
 use port::dto::passage_dto::PassageDTO;
 use port::repositories::passage_repository::PassageRepository;
-use crosscutting::error_management::error::Error;
 
 #[derive(Clone)]
 pub struct InMemoryPassageRepository {

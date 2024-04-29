@@ -4,7 +4,7 @@ use port::dto::player_state_dto::PlayerStateDTO;
 pub fn player_state_map_domain_to_dto(domain_stuct: &PlayerState) -> PlayerStateDTO {
     PlayerStateDTO {
         player_id: domain_stuct.player_id(),
-        current_location_id: domain_stuct.current_location_id()
+        current_location_id: domain_stuct.current_location_id(),
     }
 }
 
@@ -16,12 +16,12 @@ pub fn player_state_map_dto_to_domain(dto: &PlayerStateDTO) -> PlayerState {
         .expect("Failed to build PlayerState from DTO")
 }
 
-
 #[cfg(test)]
 mod tests {
+    use domain_pure::model::player_state::PlayerStateBuilder;
+    use port::dto::player_state_dto::PlayerStateDTO;
+
     use super::*;
-use domain_pure::model::player_state::PlayerStateBuilder;
-use port::dto::player_state_dto::PlayerStateDTO;
 
     #[test]
     fn test_player_state_mapping_round_trip() {
@@ -37,7 +37,6 @@ use port::dto::player_state_dto::PlayerStateDTO;
         assert_eq!(original_player_state.player_id(), converted_back_player_state.player_id());
         assert_eq!(original_player_state.current_location_id(), converted_back_player_state.current_location_id());
     }
-
 
 
     #[test]

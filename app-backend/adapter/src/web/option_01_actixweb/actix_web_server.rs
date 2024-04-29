@@ -6,8 +6,8 @@ use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 use log::info;
 
-use port::servers::web_server::WebServer;
-use port::service_container::service_container::ServiceContainer;
+use port::adapters_inbound::web_server::WebServer;
+use port::outbound_adapters::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
 use crate::web::option_01_actixweb::controllers::player_controller;
@@ -31,7 +31,7 @@ impl WebServer for ActixWebServer {
                 App::new()
                     .app_data(Data::new(Arc::new(app_state.clone())))
                     .configure(Self::configure_routes)
-                    //.service(web::resource("/player/move").route(web::post().to(player_controller::move_player))) alternative cfg
+                //.service(web::resource("/player/move").route(web::post().to(player_controller::move_player))) alternative cfg
             })
                 .bind("localhost:8080")?;
             server.run()
@@ -56,4 +56,3 @@ impl ActixWebServer {
         })
     }
 }
-

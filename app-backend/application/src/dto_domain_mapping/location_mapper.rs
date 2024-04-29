@@ -2,7 +2,6 @@ use domain_pure::model::location::Location;
 use domain_pure::model::location::LocationBuilder;
 use port::dto::location_dto::LocationDTO;
 
-
 pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
     LocationDTO {
         id: location.aggregate_id(),
@@ -27,8 +26,9 @@ pub fn location_map_dto_to_domain(dto: LocationDTO) -> Location {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use domain_pure::model::location::LocationBuilder;
+
+    use super::*;
 
     #[test]
     fn test_location_to_dto_mapping() {

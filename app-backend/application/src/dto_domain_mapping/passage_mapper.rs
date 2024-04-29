@@ -26,8 +26,9 @@ pub fn passage_map_dto_to_domain(dto: PassageDTO) -> Passage {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use domain_pure::model::passage::PassageBuilder;
+
+    use super::*;
 
     #[test]
     fn test_player_state_mapping_round_trip() {

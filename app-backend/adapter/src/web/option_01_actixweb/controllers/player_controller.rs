@@ -1,14 +1,13 @@
 use std::sync::Arc;
 
 use actix_web::{HttpResponse, Responder, web};
+use log::{debug, info};
 use serde::{Deserialize, Serialize};
 
 use port::context::RequestContext;
 use port::port_services::domain_story_move_player::MovePlayerCommand;
 
 use crate::web::option_01_actixweb::app_state::AppState;
-use log::{info, debug};
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerInput {
@@ -23,7 +22,7 @@ pub struct WebMovePlayerOutput {
 
 pub async fn move_player(
     app_state: web::Data<Arc<AppState>>,
-    web_input: web::Json<WebMovePlayerInput>
+    web_input: web::Json<WebMovePlayerInput>,
 ) -> impl Responder {
     info!("Handling move_player request: {:?}", web_input);
     debug!("Attempting to extract AppState...");
@@ -47,7 +46,7 @@ pub async fn move_player(
                 narration: response.narration,
             };
             HttpResponse::Ok().json(web_output)
-        },
+        }
         Err(error) => HttpResponse::InternalServerError().body(error),
     }
 }
@@ -65,10 +64,10 @@ mod tests {
 
     use actix_web::{App, test, web};
 
-    use port::port_services::domain_story_move_player::MockMovePlayerDomainStory;
     use port::dto::location_dto::LocationDTO;
     use port::dto::passage_dto::PassageDTO;
     use port::dto::player_state_dto::PlayerStateDTO;
+    use port::port_services::domain_story_move_player::MockMovePlayerDomainStory;
     use port::repositories::location_repository::MockLocationRepository;
     use port::repositories::passage_repository::MockPassageRepository;
     use port::repositories::player_state_repository::MockPlayerStateRepository;
@@ -135,7 +134,7 @@ mod tests {
         // Deserialize the response body to WebMovePlayerOutput
         let result: WebMovePlayerOutput = test::read_body_json(resp).await;
 
-        println!("Response Body: {:?}", result.clone() );
+        println!("Response Body: {:?}", result.clone());
 
         // Now use the previously captured status
         println!("Response Status: {:?}", status);

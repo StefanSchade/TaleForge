@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use tokio::sync::Mutex;
+
 use futures::future::BoxFuture;
-use serde::{Deserialize, Serialize};
+use tokio::sync::Mutex;
+
 use crosscutting::error_management::error::Error;
 use port::dto::location_dto::LocationDTO;
 use port::repositories::location_repository::LocationRepository;
