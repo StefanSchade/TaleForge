@@ -197,18 +197,6 @@ mod tests {
         let mut mock_player_state_repo = MockPlayerStateRepository::new();
         let mut mock_bout_repo = MockBoutRepository::new();
 
-        // We need to pass `expected_location` to the closure `.returning()`, but since this closure might
-        // be called multiple times we have to clone it first. Wrapping it into Arc reduces the overhead.
-        // We thus guarantee immutability and just have to clone the reference, but not the struct itself.
-
-        // let expected_destination_location = Arc::new(LocationBuilder::default()
-        //     .aggregate_id(expected_destination_location_id)
-        //     .game_id(1_u64)
-        //     .title("Destination - This could be anything".to_string())
-        //     .description("Destinatinon Decription - This could be anything".to_string())
-        //     .build()
-        //     .unwrap());
-
         let expected_current_location_id: u64 = 74;
         let expected_destination_location_id: u64 = 75;
         let expected_game_id: u64 = 45;
