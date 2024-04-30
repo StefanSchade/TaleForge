@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use futures::future::BoxFuture;
 
-use crosscutting::error_management::standard_errors::BOUT_NOT_RUNNING;
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
 use port::dto::bout_dto::BoutStatusDTO;
@@ -53,7 +52,7 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
     fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
         let player_repo_clone = self.player_state_repository.clone();
         let navigation_service_clone = self.navigation_service.clone();
-        let bout_repo_clone = self.bout_repository.clone();  // Assume clone is possible and cheap
+        let bout_repo_clone = self.bout_repository.clone();
 
         Box::pin(async move {
             let current_bout = bout_repo_clone.get_bout_by_id(context.bout_id).await;
@@ -83,17 +82,17 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                                             narration,
                                         })
                                         .map_err(|e| e.to_string())
-                                },
+                                }
                                 Err(e) => Err(e.to_string()),
                             }
-                        },
+                        }
                         Ok(None) => Err(format!("Player state not found for player {:?}", player_id)),
                         Err(e) => Err(e.to_string()),
                     }
-                },
+                }
                 Ok(Some(bout)) => {
                     Err(format!("Bout with ID {} is not running, status is {:?}", bout.id, bout.status))
-                },
+                }
                 Ok(None) => Err("Bout not found".to_string()),
                 Err(e) => Err(e.to_string()),
             }
@@ -141,11 +140,11 @@ mod tests {
         PassageRepository {}
 
          impl  PassageRepository for PassageRepository {
-            fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-            fn get_passage_by_id(&self, id: u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-            fn get_passages_for_location(&self, location_id: u64) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
-            fn add_passage(&self, passage: PassageDTO) ->  BoxFuture<'static, Result<(), Error>>;
-            fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id:u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn find_passage_by_location_and_direction(&self,game_id: u64,  location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passage_by_id(&self,game_id: u64,  id: u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+            fn get_passages_for_location(&self,game_id: u64,  location_id: u64) ->  BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
+            fn add_passage(&self,game_id: u64,  passage: PassageDTO) ->  BoxFuture<'static, Result<(), Error>>;
+            fn find_by_start_and_end_id(&self,game_id: u64,  from_location_id: u64, to_location_id:u64) ->  BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
         }
     }
 
@@ -207,9 +206,9 @@ mod tests {
         let expected_player_id: u64 = 66;
 
         mock_passage_repo.expect_find_passage_by_location_and_direction()
-            .with(mockall::predicate::eq(expected_current_location_id), mockall::predicate::eq("north"))
+            .with(eq(expected_game_id),eq(expected_current_location_id), eq("north"))
             .times(1)
-            .returning(move |_, _|
+            .returning(move |_, _, _|
                 async move {
                     Ok(
                         Some(PassageDTO {

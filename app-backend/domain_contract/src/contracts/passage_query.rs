@@ -6,6 +6,6 @@ use crosscutting::error_management::error::Error;
 use domain_pure::model::passage::Passage;
 
 pub trait PassageQueries: Send + Sync + Debug {
-    fn find_passage_between_locations(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
-    fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+    fn find_passage_between_locations(&self, game_id: u64,  from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+    fn find_passage_by_location_and_direction(&self, game_id: u64, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
 }

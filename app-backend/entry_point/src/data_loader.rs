@@ -48,7 +48,7 @@ pub async fn load_data_from_json<L, P, B>(
     let passages: Vec<Passage> = serde_json::from_str(&contents)?;
 
     for passage in passages {
-        passage_repo.add_passage(passage_map_domain_to_dto(&passage)).await?;
+        passage_repo.add_passage(1, passage_map_domain_to_dto(&passage)).await?;
     }
 
     // Load and save bouts

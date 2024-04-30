@@ -9,12 +9,12 @@ use crosscutting::error_management::error::Error;
 use crate::dto::passage_dto::PassageDTO;
 
 pub trait PassageRepository: Send + Sync + Debug {
-    fn get_passage_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-    fn get_passages_for_location(&self, location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
+    fn get_passage_by_id(&self,  game_id: u64,  id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+    fn get_passages_for_location(&self,  game_id: u64,   location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>>;
     // New method to find a passage by direction and current passage
-    fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
-    fn add_passage(&self, passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>>;
-    fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+    fn find_passage_by_location_and_direction(&self, game_id: u64,  location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
+    fn add_passage(&self, game_id: u64,  passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>>;
+    fn find_by_start_and_end_id(&self, game_id: u64,  from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>>;
 }
 
 #[cfg(feature = "test-utils")]
@@ -44,7 +44,7 @@ impl fmt::Debug for MockPassageRepository {
 #[cfg(feature = "test-utils")]
 impl PassageRepository for MockPassageRepository {
     #[cfg(feature = "test-utils")]
-    fn get_passage_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn get_passage_by_id(&self, game_id: u64,  id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let fixed_passage = self.fixed_passage.clone();
         future::ready(
             Ok(
@@ -57,7 +57,7 @@ impl PassageRepository for MockPassageRepository {
         ).boxed()
     }
 
-    fn get_passages_for_location(&self, _from_location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
+    fn get_passages_for_location(&self,game_id: u64,  _from_location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
         future::ready(
             Ok(
                 self.all_passages_for_one_location.clone().unwrap()
@@ -65,11 +65,11 @@ impl PassageRepository for MockPassageRepository {
         ).boxed()
     }
 
-    fn add_passage(&self, _passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn add_passage(&self, game_id: u64,  _passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>> {
         future::ready(Ok(())).boxed()
     }
 
-    fn find_passage_by_location_and_direction(&self, from_location_id: u64, _direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_passage_by_location_and_direction(&self, game_id: u64,  from_location_id: u64, _direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         future::ready(
             Ok(
                 if from_location_id == self.fixed_passage.from_location_id {
@@ -81,7 +81,7 @@ impl PassageRepository for MockPassageRepository {
         ).boxed()
     }
 
-    fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_by_start_and_end_id(&self, game_id: u64,  from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         future::ready(
             Ok(
                 if from_location_id == self.fixed_passage.from_location_id && to_location_id == self.fixed_passage.to_location_id {
@@ -114,7 +114,7 @@ async fn test_with_mock_repository() {
     };
 
     let mock_repo = MockPassageRepository::new(fixed_passage, None);
-    let passage_future = mock_repo.get_passage_by_id(expected_passage_id);
+    let passage_future = mock_repo.get_passage_by_id(expected_game, expected_passage_id);
     let passage = passage_future.await.expect("Failed to get passage");
 
     assert_eq!(passage.unwrap().description, "description1");
@@ -154,7 +154,7 @@ async fn test_get_passages_for_location() {
     ];
 
     let mock_repo = MockPassageRepository::new(fixed_passage, Some(all_passages.clone()));
-    let passages_future = mock_repo.get_passages_for_location(1);
+    let passages_future = mock_repo.get_passages_for_location(expected_game, expected_original_location);
     let passages = passages_future.await.expect("Failed to get passages");
 
     let expected_json = serde_json::to_string(&all_passages).expect("Failed to serialize expected passages");

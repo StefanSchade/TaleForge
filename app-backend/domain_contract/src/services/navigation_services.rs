@@ -15,7 +15,7 @@ use crate::contracts::passage_query::PassageQueries;
 pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
         &self,
-        bout_id: u64,
+        game_id: u64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>>;
@@ -50,7 +50,7 @@ impl NavigationServiceTrait for NavigationService {
         let location_query_clone = self.location_query.clone();
 
         Box::pin(async move {
-            let passage_result = Self::find_passage(passage_query_clone, &player_state, &direction).await;
+            let passage_result = Self::find_passage(passage_query_clone, game_id, &player_state, &direction).await;
             Self::process_passage_result(passage_result, game_id, location_query_clone, direction).await
         })
     }
@@ -59,10 +59,11 @@ impl NavigationServiceTrait for NavigationService {
 impl NavigationService {
     async fn find_passage(
         passage_query: Arc<dyn PassageQueries>,
+        game_id: u64,
         player_state: &PlayerState,
         direction: &str,
     ) -> Result<Option<Passage>, Error> {
-        passage_query.find_passage_by_location_and_direction(player_state.current_location_id(), direction).await
+        passage_query.find_passage_by_location_and_direction(game_id, player_state.current_location_id(), direction).await
     }
 
     async fn process_passage_result(
@@ -73,7 +74,7 @@ impl NavigationService {
     ) -> Result<(Location, String), Error> {
         match passage_result {
             Ok(Some(passage)) => {
-                let location_result = location_query.get_location_by_aggregate_id(game_id, passage.get_to_location()).await;
+                let location_result = location_query.get_location_by_game_id_and_aggregate_id(game_id, passage.get_to_location()).await;
                 NavigationService::handle_location_result(location_result, passage)
             }
             Ok(None) => Err(NO_ENTRY_FOUND.instantiate(vec![
@@ -121,7 +122,7 @@ mod tests {
     mock! {
         LocationQueries {}
         impl LocationQueries for LocationQueries {
-            fn get_location_by_aggregate_id
+            fn get_location_by_game_id_and_aggregate_id
                 (
                     &self,
                     game_id: u64,
@@ -140,8 +141,8 @@ mod tests {
     mock! {
         PassageQueries {}
         impl PassageQueries for PassageQueries {
-            fn find_passage_between_locations(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
-            fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_between_locations(&self, game_id: u64, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_by_location_and_direction(&self, game_id: u64, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
         }
     }
 
@@ -171,7 +172,7 @@ mod tests {
         let passage_id_clone = expected_passage_id;
 
         // Setup mock for location query
-        mock_location_query.expect_get_location_by_aggregate_id()
+        mock_location_query.expect_get_location_by_game_id_and_aggregate_id()
             .with(eq(game_id_clone), eq(destination_location_clone))
             .times(1)
             .returning(move |_, _| {
@@ -187,9 +188,9 @@ mod tests {
 
         // Setup mock for passage query
         mock_passage_query.expect_find_passage_by_location_and_direction()
-            .with(eq(origination_location_clone), eq("north"))
+            .with(eq(expected_game_id), eq(expected_origination_location), eq("north"))
             .times(1)
-            .returning(move |_, _| {
+            .returning(move |_, _, _| {
                 future::ready(Ok(
                     Some(PassageBuilder::default()
                         .aggregate_id(passage_id_clone)
