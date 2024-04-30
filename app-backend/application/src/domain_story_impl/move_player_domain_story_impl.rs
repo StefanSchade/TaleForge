@@ -61,10 +61,14 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                     let game_id = bout.game_id;
                     let player_id = context.player_id;
 
-                    let player_state_dto = player_repo_clone.find_by_player_id(player_id).await;
+                    let player_state_dto =
+                        player_repo_clone.find_by_bout_id_and_player_id(
+                            bout.id,
+                            player_id,
+                        ).await;
                     match player_state_dto {
                         Ok(Some(state)) => {
-                            let player_state = player_state_map_dto_to_domain(&state);
+                            let player_state = player_state_map_dto_to_domain(state.clone());
 
                             let navigation_result = navigation_service_clone.navigate(
                                 game_id,
@@ -159,7 +163,7 @@ mod tests {
         PlayerStateRepository {}
 
         impl PlayerStateRepository for PlayerStateRepository  {
-             fn find_by_player_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
+             fn find_by_bout_id_and_player_id(&self, bout_id: u64, id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
              fn save(&self, player_state: PlayerStateDTO) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>>;
         }
     }
@@ -206,7 +210,7 @@ mod tests {
         let expected_player_id: u64 = 66;
 
         mock_passage_repo.expect_find_passage_by_location_and_direction()
-            .with(eq(expected_game_id),eq(expected_current_location_id), eq("north"))
+            .with(eq(expected_game_id), eq(expected_current_location_id), eq("north"))
             .times(1)
             .returning(move |_, _, _|
                 async move {
@@ -259,10 +263,10 @@ mod tests {
                 }.boxed()
             );
 
-        mock_player_state_repo.expect_find_by_player_id()
-            .with(eq(expected_player_id))
+        mock_player_state_repo.expect_find_by_bout_id_and_player_id()
+            .with(eq(expected_bout_id), eq(expected_player_id))
             .times(1)
-            .returning(move |_|
+            .returning(move |_, _|
                 async move {
                     Ok(
                         Some(

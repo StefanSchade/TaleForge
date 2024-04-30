@@ -5,6 +5,8 @@ use crosscutting::error_management::error::Error;
 use domain_contract::contracts::player_state_query::PlayerStateQuery;
 use domain_pure::model::player_state::PlayerState;
 use port::repositories::player_state_repository::PlayerStateRepository;
+use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
+use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
 
 #[derive(Clone, Debug)]
 pub struct  PlayerStateQueryImpl {
@@ -18,14 +20,18 @@ impl PlayerStateQueryImpl {
 }
 
 impl PlayerStateQuery for PlayerStateQueryImpl {
-    fn get_player_state(&self, player_id: u64, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
-        todo!()
+    fn get_player_state(&self, bout_id: u64, player_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
+        let repo = self.player_state_repository.clone();
+        Box::pin(async move {
+            let player_state_dto_result = repo.find_by_bout_id_and_player_id(bout_id, player_id).await;
+            player_state_dto_result
+                .map(|option_dto| option_dto.map(player_state_map_dto_to_domain))
+                .map_err(|e| e.into())
+        })
     }
 
-    fn save_newly_initialized_player(&self, player_state: PlayerState, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
+
+    fn persist_player_state(&self, player_state: PlayerState, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
         todo!()
     }
-
-
-
 }

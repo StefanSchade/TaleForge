@@ -9,7 +9,7 @@ pub fn player_state_map_domain_to_dto(domain: &PlayerState) -> PlayerStateDTO {
     }
 }
 
-pub fn player_state_map_dto_to_domain(dto: &PlayerStateDTO) -> PlayerState {
+pub fn player_state_map_dto_to_domain(dto: PlayerStateDTO) -> PlayerState {
     PlayerStateBuilder::default()
         .player_id(dto.player_id)
         .bout_id(dto.bout_id)
@@ -35,7 +35,7 @@ mod tests {
             .expect("Failed to build PlayerState");
 
         let player_state_dto = player_state_map_domain_to_dto(&original_player_state);
-        let converted_back_player_state = player_state_map_dto_to_domain(&player_state_dto);
+        let converted_back_player_state = player_state_map_dto_to_domain(player_state_dto);
 
         assert_eq!(original_player_state.player_id(), converted_back_player_state.player_id());
         assert_eq!(original_player_state.current_location_id(), converted_back_player_state.current_location_id());
@@ -50,7 +50,7 @@ mod tests {
             current_location_id: 0,
         };
 
-        let player_state = player_state_map_dto_to_domain(&player_state_dto);
+        let player_state = player_state_map_dto_to_domain(player_state_dto);
 
         assert_eq!(player_state.player_id(), 0);
         assert_eq!(player_state.current_location_id(), 0);
