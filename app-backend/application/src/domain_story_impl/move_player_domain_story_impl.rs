@@ -214,6 +214,7 @@ mod tests {
                     Ok(
                         Some(PassageDTO {
                             id: 1,
+                            game_id: 2,
                             description: "north".to_string(),
                             direction: "north".to_string(),
                             narration: "You take the passage".to_string(),
@@ -268,6 +269,7 @@ mod tests {
                         Some(
                             PlayerStateDTO {
                                 player_id: expected_player_id,
+                                bout_id: expected_bout_id,
                                 current_location_id: expected_current_location_id,
                             }
                         )

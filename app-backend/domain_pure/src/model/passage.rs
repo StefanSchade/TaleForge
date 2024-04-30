@@ -4,16 +4,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Passage {
     aggregate_id: u64,
+    game_id: u64,
     from_location_id: u64,
     to_location_id: u64,
     description: String,
     direction: String,
     narration: String,
+
 }
 
 impl Passage {
     pub fn get_aggregate_id(&self) -> u64 {
         self.aggregate_id
+    }
+    pub fn get_game_id(&self) -> u64 {
+        self.game_id
     }
     pub fn get_from_location(&self) -> u64 {
         self.from_location_id
@@ -54,6 +59,7 @@ mod tests {
     fn test_passage_builder() {
         let passage = PassageBuilder::default()
             .aggregate_id(1)
+            .game_id(1)
             .from_location_id(1)
             .to_location_id(1)
             .description("Description".into())

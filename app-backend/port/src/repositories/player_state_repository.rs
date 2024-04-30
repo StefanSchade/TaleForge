@@ -59,12 +59,13 @@ impl PlayerStateRepository for MockPlayerStateRepository {
 async fn test_with_mock_repository() {
     let fixed_player_state = PlayerStateDTO {
         player_id: 1,
-        current_location_id: 1,
+        bout_id: 2,
+        current_location_id: 3,
     };
 
     let mock_repo = MockPlayerStateRepository::new(fixed_player_state);
     let player_state_future = mock_repo.find_by_player_id(1);
     let player_state = player_state_future.await.expect("Failed to get player state");
 
-    assert_eq!(player_state.unwrap().current_location_id, 1);
+    assert_eq!(player_state.unwrap().current_location_id, 3);
 }

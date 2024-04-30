@@ -155,48 +155,69 @@ mod tests {
 
     #[tokio::test]
     async fn navigate_to_passage_success() {
+        let expected_origination_location = 1;
+        let expected_destination_location = 2;
+        let expected_game_id = 10;
+        let expected_bout_id: u64 = 15;
+        let expected_passage_id = 20;
+
         let mut mock_passage_query = MockPassageQueries::new();
         let mut mock_location_query = MockLocationQueries::new();
 
-        mock_location_query.expect_get_location_by_aggregate_id()
-            .with(eq(1_u64), eq(2_u64))
-            .times(1)
-            .returning(|_, _|
-                future::ready(
-                    Ok(
-                        Some(LocationBuilder::default()
-                            .aggregate_id(2_u64)
-                            .game_id(1_u64)
-                            .title("Target Location".to_string())
-                            .description("Description of Target Location".to_string())
-                            .build().unwrap())
-                    )
-                ).boxed()
-            );
+        // Clone all necessary data before defining the returning closure
+        let origination_location_clone = expected_origination_location;
+        let destination_location_clone = expected_destination_location;
+        let game_id_clone = expected_game_id;
+        let passage_id_clone = expected_passage_id;
 
-        mock_passage_query.expect_find_passage_by_location_and_direction()
-            .with(eq(1), eq("north"))
+        // Setup mock for location query
+        mock_location_query.expect_get_location_by_aggregate_id()
+            .with(eq(game_id_clone), eq(destination_location_clone))
             .times(1)
-            .returning(|_, _|
+            .returning(move |_, _| {
                 future::ready(Ok(
-                    Some(PassageBuilder::default()
-                        .aggregate_id(2)
-                        .from_location_id(1)
-                        .to_location_id(2)
-                        .description("Description of passage".into())
-                        .direction("north".into())
-                        .narration("You go north".into())
+                    Some(LocationBuilder::default()
+                        .aggregate_id(destination_location_clone)
+                        .game_id(game_id_clone)
+                        .title("Target Location".to_string())
+                        .description("Description of Target Location".to_string())
                         .build().unwrap())
                 )).boxed()
-            );
+            });
 
-        let navigation_service = NavigationService::new(Arc::new(mock_location_query), Arc::new(mock_passage_query));
-        let player_state_instance = PlayerStateBuilder::default().player_id(1).current_location_id(1).build().unwrap();
-        let result = navigation_service.navigate(1, player_state_instance, "north".to_string()).await;
+        // Setup mock for passage query
+        mock_passage_query.expect_find_passage_by_location_and_direction()
+            .with(eq(origination_location_clone), eq("north"))
+            .times(1)
+            .returning(move |_, _| {
+                future::ready(Ok(
+                    Some(PassageBuilder::default()
+                        .aggregate_id(passage_id_clone)
+                        .game_id(game_id_clone)
+                        .from_location_id(origination_location_clone)
+                        .to_location_id(destination_location_clone)
+                        .description("Description of passage".to_string())
+                        .direction("north".to_string())
+                        .narration("You go north".to_string())
+                        .build().unwrap())
+                )).boxed()
+            });
+
+        let navigation_service = NavigationService::new(
+            Arc::new(mock_location_query),
+            Arc::new(mock_passage_query));
+
+        let player_state_instance = PlayerStateBuilder::default()
+            .player_id(1)
+            .bout_id(expected_bout_id)
+            .current_location_id(expected_origination_location)
+            .build().unwrap();
+
+        let result = navigation_service.navigate(expected_game_id, player_state_instance, "north".to_string()).await;
 
         assert!(result.is_ok());
         let (location, narration) = result.unwrap();
-        assert_eq!(location.aggregate_id(), 2);
+        assert_eq!(location.aggregate_id(), expected_destination_location);
         assert_eq!(narration, "You go north and reach Target Location.");
     }
 }

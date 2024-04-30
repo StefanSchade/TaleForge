@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct PlayerState {
     player_id: u64,
-    //aggregate id and foreign kez (once I have established a user)
+    bout_id: u64,
     current_location_id: u64,
 }
 
@@ -16,4 +16,5 @@ impl PlayerState {
         self.current_location_id = location_id;
     }
     pub fn player_id(&self) -> u64 { self.player_id }
+    pub fn bout_id(&self) -> u64 { self.bout_id }
 }

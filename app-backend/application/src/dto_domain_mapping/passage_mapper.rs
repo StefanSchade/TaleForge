@@ -1,20 +1,22 @@
 use domain_pure::model::passage::{Passage, PassageBuilder};
 use port::dto::passage_dto::PassageDTO;
 
-pub fn passage_map_domain_to_dto(passage: &Passage) -> PassageDTO {
+pub fn passage_map_domain_to_dto(domain: &Passage) -> PassageDTO {
     PassageDTO {
-        id: passage.get_aggregate_id(),
-        from_location_id: passage.get_from_location(),
-        to_location_id: passage.get_to_location(),
-        description: passage.description_owned(),
-        direction: passage.direction_owned(),
-        narration: passage.narration_owned(),
+        id: domain.get_aggregate_id(),
+        game_id: domain.get_game_id(),
+        from_location_id: domain.get_from_location(),
+        to_location_id: domain.get_to_location(),
+        description: domain.description_owned(),
+        direction: domain.direction_owned(),
+        narration: domain.narration_owned(),
     }
 }
 
 pub fn passage_map_dto_to_domain(dto: PassageDTO) -> Passage {
     PassageBuilder::default()
         .aggregate_id(dto.id)
+        .game_id(dto.game_id)
         .from_location_id(dto.from_location_id)
         .to_location_id(dto.to_location_id)
         .description(dto.description)
@@ -34,8 +36,9 @@ mod tests {
     fn test_player_state_mapping_round_trip() {
         let original_passage = PassageBuilder::default()
             .aggregate_id(1)
-            .from_location_id(1)
-            .to_location_id(2)
+            .game_id(2)
+            .from_location_id(3)
+            .to_location_id(4)
             .description("desc".to_string())
             .narration("narr".to_string())
             .direction("dir".to_string())

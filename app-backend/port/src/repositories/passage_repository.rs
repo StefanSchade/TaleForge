@@ -92,21 +92,29 @@ impl PassageRepository for MockPassageRepository {
             )
         ).boxed()
     }
+
 }
 
 #[tokio::test]
 async fn test_with_mock_repository() {
+
+    let expected_passage_id: u64 = 0;
+    let expected_game: u64 = 3;
+    let expected_original_location: u64 = 1;
+    let expected_destination_location: u64 = 2;
+
     let fixed_passage = PassageDTO {
-        id: 1,
-        from_location_id: 1,
-        to_location_id: 2,
+        id: expected_passage_id,
+        game_id: expected_game,
+        from_location_id: expected_original_location,
+        to_location_id: expected_destination_location,
         description: "description1".to_string(),
         direction: "direction1".to_string(),
         narration: "narration1".to_string(),
     };
 
     let mock_repo = MockPassageRepository::new(fixed_passage, None);
-    let passage_future = mock_repo.get_passage_by_id(1);
+    let passage_future = mock_repo.get_passage_by_id(expected_passage_id);
     let passage = passage_future.await.expect("Failed to get passage");
 
     assert_eq!(passage.unwrap().description, "description1");
@@ -114,21 +122,31 @@ async fn test_with_mock_repository() {
 
 #[tokio::test]
 async fn test_get_passages_for_location() {
+
+    let expected_passage_id: u64 = 0;
+    let expected_game: u64 = 3;
+    let expected_original_location: u64 = 1;
+    let expected_destination_location: u64 = 2;
+
     let fixed_passage = PassageDTO {
-        id: 1,
-        from_location_id: 1,
-        to_location_id: 2,
+        id: expected_passage_id,
+        game_id: expected_game,
+        from_location_id: expected_original_location,
+        to_location_id: expected_destination_location,
         description: "description1".to_string(),
         direction: "direction1".to_string(),
         narration: "narration1".to_string(),
     };
 
     let all_passages = vec![
+
         fixed_passage.clone(),
+
         PassageDTO {
-            id: 2,
-            from_location_id: 1,
-            to_location_id: 3,
+            id: expected_passage_id+1,
+            game_id: expected_game,
+            from_location_id: expected_original_location,
+            to_location_id: expected_destination_location+1,
             description: "description2".to_string(),
             direction: "direction2".to_string(),
             narration: "narration2".to_string(),

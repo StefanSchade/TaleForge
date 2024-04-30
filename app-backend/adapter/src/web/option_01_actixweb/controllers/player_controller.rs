@@ -84,6 +84,7 @@ mod tests {
 
         let mock_passage = PassageDTO {
             id: 1,
+            game_id: 2,
             from_location_id: 1,
             to_location_id: 2,
             direction: "north".to_string(),

@@ -2,13 +2,13 @@ use domain_pure::model::location::Location;
 use domain_pure::model::location::LocationBuilder;
 use port::dto::location_dto::LocationDTO;
 
-pub fn location_map_domain_to_dto(location: &Location) -> LocationDTO {
+pub fn location_map_domain_to_dto(domain: &Location) -> LocationDTO {
     LocationDTO {
-        id: location.aggregate_id(),
-        game_id: location.game_id(),
-        title: location.title_owned(),
-        description: location.description_owned(),
-        image_url: location.image_url_owned(),
+        id: domain.aggregate_id(),
+        game_id: domain.game_id(),
+        title: domain.title_owned(),
+        description: domain.description_owned(),
+        image_url: domain.image_url_owned(),
     }
 }
 
