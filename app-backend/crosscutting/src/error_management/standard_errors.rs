@@ -17,3 +17,9 @@ pub static BOUT_NOT_RUNNING: ErrorTemplate = ErrorTemplate {
     message: "The bout_id: {} has status {}.",
     kind: ErrorKind::Functional,
 };
+
+pub static PLAYER_NOT_REGISTERED: ErrorTemplate = ErrorTemplate {
+    code: "player_not_registered",
+    message: "The player: {} is not registered for bout {}.",
+    kind: ErrorKind::Functional,
+};
