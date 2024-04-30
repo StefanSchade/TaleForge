@@ -6,7 +6,7 @@ use domain_contract::contracts::player_state_query::PlayerStateQuery;
 use domain_pure::model::player_state::PlayerState;
 use port::repositories::player_state_repository::PlayerStateRepository;
 use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
-use crate::dto_domain_mapping::player_state_mapper::player_state_map_dto_to_domain;
+use crate::dto_domain_mapping::player_state_mapper::{player_state_map_domain_to_dto, player_state_map_dto_to_domain};
 
 #[derive(Clone, Debug)]
 pub struct  PlayerStateQueryImpl {
@@ -30,8 +30,13 @@ impl PlayerStateQuery for PlayerStateQueryImpl {
         })
     }
 
-
-    fn persist_player_state(&self, player_state: PlayerState, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
-        todo!()
+    fn persist_player_state(&self, player_state: PlayerState, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send + 'static>> {
+        let repo = self.player_state_repository.clone();
+        let player_state_dto = player_state_map_domain_to_dto(& player_state);
+        Box::pin(async move {
+            repo.save(player_state_dto).await
+                .map(|_opt_dto| ())  // Ignore the Option in the result, just map to unit type `()`.
+                .map_err(|e| e.into())
+        })
     }
 }
