@@ -23,3 +23,14 @@ pub static PLAYER_NOT_REGISTERED: ErrorTemplate = ErrorTemplate {
     message: "The player: {} is not registered for bout {}.",
     kind: ErrorKind::Functional,
 };
+
+pub static UNEXPECTED_ERROR: ErrorTemplate = ErrorTemplate {
+    code: "unexpected error",
+    message: "Error: {} My comment: {}.",
+    kind: ErrorKind::Functional,
+};
+pub static DATABASE_ACCESS_ERROR: ErrorTemplate = ErrorTemplate {
+    code: "db_access_error",
+    message: "Error: {} My comment: {}.",
+    kind: ErrorKind::Functional,
+};

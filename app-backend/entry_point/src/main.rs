@@ -28,18 +28,18 @@ async fn main() -> std::io::Result<()> {
     let bout_repo = Arc::new(InMemoryBoutRepository::new());
     let player_state_repo = Arc::new(InMemoryPlayerStateRepository::new());
 
-    // ... and initialize them
-
-    let _ = player_state_repo
-        .save(
-            PlayerStateDTO {
-                player_id: 1,
-                bout_id: 1,
-                current_location_id: 1,
-            }
-        ).await;
-
-    info!("player state initialized");
+    // // ... and initialize them
+    //
+    // let _ = player_state_repo
+    //     .save(
+    //         PlayerStateDTO {
+    //             player_id: 1,
+    //             bout_id: 1,
+    //             current_location_id: 1,
+    //         }
+    //     ).await;
+    //
+    // info!("player state initialized");
 
     let location_file_path = Path::new("resources_test/locations.json");
     let passage_file_path = Path::new("resources_test/passages.json");

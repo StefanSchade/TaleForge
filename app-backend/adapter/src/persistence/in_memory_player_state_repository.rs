@@ -44,7 +44,7 @@ impl PlayerStateRepository for InMemoryPlayerStateRepository {
         Box::pin(async move {
             let mut states = states.lock().await;
             let player_states = states.entry(player_state.bout_id).or_insert_with(HashMap::new);
-            println!("Updating InMemoryRepository PlayerState for bout_id {}, player_id {}", player_state.bout_id, player_state.player_id);
+            println!("Updating InMemoryRepository PlayerState for bout_id {}, player_id {}, current location {}", player_state.bout_id, player_state.player_id, player_state.current_location_id);
             player_states.insert(player_state.player_id, player_state.clone());
             Ok(Some(player_state))
         })

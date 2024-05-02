@@ -41,6 +41,7 @@ impl PlayerStateService {
                     let new_state = PlayerStateBuilder::default()
                         .player_id(player_id)
                         .bout_id(bout_id)
+                        .current_location_id(1) // This should be parametrized later on
                         .build().expect("Construction of player state failed");
                     player_state_query.persist_player_state(new_state.clone(), bout_id).await?;
                     Ok(new_state)
