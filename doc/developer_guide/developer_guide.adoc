@@ -1,5 +1,10 @@
 = Developer Guide
 
+npm install @openapi-generator/cli -g
+
+openapi-generator-cli generate -i ./api-contract/openapi.yml -g rust-server -o ./app-backend/openapi
+
+
 Welcome to the developer guide for our project. This guide serves as a comprehensive resource for developers working on this project, outlining best practices, coding standards, and our approach to software development and testing.
 
 == Introduction
