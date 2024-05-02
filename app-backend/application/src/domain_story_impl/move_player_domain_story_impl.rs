@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use futures::future::BoxFuture;
+use crosscutting::error_management::standard_errors::{BOUT_NOT_RUNNING, PLAYER_NOT_REGISTERED};
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use port::context::RequestContext;
@@ -90,12 +91,23 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                                 Err(e) => Err(e.to_string()),
                             }
                         }
-                        Ok(None) => Err(format!("Player state not found for player {:?}", player_id)),
+                        Ok(None) =>
+                            Err(
+                            PLAYER_NOT_REGISTERED.instantiate(vec![
+                                format!("PlayerID={}", player_id),
+                                format!("BoutID={}", bout.id)
+                            ]).to_string()
+                        ),
                         Err(e) => Err(e.to_string()),
                     }
                 }
                 Ok(Some(bout)) => {
-                    Err(format!("Bout with ID {} is not running, status is {:?}", bout.id, bout.status))
+                    Err(
+                        BOUT_NOT_RUNNING.instantiate(vec![
+                            format!("BoutID={}", bout.id),
+                            format!("BoutStatus={:?}", bout.status)
+                        ]).to_string()
+                    )
                 }
                 Ok(None) => Err("Bout not found".to_string()),
                 Err(e) => Err(e.to_string()),
