@@ -17,7 +17,7 @@ impl BusinessAdapterImpl {
 }
 
 impl BusinessAdapter for BusinessAdapterImpl {
-    async fn move_player(&self, bout_id: u64, player_id: u64, direction: String) -> Result<String, String> {
+    async fn move_player(&self, bout_id: u64, player_id: u64, direction: String, string: String) -> Result<String, String> {
         let context = RequestContext::new(bout_id, player_id);
         let input = MovePlayerCommand {
             direction

@@ -21,14 +21,16 @@ paths:
                 bout_id:
                   type: integer
                   format: int64
-                  description: The unique identifier for a bout
+                  minimum: 0
+                  description: The unique identifier for a bout, must be a non-negative integer.
                 player_id:
                   type: integer
                   format: int64
-                  description: The unique identifier for a player
+                  minimum: 0
+                  description: The unique identifier for a player, must be a non-negative integer.
                 direction:
                   type: string
-                  description: The direction in which the player wants to move
+                  description: The direction in which the player wants to move, must be a string.
       responses:
         '200':
           description: Player moved successfully
