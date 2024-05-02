@@ -6,8 +6,8 @@ use async_trait::async_trait;
 use frunk_core::labelled::chars::C;
 use swagger::ApiError;
 use MovePlayerPostResponse::PlayerMovedSuccessfully;
-use crate::{Api, models, MovePlayerPostResponse};
-use crate::models::MovePlayerPostRequest;
+use crate::{Api, models, MovePlayerPostResponse, MovePlayerResponse};
+use crate::models::{MovePlayerPostRequest, MovePlayerRequest};
 
 #[derive(Debug, Clone)]
 pub struct RequestContext {
@@ -36,21 +36,16 @@ impl<B: BusinessAdapter + Send + Sync> Api<RequestContext> for ApiAdapter<B> {
     //     Poll::Ready(Ok(()))
     // }
 
-    async fn move_player_post(&self, move_player_post_request: models::MovePlayerPostRequest, context: &RequestContext) -> Result<MovePlayerPostResponse, ApiError> {
-        let bout_id = match u64::from_str(&move_player_post_request.bout_id) {
-            Ok(num) => num,
-            Err(_) => return Err(ApiError::invalid_input("Invalid bout_id")),
-        };
+    async fn move_player(&self, move_player_request: MovePlayerRequest, context: &RequestContext) -> Result<MovePlayerResponse, ApiError> {
 
-        let player_id = match u64::from_str(&move_player_post_request.player_id) {
-            Ok(num) => num,
-            Err(_) => return Err(ApiError::invalid_input("Invalid player_id")),
-        };
+        let bout_id = move_player_request.bout_id;
+        let player_id = move_player_request.player_id;
+        let direction = move_player_request.direction;
 
-        let direction = move_player_post_request.direction;
+        let direction = move_player_request.direction;
 
         match self.business_adapter.move_player(bout_id, player_id, direction, context.token.clone()).await {
-            Ok(result_json) => Ok(MovePlayerPostResponse::PlayerMovedSuccessfully(result_json)),
+            Ok(result_json) => Ok(MovePlayerResponse::PlayerMovedSuccessfully(result_json)),
             Err(error_message) => Err(ApiError::from(error_message)),
         }
     }

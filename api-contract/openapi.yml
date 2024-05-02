@@ -13,6 +13,10 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - bout_id
+                - player_id
+                - direction
               properties:
                 bout_id:
                   type: integer
