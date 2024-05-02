@@ -1,37 +1,44 @@
 openapi: 3.0.0
 info:
-  title: Adventure Game API
+  title: Example API
   version: 1.0.0
-servers:
-  - url: 'http://localhost:8000'
 paths:
   /move/player:
     post:
-      summary: Move player in a given direction
+      summary: Move a player in a given direction
+      operationId: movePlayer
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - playerId
-                - boutId
-                - direction
               properties:
-                playerId:
-                  type: string
-                  description: Unique identifier of the player character
-                boutId:
-                  type: string
-                  description: Unique identifier of the bout or game session
+                bout_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for a bout
+                player_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for a player
                 direction:
                   type: string
                   description: The direction in which the player wants to move
       responses:
-        200:
+        '200':
           description: Player moved successfully
-        400:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  player_location:
+                    type: integer
+                    format: int64
+                  narration:
+                    type: string
+        '400':
           description: Invalid input
-        404:
+        '404':
           description: Player or bout not found
