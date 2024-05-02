@@ -3,7 +3,8 @@ use std::future::Future;
 use std::pin::Pin;
 
 use crosscutting::error_management::error::Error;
-use crosscutting::error_management::standard_errors::{BOUT_NOT_RUNNING, PLAYER_NOT_REGISTERED};
+use crosscutting::error_management::standard_errors::BOUT_NOT_RUNNING;
+use crosscutting::error_management::standard_errors::PLAYER_NOT_REGISTERED;
 use domain_pure::model::bout::BoutStatus;
 use crate::contracts::bout_query::BoutQuery;
 use crate::contracts::player_state_query::PlayerStateQuery;

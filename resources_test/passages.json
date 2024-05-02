@@ -1,5 +1,6 @@
 [
   {
+    "game_id": 1,
     "aggregate_id": 1,
     "from_location_id": 1,
     "to_location_id": 2,
@@ -8,6 +9,7 @@
     "narration": "You take a deep breath and start your climb. The path is steep but well-trodden."
   },
   {
+    "game_id": 1,
     "aggregate_id": 2,
     "from_location_id": 2,
     "to_location_id": 1,

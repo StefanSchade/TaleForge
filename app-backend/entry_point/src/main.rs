@@ -34,7 +34,7 @@ async fn main() -> std::io::Result<()> {
         .save(
             PlayerStateDTO {
                 player_id: 1,
-                bout_id: 3,
+                bout_id: 1,
                 current_location_id: 1,
             }
         ).await;
