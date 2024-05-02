@@ -1,13 +1,13 @@
+use std::convert::TryFrom;
 use std::error::Error;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use async_trait::async_trait;
-use frunk_core::labelled::chars::C;
+use serde::{Deserialize, Serialize};
 use swagger::ApiError;
-use MovePlayerPostResponse::PlayerMovedSuccessfully;
-use crate::{Api, models, MovePlayerPostResponse, MovePlayerResponse};
-use crate::models::{MovePlayerPostRequest, MovePlayerRequest};
+use crate::{Api, models, MovePlayerResponse};
+use crate::models::{MovePlayer200Response, MovePlayerRequest};
 
 #[derive(Debug, Clone)]
 pub struct RequestContext {
@@ -21,6 +21,28 @@ impl RequestContext {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MovePlayerResult {
+    pub player_location: u64,
+    pub narration: String,
+}
+
+
+impl TryFrom<MovePlayerResult> for MovePlayer200Response {
+    type Error = &'static str;
+
+    fn try_from(value: MovePlayerResult) -> Result<Self, Self::Error> {
+        let player_location = i64::try_from(value.player_location)
+            .map_err(|_| "Value out of range for i64")?;
+
+        Ok(MovePlayer200Response {
+            player_location: Some(player_location),
+            narration: Some(value.narration),
+        })
+    }
+}
+
 
 pub trait BusinessAdapter: Send + Sync {
     async fn move_player(&self, bout_id: u64, player_id: u64, direction: String, string: String) -> Result<String, String>;
@@ -49,9 +71,13 @@ impl<B: BusinessAdapter + Send + Sync> Api<RequestContext> for ApiAdapter<B> {
         let bout_id = bout_id as u64;
         let player_id = player_id as u64;
 
-        match self.business_adapter.move_player(bout_id, player_id, direction, context.token.clone()).await {
-            Ok(result_json) => Ok(MovePlayerResponse::PlayerMovedSuccessfully(result_json)),
-            Err(error_message) => Err(ApiError::from(error_message)),
+        match self.business_adapter.move_player(bout_id as u64, player_id as u64, direction, context.token.clone()).await {
+            Ok(result) => {
+                let response_dto = MovePlayer200Response::try_from(result)
+                    .map_err(|e| ApiError::new(500, e))?;
+                Ok(MovePlayerResponse::PlayerMovedSuccessfully(response_dto))
+            },
+            Err(error_message) => Err(ApiError::new(400, &error_message)),
         }
     }
 }
