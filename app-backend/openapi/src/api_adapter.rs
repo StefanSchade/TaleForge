@@ -43,13 +43,13 @@ impl<B: BusinessAdapter + Send + Sync> Api<RequestContext> for ApiAdapter<B> {
         let direction = move_player_request.direction;
 
         if bout_id < 0 || player_id < 0 {
-            return Err(ApiError::invalid_input("Negative IDs are not allowed"));
+            return Err(ApiError("No negative id allowed".to_string()));
         }
 
         let bout_id = bout_id as u64;
         let player_id = player_id as u64;
 
-        match self.business_adapter.move_player(bout_id as u64, player_id as u64, direction, context.token.clone()).await {
+        match self.business_adapter.move_player(bout_id, player_id, direction, context.token.clone()).await {
             Ok(result_json) => Ok(MovePlayerResponse::PlayerMovedSuccessfully(result_json)),
             Err(error_message) => Err(ApiError::from(error_message)),
         }
