@@ -3,7 +3,7 @@ use crosscutting::error_management::standard_errors::{ID_MUST_BE_POSITIVE_INT, M
 use openapi_client::models::{MovePlayerRequest, MovePlayerResponse};
 use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStoryResponse};
 
-use crate::web::shared_models::MapperTrait::MapperTrait;
+use crate::web::shared::MapperTrait::MapperTrait;
 
 pub struct PlayerMoveResponseMapper {}
 

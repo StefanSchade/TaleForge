@@ -1,3 +1,3 @@
 pub mod option_01_actixweb;
 pub mod option_02_openapi;
-pub (crate) mod shared_models;
+pub (crate) mod shared;

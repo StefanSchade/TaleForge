@@ -7,23 +7,21 @@ use openapi_client::models::{MovePlayerRequest, MovePlayerResponse};
 use port::adapters_outbound::service_container::ServiceContainer;
 use port::port_services::domain_story_move_player::MovePlayerDomainStory;
 
-use crate::web::shared_models::domain_story_mappers::PlayerMoveRequestMapper::PlayerMoveRequestMapper;
-use crate::web::shared_models::domain_story_mappers::PlayerMoveResonseMapper::PlayerMoveResponseMapper;
-use crate::web::shared_models::MapperTrait::MapperTrait;
+use crate::web::shared::domain_story_mappers::PlayerMoveRequestMapper::PlayerMoveRequestMapper;
+use crate::web::shared::domain_story_mappers::PlayerMoveResonseMapper::PlayerMoveResponseMapper;
+use crate::web::shared::MapperTrait::MapperTrait;
 
 //impl<B: BusinessAdapter + Send + Sync> Api<RequestContext> for ApiAdapter<B>
 
 #[derive(Debug, Clone)]
-struct Adapter {
-    move_player_domain_story: Arc<dyn MovePlayerDomainStory>,
+pub struct Adapter {
+    move_player_domain_story: Arc<dyn MovePlayerDomainStory + Send + Sync>,
 }
 
 impl Adapter {
-    pub fn new(service_container: ServiceContainer) -> Self {
-        let move_player_domain_story = service_container.move_player().clone();
-
-        Adapter {
-            move_player_domain_story
+    pub fn new(move_player_domain_story: Arc<dyn MovePlayerDomainStory + Send + Sync>) -> Self {
+        Self {
+            move_player_domain_story,
         }
     }
 }
