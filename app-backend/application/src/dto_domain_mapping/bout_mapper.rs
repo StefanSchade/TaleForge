@@ -37,8 +37,8 @@ mod tests {
     #[test]
     fn test_bout_to_dto_mapping() {
         let bout = BoutBuilder::default()
-            .aggregate_id(1_u64)
-            .game_id(100_u64)
+            .aggregate_id(1_i64)
+            .game_id(100_i64)
             .registered_participants(vec![1, 2, 3])
             .status(BoutStatus::Scheduled)
             .build()

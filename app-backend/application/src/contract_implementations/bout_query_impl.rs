@@ -22,7 +22,7 @@ impl BoutQueryImpl {
 }
 
 impl BoutQuery for BoutQueryImpl {
-    fn get_bout_by_id(&self, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<Bout, Error>> + Send + 'static>> {
+    fn get_bout_by_id(&self, bout_id: i64) -> Pin<Box<dyn Future<Output=Result<Bout, Error>> + Send + 'static>> {
         let repo = self.bout_repository.clone();
         Box::pin(async move {
             match repo.get_bout_by_id(bout_id).await {

@@ -10,7 +10,7 @@ use port::repositories::passage_repository::PassageRepository;
 
 #[derive(Clone)]
 pub struct InMemoryPassageRepository {
-    passages: Arc<Mutex<HashMap<u64, HashMap<u64, PassageDTO>>>>,
+    passages: Arc<Mutex<HashMap<i64, HashMap<i64, PassageDTO>>>>,
 }
 
 impl InMemoryPassageRepository {
@@ -28,7 +28,7 @@ impl fmt::Debug for InMemoryPassageRepository {
 }
 
 impl PassageRepository for InMemoryPassageRepository {
-    fn get_passage_by_id(&self, game_id: u64, id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn get_passage_by_id(&self, game_id: i64, id: i64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let passages = passages.lock().await;
@@ -36,7 +36,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn get_passages_for_location(&self, game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
+    fn get_passages_for_location(&self, game_id: i64, location_id: i64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let passages = passages.lock().await;
@@ -49,7 +49,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn find_passage_by_location_and_direction(&self, game_id: u64, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_passage_by_location_and_direction(&self, game_id: i64, location_id: i64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         let direction = direction.to_owned();
         Box::pin(async move {
@@ -62,7 +62,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn add_passage(&self, game_id: u64, passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn add_passage(&self, game_id: i64, passage: PassageDTO) -> BoxFuture<'static, Result<(), Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let mut passages = passages.lock().await;
@@ -72,7 +72,7 @@ impl PassageRepository for InMemoryPassageRepository {
         })
     }
 
-    fn find_by_start_and_end_id(&self, game_id: u64, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+    fn find_by_start_and_end_id(&self, game_id: i64, from_location_id: i64, to_location_id: i64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
         let passages = self.passages.clone();
         Box::pin(async move {
             let passages = passages.lock().await;

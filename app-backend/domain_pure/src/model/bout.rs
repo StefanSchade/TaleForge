@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Builder, PartialEq, Clone, Debug, Deserialize, Serialize)]
 pub struct Bout {
     #[builder(setter(into))]
-    pub aggregate_id: u64,
+    pub aggregate_id: i64,
     #[builder(setter(into))]
-    pub game_id: u64,
+    pub game_id: i64,
     #[builder(setter(into))]
-    pub registered_participants: Vec<u64>,
+    pub registered_participants: Vec<i64>,
     #[builder(setter(into))]
     pub status: BoutStatus,
 }
@@ -21,7 +21,7 @@ pub enum BoutStatus {
 }
 
 impl Bout {
-    pub fn get_game_id_for_bout(&self) -> u64 {
+    pub fn get_game_id_for_bout(&self) -> i64 {
         self.game_id
     }
 }

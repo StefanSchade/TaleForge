@@ -10,7 +10,7 @@ use port::repositories::location_repository::LocationRepository;
 
 #[derive(Clone)]
 pub struct InMemoryLocationRepository {
-    locations: Arc<Mutex<HashMap<u64, HashMap<u64, LocationDTO>>>>,
+    locations: Arc<Mutex<HashMap<i64, HashMap<i64, LocationDTO>>>>,
 }
 
 impl InMemoryLocationRepository {
@@ -22,7 +22,7 @@ impl InMemoryLocationRepository {
 }
 
 impl LocationRepository for InMemoryLocationRepository {
-    fn get_location_by_id(&self, game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+    fn get_location_by_id(&self, game_id: i64, location_id: i64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
         let locations = self.locations.clone();
 
         Box::pin(async move {
@@ -31,7 +31,7 @@ impl LocationRepository for InMemoryLocationRepository {
         })
     }
 
-    fn get_all_locations(&self, game_id: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
+    fn get_all_locations(&self, game_id: i64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
         let locations = self.locations.clone();
 
         Box::pin(async move {
@@ -43,7 +43,7 @@ impl LocationRepository for InMemoryLocationRepository {
         })
     }
 
-    fn add_location(&self, game_id: u64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn add_location(&self, game_id: i64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
         let locations = self.locations.clone();
 
         Box::pin(async move {

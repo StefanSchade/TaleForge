@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 #[builder(setter(into), build_fn(validate = "Self::validate"))]
 pub struct Location {
     #[builder(setter(into))]
-    aggregate_id: u64,
+    aggregate_id: i64,
     #[builder(setter(into))]
-    game_id: u64,
+    game_id: i64,
     #[builder(setter(into))]
     title: String,
     #[builder(setter(into))]
@@ -36,10 +36,10 @@ impl LocationBuilder {
 }
 
 impl Location {
-    pub fn aggregate_id(&self) -> u64 {
+    pub fn aggregate_id(&self) -> i64 {
         self.aggregate_id
     }
-    pub fn game_id(&self) -> u64 {
+    pub fn game_id(&self) -> i64 {
         self.game_id
     }
     pub fn title(&self) -> &str {
@@ -72,8 +72,8 @@ mod tests {
 
     #[test]
     fn test_location_builder() {
-        let location = LocationBuilder::default().aggregate_id(1_u64)
-            .game_id(1_u64)
+        let location = LocationBuilder::default().aggregate_id(1_i64)
+            .game_id(1_i64)
             .title("Test Location Title".to_string())
             .description("Test Location Description".to_string())
             .build()

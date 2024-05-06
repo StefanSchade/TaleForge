@@ -21,7 +21,7 @@ impl PlayerStateService {
         PlayerStateService { bout_query, player_state_query }
     }
 
-    pub fn get_or_initialize_player_state(&self, player_id: u64, bout_id: u64) -> Pin<Box<dyn Future<Output = Result<PlayerState, Error>> + Send>> {
+    pub fn get_or_initialize_player_state(&self, player_id: i64, bout_id: i64) -> Pin<Box<dyn Future<Output = Result<PlayerState, Error>> + Send>> {
         let bout_query = self.bout_query.clone();
         let player_state_query = self.player_state_query.clone();
 

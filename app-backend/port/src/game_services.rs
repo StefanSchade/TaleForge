@@ -1,5 +1,5 @@
-use crate::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerResult};
+use crate::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStoryResponse};
 
 pub trait GameService {
-    fn move_player(&self, input: MovePlayerCommand) -> Result<MovePlayerResult, &'static str>;
+    fn move_player(&self, input: MovePlayerDomainStoryRequest) -> Result<MovePlayerDomainStoryResponse, &'static str>;
 }

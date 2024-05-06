@@ -28,9 +28,9 @@ mod tests {
     #[test]
     fn test_player_state_mapping_round_trip() {
         let original_player_state = PlayerStateBuilder::default()
-            .player_id(1_u64)
-            .bout_id(1_u64)
-            .current_location_id(100_u64)
+            .player_id(1_i64)
+            .bout_id(1_i64)
+            .current_location_id(100_i64)
             .build()
             .expect("Failed to build PlayerState");
 

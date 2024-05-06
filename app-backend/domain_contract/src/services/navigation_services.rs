@@ -15,7 +15,7 @@ use crate::contracts::passage_query::PassageQueries;
 pub trait NavigationServiceTrait: Send + Sync + Debug {
     fn navigate(
         &self,
-        game_id: u64,
+        game_id: i64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>>;
@@ -42,7 +42,7 @@ impl NavigationService {
 impl NavigationServiceTrait for NavigationService {
     fn navigate(
         &self,
-        game_id: u64,
+        game_id: i64,
         player_state: PlayerState,
         direction: String,
     ) -> Pin<Box<dyn Future<Output=Result<(Location, String), Error>> + Send>> {
@@ -59,7 +59,7 @@ impl NavigationServiceTrait for NavigationService {
 impl NavigationService {
     async fn find_passage(
         passage_query: Arc<dyn PassageQueries>,
-        game_id: u64,
+        game_id: i64,
         player_state: &PlayerState,
         direction: &str,
     ) -> Result<Option<Passage>, Error> {
@@ -68,7 +68,7 @@ impl NavigationService {
 
     async fn process_passage_result(
         passage_result: Result<Option<Passage>, Error>,
-        game_id: u64,
+        game_id: i64,
         location_query: Arc<dyn LocationQueries>,
         direction: String,
     ) -> Result<(Location, String), Error> {
@@ -125,8 +125,8 @@ mod tests {
             fn get_location_by_game_id_and_aggregate_id
                 (
                     &self,
-                    game_id: u64,
-                    location_aggregate_id: u64
+                    game_id: i64,
+                    location_aggregate_id: i64
                 ) -> Pin<Box<dyn Future<Output = Result<Option<Location>, Error>> + Send>>;
         }
     }
@@ -141,8 +141,8 @@ mod tests {
     mock! {
         PassageQueries {}
         impl PassageQueries for PassageQueries {
-            fn find_passage_between_locations(&self, game_id: u64, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
-            fn find_passage_by_location_and_direction(&self, game_id: u64, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_between_locations(&self, game_id: i64, from_location_id: i64, to_location_id: i64) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
+            fn find_passage_by_location_and_direction(&self, game_id: i64, location_id: i64, direction: &str) -> BoxFuture<'static, Result<Option<Passage>, Error>>;
         }
     }
 
@@ -159,7 +159,7 @@ mod tests {
         let expected_origination_location = 1;
         let expected_destination_location = 2;
         let expected_game_id = 10;
-        let expected_bout_id: u64 = 15;
+        let expected_bout_id: i64 = 15;
         let expected_passage_id = 20;
 
         let mut mock_passage_query = MockPassageQueries::new();

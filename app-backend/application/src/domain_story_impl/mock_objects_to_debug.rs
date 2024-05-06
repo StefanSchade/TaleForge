@@ -26,7 +26,7 @@
 // }
 //
 // impl LocationRepository for MockForDebugLocationRepo {
-//     fn get_location_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+//     fn get_location_by_id(&self, id: i64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
 //         async move {
 //             if id == 1 {
 //                 Ok(Some(LocationDTO {
@@ -78,7 +78,7 @@
 // }
 //
 // impl PassageRepository for MockForDebugPassageRepo {
-//     fn get_passage_by_id(&self, id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+//     fn get_passage_by_id(&self, id: i64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
 //         async move {
 //             // Return a mocked passage or none based on an ID
 //             Ok(Some(PassageDTO {
@@ -92,7 +92,7 @@
 //         }.boxed()
 //     }
 //
-//     fn get_passages_for_location(&self, location_id: u64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
+//     fn get_passages_for_location(&self, location_id: i64) -> BoxFuture<'static, Result<Vec<PassageDTO>, Error>> {
 //         async move {
 //             // Return a list of passages for a specific location
 //             Ok(vec![
@@ -116,7 +116,7 @@
 //         }.boxed()
 //     }
 //
-//     fn find_passage_by_location_and_direction(&self, location_id: u64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+//     fn find_passage_by_location_and_direction(&self, location_id: i64, direction: &str) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
 //         let direction = direction.to_owned(); // Clone the direction into a new String
 //         async move {
 //             // Use the cloned direction here
@@ -142,7 +142,7 @@
 //         }.boxed()
 //     }
 //
-//     fn find_by_start_and_end_id(&self, from_location_id: u64, to_location_id: u64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
+//     fn find_by_start_and_end_id(&self, from_location_id: i64, to_location_id: i64) -> BoxFuture<'static, Result<Option<PassageDTO>, Error>> {
 //         async move {
 //             // Mock finding a passage by start and end location
 //             Ok(Some(PassageDTO {
@@ -167,7 +167,7 @@
 // }
 //
 // impl PlayerStateRepository for MockForDebugPlayerStateRepo {
-//     fn find_by_player_id(&self, player_id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+//     fn find_by_player_id(&self, player_id: i64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
 //         Box::pin(async move {
 //             // Simulate fetching player state
 //             Ok(Some(PlayerStateDTO {

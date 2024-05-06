@@ -9,9 +9,9 @@ use crosscutting::error_management::error::Error;
 use crate::dto::location_dto::LocationDTO;
 
 pub trait LocationRepository: Send + Sync + Debug {
-    fn get_location_by_id(&self, game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
-    fn get_all_locations(&self, game_id: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
-    fn add_location(&self, game_id: u64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
+    fn get_location_by_id(&self, game_id: i64, location_id: i64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>>;
+    fn get_all_locations(&self, game_id: i64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>>;
+    fn add_location(&self, game_id: i64, location: LocationDTO) -> BoxFuture<'static, Result<(), Error>>;
 }
 
 #[cfg(feature = "test-utils")]
@@ -33,7 +33,7 @@ impl MockLocationRepository {
 #[cfg(feature = "test-utils")]
 impl LocationRepository for MockLocationRepository {
     #[cfg(feature = "test-utils")]
-    fn get_location_by_id(&self, _game_id: u64, location_id: u64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
+    fn get_location_by_id(&self, _game_id: i64, location_id: i64) -> BoxFuture<'static, Result<Option<LocationDTO>, Error>> {
         let fixed_location = self.fixed_location.clone();
         future::ready(
             Ok(
@@ -45,11 +45,11 @@ impl LocationRepository for MockLocationRepository {
             )).boxed()
     }
 
-    fn get_all_locations(&self, _game_id: u64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
+    fn get_all_locations(&self, _game_id: i64) -> BoxFuture<'static, Result<Vec<LocationDTO>, Error>> {
         future::ready(Ok(self.all_locations.clone().unwrap())).boxed()
     }
 
-    fn add_location(&self, _game_id: u64, _location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
+    fn add_location(&self, _game_id: i64, _location: LocationDTO) -> BoxFuture<'static, Result<(), Error>> {
         future::ready(Ok(())).boxed()
     }
 }

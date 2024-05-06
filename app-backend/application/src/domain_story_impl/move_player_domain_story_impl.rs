@@ -5,7 +5,7 @@ use futures::future::BoxFuture;
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use domain_contract::services::player_state_service::PlayerStateService;
 use port::context::RequestContext;
-use port::port_services::domain_story_move_player::{MovePlayerCommand, MovePlayerDomainStory, MovePlayerResult};
+use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStory, MovePlayerDomainStoryResponse};
 use port::repositories::bout_repository::BoutRepository;
 use port::repositories::location_repository::LocationRepository;
 use port::repositories::passage_repository::PassageRepository;
@@ -60,18 +60,19 @@ impl MovePlayerDomainStoryImpl {
 }
 
 impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
-    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
+    fn execute(&self, input: MovePlayerDomainStoryRequest) -> BoxFuture<'static, Result<MovePlayerDomainStoryResponse, String>> {
         let player_state_service_clone = self.player_state_service.clone();
         let navigation_service_clone = self.navigation_service.clone();
         let player_repo_clone = self.player_state_repository.clone();
 
         Box::pin(async move {
-            let player_state_result = player_state_service_clone.get_or_initialize_player_state(context.bout_id, context.player_id).await;
+
+            let player_state_result = player_state_service_clone.get_or_initialize_player_state(input.player_id, input.bout_id).await;
 
             match player_state_result {
                 Ok(mut player_state) => {
                     let navigation_result = navigation_service_clone.navigate(
-                        context.bout_id, // Assuming bout_id correlates with game_id or make necessary adjustments
+                        input.bout_id,
                         player_state.clone(),
                         input.direction,
                     ).await;
@@ -82,7 +83,7 @@ impl MovePlayerDomainStory for MovePlayerDomainStoryImpl {
                             player_state.set_current_location_id(new_location.aggregate_id());
                             let _ = player_repo_clone.save(player_state_map_domain_to_dto(&player_state)).await; // Persist the updated state
 
-                            Ok(MovePlayerResult {
+                            Ok(MovePlayerDomainStoryResponse {
                                 player_location: new_location.aggregate_id(),
                                 narration,
                             })

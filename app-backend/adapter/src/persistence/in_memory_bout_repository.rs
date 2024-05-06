@@ -10,7 +10,7 @@ use port::repositories::bout_repository::BoutRepository;
 
 #[derive(Clone)]
 pub struct InMemoryBoutRepository {
-    bouts: Arc<Mutex<HashMap<u64, BoutDTO>>>, // A simple HashMap to store BoutDTOs keyed by match_id
+    bouts: Arc<Mutex<HashMap<i64, BoutDTO>>>, // A simple HashMap to store BoutDTOs keyed by match_id
 }
 
 impl InMemoryBoutRepository {
@@ -22,7 +22,7 @@ impl InMemoryBoutRepository {
 }
 
 impl BoutRepository for InMemoryBoutRepository {
-    fn get_bout_by_id(&self, match_id: u64) -> BoxFuture<'static, Result<Option<BoutDTO>, Error>> {
+    fn get_bout_by_id(&self, match_id: i64) -> BoxFuture<'static, Result<Option<BoutDTO>, Error>> {
         let bouts = self.bouts.clone();
 
         Box::pin(async move {

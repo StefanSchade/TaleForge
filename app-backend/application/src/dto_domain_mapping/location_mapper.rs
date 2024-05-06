@@ -33,8 +33,8 @@ mod tests {
     #[test]
     fn test_location_to_dto_mapping() {
         let location = LocationBuilder::default()
-            .aggregate_id(1_u64)
-            .game_id(1_u64)
+            .aggregate_id(1_i64)
+            .game_id(1_i64)
             .title("Mysterious Forest".to_string())
             .description("A forest full of mysteries.".to_string())
             .image_url("https://example.com/forest.jpg".to_string())

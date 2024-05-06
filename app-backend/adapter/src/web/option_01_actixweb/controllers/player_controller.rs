@@ -5,18 +5,20 @@ use log::{debug, info};
 use serde::{Deserialize, Serialize};
 
 use port::context::RequestContext;
-use port::port_services::domain_story_move_player::MovePlayerCommand;
+use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStoryResponse};
 
 use crate::web::option_01_actixweb::app_state::AppState;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerInput {
     pub direction: String,
+    pub bout_id: i64,
+    pub player_id: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebMovePlayerOutput {
-    pub location: u64,
+    pub location: i64,
     pub narration: String,
 }
 
@@ -30,12 +32,11 @@ pub async fn move_player(
     let extracted_player_id = 1;
     let extracted_bout_id = 1;
 
-    let command = MovePlayerCommand::from(web_input.into_inner());
-    let context = RequestContext::new(extracted_bout_id, extracted_player_id);
+    let command = MovePlayerDomainStoryRequest::from(web_input.into_inner());
 
     let domain_story = app_state.move_player_domain_story.clone();
 
-    let result = domain_story.execute(context, command).await;
+    let result = domain_story.execute(command).await;
 
     match result {
         Ok(response) => {
@@ -50,9 +51,14 @@ pub async fn move_player(
 }
 
 
-impl From<WebMovePlayerInput> for MovePlayerCommand {
+impl From<WebMovePlayerInput> for MovePlayerDomainStoryRequest {
     fn from(input: WebMovePlayerInput) -> Self {
-        MovePlayerCommand { direction: input.direction }
+        MovePlayerDomainStoryRequest
+        {
+            direction: input.direction,
+            bout_id: input.bout_id,
+            player_id: input.player_id,
+        }
     }
 }
 
@@ -92,13 +98,6 @@ mod tests {
             narration: "nar".to_string(),
         };
         let _mock_passage_repository = Arc::new(MockPassageRepository::new(mock_passage, None));
-
-        // let mock_player_state = PlayerStateDTO {
-        //     player_id: 1,
-        //     current_location_id: 1,
-        // };
-        //
-        //let mock_player_state_repository = Arc::new(MockPlayerStateRepository::new(mock_player_state));
 
         let mock_move_player_domain_story = Arc::new(MockMovePlayerDomainStory::new(1, "You moved north.".to_string()));
 

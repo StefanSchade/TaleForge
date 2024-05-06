@@ -15,12 +15,12 @@ Repositories in DDD serve as abstractions over the storage mechanism for aggrega
 [source,rust]
 ----
 trait LocationRepository {
-    fn find_by_id(&self, id: u64) -> Option<Location>;
+    fn find_by_id(&self, id: i64) -> Option<Location>;
     // Other necessary methods...
 }
 
 trait PassageRepository {
-    fn find_by_id(&self, id: u64) -> Option<Passage>;
+    fn find_by_id(&self, id: i64) -> Option<Passage>;
     // Other necessary methods...
 }
 ----
@@ -47,7 +47,7 @@ impl NavigationService {
     }
 
     // Example service method
-    pub fn navigate(&self, from: u64, to: u64) -> Result<Path, NavigationError> {
+    pub fn navigate(&self, from: i64, to: i64) -> Result<Path, NavigationError> {
         // Implementation...
     }
 }

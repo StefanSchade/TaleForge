@@ -10,31 +10,33 @@ use crate::context::RequestContext;
 
 #[async_trait]
 pub trait MovePlayerDomainStory: Send + Sync + Debug {
-    fn execute(&self, context: RequestContext, input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>>;
+    fn execute(&self, input: MovePlayerDomainStoryRequest) -> BoxFuture<'static, Result<MovePlayerDomainStoryResponse, String>>;
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MovePlayerCommand {
+pub struct MovePlayerDomainStoryRequest {
     pub direction: String,
+    pub bout_id: i64,
+    pub player_id: i64
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MovePlayerResult {
-    pub player_location: u64,
+pub struct MovePlayerDomainStoryResponse {
+    pub player_location: i64,
     pub narration: String,
 }
 
 #[cfg(feature = "test-utils")]
 #[derive(Debug)]
 pub struct MockMovePlayerDomainStory {
-    pub fixed_result: MovePlayerResult,
+    pub fixed_result: MovePlayerDomainStoryResponse,
 }
 
 #[cfg(feature = "test-utils")]
 impl MockMovePlayerDomainStory {
-    pub fn new(player_location: u64, narration: String) -> Self {
+    pub fn new(player_location: i64, narration: String) -> Self {
         MockMovePlayerDomainStory {
-            fixed_result: MovePlayerResult {
+            fixed_result: MovePlayerDomainStoryResponse {
                 player_location,
                 narration,
             }
@@ -45,7 +47,7 @@ impl MockMovePlayerDomainStory {
 #[cfg(feature = "test-utils")]
 #[async_trait]
 impl MovePlayerDomainStory for MockMovePlayerDomainStory {
-    fn execute(&self, _context: RequestContext, _input: MovePlayerCommand) -> BoxFuture<'static, Result<MovePlayerResult, String>> {
+    fn execute(&self, _context: RequestContext, _input: MovePlayerDomainStoryRequest) -> BoxFuture<'static, Result<MovePlayerDomainStoryResponse, String>> {
         future::ready(Ok(self.fixed_result.clone())).boxed()
     }
 }

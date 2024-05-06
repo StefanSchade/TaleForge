@@ -20,7 +20,7 @@ impl PlayerStateQueryImpl {
 }
 
 impl PlayerStateQuery for PlayerStateQueryImpl {
-    fn get_player_state(&self, bout_id: u64, player_id: u64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
+    fn get_player_state(&self, bout_id: i64, player_id: i64) -> Pin<Box<dyn Future<Output=Result<Option<PlayerState>, Error>> + Send + 'static>> {
         let repo = self.player_state_repository.clone();
         Box::pin(async move {
             let player_state_dto_result = repo.find_by_bout_id_and_player_id(bout_id, player_id).await;
@@ -30,7 +30,7 @@ impl PlayerStateQuery for PlayerStateQueryImpl {
         })
     }
 
-    fn persist_player_state(&self, player_state: PlayerState, bout_id: u64) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send + 'static>> {
+    fn persist_player_state(&self, player_state: PlayerState, bout_id: i64) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send + 'static>> {
         let repo = self.player_state_repository.clone();
         let player_state_dto = player_state_map_domain_to_dto(& player_state);
         Box::pin(async move {

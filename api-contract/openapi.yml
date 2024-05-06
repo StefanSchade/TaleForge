@@ -1,86 +1,53 @@
 openapi: 3.0.0
 info:
-  title: Adventure Game API
-  version: 1.0.0
-servers:
-  - url: 'http://localhost:8000'
+  title: Game API
+  version: "1.0.0"
 paths:
-  /players/{playerId}/move:
+  /move/player:
     post:
       summary: Move player in a given direction
-      parameters:
-        - in: path
-          name: playerId
-          required: true
-          schema:
-            type: string
+      operationId: movePlayer
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - player_id
+                - bout_id
+                - direction
               properties:
+                player_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for a player.
+                bout_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for a bout.
                 direction:
                   type: string
-                gameId:
-                  type: string
+                  description: The direction in which the player wants to move.
       responses:
-        200:
+        '200':
           description: Player moved successfully
-  /players/{playerId}/rooms/current:
-    get:
-      summary: Get current room description
-      parameters:
-        - in: path
-          name: playerId
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Current room description
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  description:
-                    type: string
-                  imageUrl:
-                    type: string
-  /players/{playerId}/rooms/current/directions:
-    get:
-      summary: Get possible directions from the current room
-      parameters:
-        - in: path
-          name: playerId
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Possible directions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /rooms/{roomId}/image:
-    get:
-      summary: Get room image
-      parameters:
-        - in: path
-          name: roomId
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Image file
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/MovePlayerResponse'
+        '400':
+          description: Invalid input
+        '404':
+          description: Player or bout not found
+
+components:
+  schemas:
+    MovePlayerResponse:
+      type: object
+      properties:
+        player_location:
+          type: integer
+          format: int64
+        narration:
+          type: string

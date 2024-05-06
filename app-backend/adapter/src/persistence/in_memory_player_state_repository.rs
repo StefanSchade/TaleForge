@@ -11,7 +11,7 @@ use port::repositories::player_state_repository::PlayerStateRepository;
 
 #[derive(Clone)]
 pub struct InMemoryPlayerStateRepository {
-    states: Arc<Mutex<HashMap<u64, HashMap<u64, PlayerStateDTO>>>>,
+    states: Arc<Mutex<HashMap<i64, HashMap<i64, PlayerStateDTO>>>>,
 }
 
 impl InMemoryPlayerStateRepository {
@@ -29,7 +29,7 @@ impl fmt::Debug for InMemoryPlayerStateRepository {
 }
 
 impl PlayerStateRepository for InMemoryPlayerStateRepository {
-    fn find_by_bout_id_and_player_id(&self, bout_id: u64, player_id: u64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
+    fn find_by_bout_id_and_player_id(&self, bout_id: i64, player_id: i64) -> BoxFuture<'static, Result<Option<PlayerStateDTO>, Error>> {
         let states = self.states.clone();
         Box::pin(async move {
             let states = states.lock().await;

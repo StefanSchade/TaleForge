@@ -29,6 +29,18 @@ pub static UNEXPECTED_ERROR: ErrorTemplate = ErrorTemplate {
     message: "Error: {} My comment: {}.",
     kind: ErrorKind::Functional,
 };
+
+pub static MANDATORY_FIELD_MISSING: ErrorTemplate = ErrorTemplate {
+    code: "mandatory_field_missing",
+    message: "Request {} requires filed {}.",
+    kind: ErrorKind::Functional,
+};
+pub static ID_MUST_BE_POSITIVE_INT: ErrorTemplate = ErrorTemplate {
+    code: "id_must_be_postive_int",
+    message: "the value {} is {} but must be a positive int64",
+    kind: ErrorKind::Functional,
+};
+
 pub static DATABASE_ACCESS_ERROR: ErrorTemplate = ErrorTemplate {
     code: "db_access_error",
     message: "Error: {} My comment: {}.",

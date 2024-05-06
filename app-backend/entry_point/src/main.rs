@@ -75,6 +75,14 @@ async fn main() -> std::io::Result<()> {
 
     let service_container = ServiceContainer::new(move_player_ds);
 
+    // hyper adapter
+
+    let service_container_hyper = service_container.clone();
+
+    let adapter: Adapter = Adapter::new(service_container_hyper);
+
+    // actix adapter
+
     let actix = ActixWebServer::new(service_container);
 
     actix.start_server().await
