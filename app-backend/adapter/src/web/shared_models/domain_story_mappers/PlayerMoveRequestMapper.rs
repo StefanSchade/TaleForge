@@ -5,9 +5,9 @@ use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest
 
 use crate::web::shared_models::MapperTrait::MapperTrait;
 
-struct PlayerMoveRequest {}
+pub struct PlayerMoveRequestMapper {}
 
-impl MapperTrait<MovePlayerRequest, MovePlayerDomainStoryRequest> for PlayerMoveRequest {
+impl MapperTrait<MovePlayerRequest, MovePlayerDomainStoryRequest> for PlayerMoveRequestMapper {
     fn from_api(api_model: MovePlayerRequest) -> Result<MovePlayerDomainStoryRequest, Error> {
         let player_id = api_model.player_id.ok_or_else(
             || MANDATORY_FIELD_MISSING.instantiate(
@@ -62,9 +62,9 @@ impl MapperTrait<MovePlayerRequest, MovePlayerDomainStoryRequest> for PlayerMove
 
         Ok(
             MovePlayerRequest {
-                player_id,
-                bout_id,
-                direction,
+                player_id: port_model.player_id,
+                bout_id: port_model.bout_id,
+                direction: port_model.direction,
             }
         )
     }

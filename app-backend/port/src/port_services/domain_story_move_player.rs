@@ -1,12 +1,9 @@
 use std::fmt::Debug;
-use std::future;
 
 use async_trait::async_trait;
 use futures::future::BoxFuture;
 use futures::FutureExt;
 use serde::{Deserialize, Serialize};
-
-use crate::context::RequestContext;
 
 #[async_trait]
 pub trait MovePlayerDomainStory: Send + Sync + Debug {
@@ -17,7 +14,7 @@ pub trait MovePlayerDomainStory: Send + Sync + Debug {
 pub struct MovePlayerDomainStoryRequest {
     pub direction: String,
     pub bout_id: i64,
-    pub player_id: i64
+    pub player_id: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -47,7 +44,7 @@ impl MockMovePlayerDomainStory {
 #[cfg(feature = "test-utils")]
 #[async_trait]
 impl MovePlayerDomainStory for MockMovePlayerDomainStory {
-    fn execute(&self, _context: RequestContext, _input: MovePlayerDomainStoryRequest) -> BoxFuture<'static, Result<MovePlayerDomainStoryResponse, String>> {
-        future::ready(Ok(self.fixed_result.clone())).boxed()
+    fn execute(&self, _input: MovePlayerDomainStoryRequest) -> BoxFuture<'static, Result<MovePlayerDomainStoryResponse, String>> {
+        std::future::ready(Ok(self.fixed_result.clone())).boxed()
     }
 }
