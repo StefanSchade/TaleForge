@@ -1,7 +1,9 @@
+#[cfg(feature = "test-utils")]
 use std::{fmt, future};
 use std::fmt::Debug;
 
 use futures::future::BoxFuture;
+#[cfg(feature = "test-utils")]
 use futures::FutureExt;
 
 use crosscutting::error_management::error::Error;

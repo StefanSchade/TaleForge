@@ -1,7 +1,7 @@
 use crosscutting::error_management::error::Error;
 use crosscutting::error_management::standard_errors::{ID_MUST_BE_POSITIVE_INT, MANDATORY_FIELD_MISSING};
-use openapi_client::models::{MovePlayerRequest, MovePlayerResponse};
-use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStoryResponse};
+use openapi_client::models::MovePlayerRequest;
+use port::port_services::domain_story_move_player::MovePlayerDomainStoryRequest;
 
 use crate::web::shared::MapperTrait::MapperTrait;
 

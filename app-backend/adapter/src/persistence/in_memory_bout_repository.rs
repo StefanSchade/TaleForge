@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 use std::sync::Arc;
+
 use futures::future::BoxFuture;
 use tokio::sync::Mutex;
 
 use crosscutting::error_management::error::Error;
 use port::dto::bout_dto::BoutDTO;
-use port::dto::passage_dto::PassageDTO;
 use port::repositories::bout_repository::BoutRepository;
 
 #[derive(Clone)]
 pub struct InMemoryBoutRepository {
-    bouts: Arc<Mutex<HashMap<i64, BoutDTO>>>, // A simple HashMap to store BoutDTOs keyed by match_id
+    bouts: Arc<Mutex<HashMap<i64, BoutDTO>>>,
 }
 
 impl InMemoryBoutRepository {

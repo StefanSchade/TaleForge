@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use async_trait::async_trait;
 use futures::future::BoxFuture;
+#[cfg(feature = "test-utils")]
 use futures::FutureExt;
 use serde::{Deserialize, Serialize};
 

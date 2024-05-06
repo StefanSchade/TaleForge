@@ -1,10 +1,10 @@
 use std::sync::Arc;
+use async_trait::async_trait;
 
 use swagger::ApiError;
 
 use openapi_client::Api;
 use openapi_client::models::{MovePlayerRequest, MovePlayerResponse};
-use port::adapters_outbound::service_container::ServiceContainer;
 use port::port_services::domain_story_move_player::MovePlayerDomainStory;
 
 use crate::web::shared::domain_story_mappers::PlayerMoveRequestMapper::PlayerMoveRequestMapper;
@@ -33,6 +33,7 @@ struct DummyContext {}
 
 impl DummyContextTrait for DummyContext {}
 
+#[async_trait]
 impl Api<DummyContext> for Adapter {
     async fn move_player(&self, move_player_request: MovePlayerRequest, context: &DummyContext) -> Result<MovePlayerResponse, ApiError> {
         let domain_story = self.move_player_domain_story.clone();

@@ -4,7 +4,6 @@ use futures::future::BoxFuture;
 
 use domain_contract::services::navigation_services::{NavigationService, NavigationServiceTrait};
 use domain_contract::services::player_state_service::PlayerStateService;
-use port::context::RequestContext;
 use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStory, MovePlayerDomainStoryResponse};
 use port::repositories::bout_repository::BoutRepository;
 use port::repositories::location_repository::LocationRepository;
@@ -19,12 +18,9 @@ use crate::dto_domain_mapping::player_state_mapper::player_state_map_domain_to_d
 
 #[derive(Clone, Debug)]
 pub struct MovePlayerDomainStoryImpl {
-    location_repository: Arc<dyn LocationRepository>,
-    passage_repository: Arc<dyn PassageRepository>,
-    bout_repository: Arc<dyn BoutRepository>,
     player_state_repository: Arc<dyn PlayerStateRepository>,
     navigation_service: Arc<dyn NavigationServiceTrait>,
-    player_state_service: Arc<PlayerStateService>,  // Added PlayerStateService
+    player_state_service: Arc<PlayerStateService>,
 }
 
 impl MovePlayerDomainStoryImpl {
@@ -33,7 +29,6 @@ impl MovePlayerDomainStoryImpl {
         passage_repository: Arc<dyn PassageRepository>,
         bout_repository: Arc<dyn BoutRepository>,
         player_state_repository: Arc<dyn PlayerStateRepository>,
-        //  player_state_service: Arc<PlayerStateService>,  // Initialize PlayerStateService
     ) -> Self {
         let navigation_service = Arc::new(
             NavigationService::new(
@@ -49,9 +44,6 @@ impl MovePlayerDomainStoryImpl {
         );
 
         Self {
-            location_repository,
-            passage_repository,
-            bout_repository,
             player_state_repository,
             navigation_service,
             player_state_service,

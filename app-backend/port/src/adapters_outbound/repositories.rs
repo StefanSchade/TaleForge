@@ -43,4 +43,7 @@ impl OutboundAdapters {
     pub fn player_state_repo(&self) -> Arc<dyn PlayerStateRepository> {
         self.player_state.clone()
     }
+
+    pub fn bout_repo(&self) -> Arc<dyn BoutRepository> { self.bout_repo.clone()
+    }
 }

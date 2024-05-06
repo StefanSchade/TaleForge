@@ -2,10 +2,10 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 use crosscutting::error_management::error::Error;
+use crosscutting::error_management::standard_errors::UNEXPECTED_ERROR;
 use domain_contract::contracts::player_state_query::PlayerStateQuery;
 use domain_pure::model::player_state::PlayerState;
 use port::repositories::player_state_repository::PlayerStateRepository;
-use crate::dto_domain_mapping::passage_mapper::passage_map_dto_to_domain;
 use crate::dto_domain_mapping::player_state_mapper::{player_state_map_domain_to_dto, player_state_map_dto_to_domain};
 
 #[derive(Clone, Debug)]
@@ -33,9 +33,14 @@ impl PlayerStateQuery for PlayerStateQueryImpl {
     fn persist_player_state(&self, player_state: PlayerState, bout_id: i64) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send + 'static>> {
         let repo = self.player_state_repository.clone();
         let player_state_dto = player_state_map_domain_to_dto(& player_state);
+
         Box::pin(async move {
+            if   player_state.bout_id() != bout_id {
+                return Err(UNEXPECTED_ERROR.instantiate(vec![
+                    format!("Inconsistent bout in player_state ({:?}) and in call is ({:?})", player_state.bout_id(), bout_id)]))
+            }
             repo.save(player_state_dto).await
-                .map(|_opt_dto| ())  // Ignore the Option in the result, just map to unit type `()`.
+                .map(|_opt_dto| ())
                 .map_err(|e| e.into())
         })
     }

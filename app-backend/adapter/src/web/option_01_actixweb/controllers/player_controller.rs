@@ -4,8 +4,7 @@ use actix_web::{HttpResponse, Responder, web};
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 
-use port::context::RequestContext;
-use port::port_services::domain_story_move_player::{MovePlayerDomainStoryRequest, MovePlayerDomainStoryResponse};
+use port::port_services::domain_story_move_player::MovePlayerDomainStoryRequest;
 
 use crate::web::option_01_actixweb::app_state::AppState;
 
@@ -28,9 +27,6 @@ pub async fn move_player(
 ) -> impl Responder {
     info!("Handling move_player request: {:?}", web_input);
     debug!("Attempting to extract AppState...");
-
-    let extracted_player_id = 1;
-    let extracted_bout_id = 1;
 
     let command = MovePlayerDomainStoryRequest::from(web_input.into_inner());
 
