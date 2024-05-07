@@ -4,9 +4,6 @@ use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use async_trait::async_trait;
-use swagger::ApiError;
-
 use openapi_client::Api;
 #[allow(unused_imports)]
 use openapi_client::models::Error as ErrorBody;
@@ -18,41 +15,43 @@ use openapi_client::models::MovePlayerResponse as MovePlayerResponseBody;
 use openapi_client::MovePlayerResponse as MovePlayerResponseCodesAndBody;
 use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
-use port::port_services::domain_story_move_player::MovePlayerDomainStory;
-
-use crate::web::shared::domain_story_mappers::player_move_request_mapper::PlayerMoveRequestMapper;
-use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::PlayerMoveResponseMapper;
-use crate::web::shared::request_mapper_trait::RequestMapperTrait;
-use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
+use crate::web::option_01_actixweb::app_state::AppState;
 
 #[derive(Clone, Debug)]
 pub struct HyperServer {
-    move_player_domain_story: Arc<dyn MovePlayerDomainStory>,
+    service_container: ServiceContainer,
+    config: Arc<ServerConfig>,
 }
 
 impl HyperServer {
-    pub fn new(service_container: ServiceContainer) -> Self {
-        let move_player_domain_story = service_container.move_player();
+    pub fn new(container: ServiceContainer, config: ServerConfig) -> Self {
         HyperServer {
-            move_player_domain_story,
+            service_container: container,
+            config: Arc::new(config)
         }
     }
 }
-
 impl WebServer for HyperServer {
-    fn start_server(&self, config: ServerConfig) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
+    fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
+        let app_state = AppState {
+            move_player_domain_story: self.service_container.move_player(),
+        };
+
+        let config_clone = self.config.clone();
+
         Box::pin(async move {
-            let addr_result = config.address.parse::<SocketAddr>();
-            let addr = match addr_result {
+            // Directly parse the address without taking a reference
+            let addr = match config_clone.address.parse::<SocketAddr>() {
                 Ok(addr) => addr,
                 Err(e) => return Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Failed to parse bind address: {}", e)))
             };
-            if config.use_https {
+
+            if config_clone.use_https {
                 // HTTPS setup
                 #[cfg(feature = "ssl")]
                 {
-                    let ssl_key = config.ssl_key.expect("SSL key file is required for HTTPS");
-                    let ssl_cert = config.ssl_cert.expect("SSL cert file is required for HTTPS");
+                    let ssl_key = config_clone.ssl_key.expect("SSL key file is required for HTTPS");
+                    let ssl_cert = config_clone.ssl_cert.expect("SSL cert file is required for HTTPS");
 
                     // Here would be your SSL setup code
                     // Placeholder for SSL code
@@ -77,34 +76,9 @@ impl WebServer for HyperServer {
     }
 }
 
-trait DummyContextTrait: Send + Sync {}
+pub trait DummyContextTrait: Send + Sync {}
 
 #[derive(Debug, Clone, Copy)]
-struct DummyContext {}
+pub struct DummyContext {}
 
 impl DummyContextTrait for DummyContext {}
-
-#[async_trait]
-impl Api<DummyContext> for HyperServer {
-    async fn move_player(&self, move_player_request: ModelMovePlayerRequest, context: &DummyContext) -> Result<MovePlayerResponseCodesAndBody, ApiError> {
-        let domain_story = self.move_player_domain_story.clone();
-        let _context_clone = context.clone();
-
-        match PlayerMoveRequestMapper::from_api(move_player_request) {
-            Ok(request) => {
-                match domain_story.execute(request).await {
-                    Ok(response) => {
-                        // Since the line was simple, no need for additional braces
-                        Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
-                    }
-                    Err(e) => {
-                        Err(ApiError(format!("Error processing domain story: {}", e)))
-                    }
-                }
-            }
-            Err(e) => {
-                Err(ApiError(format!("Error processing move player request: {}", e)))
-            }
-        }
-    }
-}

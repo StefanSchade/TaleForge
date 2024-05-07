@@ -77,9 +77,7 @@ async fn main() -> std::io::Result<()> {
 
     let service_container_hyper = service_container.clone();
 
-    let hyper = HyperServer::new(service_container_hyper);
-
-    let hyper_future = hyper.start_server(ServerConfig::new
+    let hyper = HyperServer::new(service_container_hyper, ServerConfig::new
         (
             "localhost:8080".to_string(),
             false,
@@ -87,16 +85,18 @@ async fn main() -> std::io::Result<()> {
             None,
         ));
 
+    let hyper_future = hyper.start_server();
+
     // actix adapter
 
-    let actix = ActixWebServer::new(service_container);
-
-    let actix_future = actix.start_server(ServerConfig::new(
+    let actix = ActixWebServer::new(service_container, ServerConfig::new(
         "localhost:8081".to_string(),
         false,
         None,
         None,
     ));
+
+    let actix_future = actix.start_server();
 
     let (_hyper_result, _actix_result) = tokio::join!(hyper_future, actix_future);
 

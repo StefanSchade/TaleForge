@@ -15,16 +15,20 @@ use crate::web::option_01_actixweb::controllers::player_controller;
 #[derive(Debug)]
 pub struct ActixWebServer {
     pub service_container: ServiceContainer,
+    config: Arc<ServerConfig>
 }
 
 impl WebServer for ActixWebServer {
     // pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
-    fn start_server(&self, config: ServerConfig) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+    fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
         info!("starting actix");
+
 
         let app_state = AppState {
             move_player_domain_story: self.service_container.move_player(),
         };
+
+        let config_clone = self.config.clone();
 
         let server_future = async move {
             let server = HttpServer::new(move || {
@@ -33,7 +37,7 @@ impl WebServer for ActixWebServer {
                     .configure(Self::configure_routes)
                 //.service(web::resource("/player/move").route(web::post().to(player_controller::move_player))) alternative cfg
             })
-                .bind(config.address)?;
+                .bind(&config_clone.address)?;
             server.run()
                 .await
         };
@@ -50,9 +54,10 @@ impl ActixWebServer {
         );
     }
 
-    pub fn new(container: ServiceContainer) -> Arc<Self> {
+    pub fn new(container: ServiceContainer, config: ServerConfig) -> Arc<Self> {
         Arc::new(ActixWebServer {
             service_container: container,
+            config: Arc::new(config)
         })
     }
 }
