@@ -1,5 +1,6 @@
 use std::future::Future;
 use std::io::Error;
+use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
 
@@ -41,8 +42,11 @@ impl HyperServer {
 impl WebServer for HyperServer {
     fn start_server(&self, config: ServerConfig) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
         Box::pin(async move {
-            let addr = config.address.parse().expect("Failed to parse bind address");
-
+            let addr_result = config.address.parse::<SocketAddr>();
+            let addr = match addr_result {
+                Ok(addr) => addr,
+                Err(e) => return Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Failed to parse bind address: {}", e)))
+            };
             if config.use_https {
                 // HTTPS setup
                 #[cfg(feature = "ssl")]
