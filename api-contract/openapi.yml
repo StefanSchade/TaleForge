@@ -7,28 +7,15 @@ paths:
     post:
       summary: Move player in a given direction
       operationId: movePlayer
+      tags:
+        - Player
       requestBody:
+        description: Request parameters needed for moving a player
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - player_id
-                - bout_id
-                - direction
-              properties:
-                player_id:
-                  type: integer
-                  format: int64
-                  description: The unique identifier for a player.
-                bout_id:
-                  type: integer
-                  format: int64
-                  description: The unique identifier for a bout.
-                direction:
-                  type: string
-                  description: The direction in which the player wants to move.
+              $ref: '#/components/schemas/MovePlayerRequest'
       responses:
         '200':
           description: Player moved successfully
@@ -37,17 +24,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/MovePlayerResponse'
         '400':
-          description: Invalid input
+          description: Invalid input, such as validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: Player or bout not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
+    MovePlayerRequest:
+      type: object
+      required:
+        - playerId
+        - boutId
+        - direction
+      properties:
+        playerId:
+          type: integer
+          format: int64
+        boutId:
+          type: integer
+          format: int64
+        direction:
+          type: string
     MovePlayerResponse:
       type: object
       properties:
-        player_location:
+        newLocation:
           type: integer
           format: int64
         narration:
           type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: 'unexpected_error'
+        message:
+          type: string
+          example: 'An unexpected error occurred.'

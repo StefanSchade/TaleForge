@@ -1,2 +1,2 @@
-pub mod PlayerMoveRequestMapper;
-pub mod PlayerMoveResonseMapper;
+pub mod player_move_request_mapper;
+pub mod player_move_resonse_mapper;

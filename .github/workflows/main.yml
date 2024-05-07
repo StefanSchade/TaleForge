@@ -33,7 +33,7 @@ jobs:
         working-directory: ./
 
       - name: Generate API client code
-        run: openapi-generator-cli generate -i api-contract/openapi.yml -g typescript-axios -o app-frontend/src/api
+        run: openapi-generator-cli generate -i api-contract/openapi_old.yml -g typescript-axios -o app-frontend/src/api
         working-directory: ./
 
       - name: Build frontend
