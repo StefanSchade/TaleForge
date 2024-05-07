@@ -1,3 +1,6 @@
+use std::future::Future;
+use std::io::Error;
+use std::pin::Pin;
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -12,6 +15,7 @@ use openapi_client::models::MovePlayerRequest as ModelMovePlayerRequest;
 use openapi_client::models::MovePlayerResponse as MovePlayerResponseBody;
 #[allow(unused_imports)]
 use openapi_client::MovePlayerResponse as MovePlayerResponseCodesAndBody;
+use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
 use port::port_services::domain_story_move_player::MovePlayerDomainStory;
 
@@ -31,6 +35,41 @@ impl HyperServer {
         HyperServer {
             move_player_domain_story,
         }
+    }
+}
+
+impl WebServer for HyperServer {
+    fn start_server(&self, config: ServerConfig) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
+        Box::pin(async move {
+            let addr = config.address.parse().expect("Failed to parse bind address");
+
+            if config.use_https {
+                // HTTPS setup
+                #[cfg(feature = "ssl")]
+                {
+                    let ssl_key = config.ssl_key.expect("SSL key file is required for HTTPS");
+                    let ssl_cert = config.ssl_cert.expect("SSL cert file is required for HTTPS");
+
+                    // Here would be your SSL setup code
+                    // Placeholder for SSL code
+                }
+
+                // Placeholder for the actual HTTPS server setup
+                println!("HTTPS server started on {}", addr);
+                Ok(())
+            } else {
+                // HTTP setup
+                let make_svc = hyper::service::make_service_fn(|_conn| async {
+                    Ok::<_, hyper::Error>(hyper::service::service_fn(|_req| async {
+                        Ok::<_, hyper::Error>(hyper::Response::new(hyper::Body::from("Hello World!")))
+                    }))
+                });
+
+                let server = hyper::server::Server::bind(&addr).serve(make_svc);
+                println!("HTTP server started on {}", addr);
+                server.await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("Hyper error: {}", e)))
+            }
+        })
     }
 }
 

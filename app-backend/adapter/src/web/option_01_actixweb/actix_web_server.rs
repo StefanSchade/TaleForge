@@ -6,7 +6,7 @@ use actix_web::{App, HttpServer, web};
 use actix_web::web::Data;
 use log::info;
 
-use port::adapters_inbound::web_server::WebServer;
+use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
 
 use crate::web::option_01_actixweb::app_state::AppState;
@@ -19,7 +19,7 @@ pub struct ActixWebServer {
 
 impl WebServer for ActixWebServer {
     // pub fn start_server(sc: ServiceContainer) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
-    fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
+    fn start_server(&self, config: ServerConfig) -> Pin<Box<dyn Future<Output=Result<(), std::io::Error>> + Send>> {
         info!("starting actix");
 
         let app_state = AppState {
@@ -33,7 +33,7 @@ impl WebServer for ActixWebServer {
                     .configure(Self::configure_routes)
                 //.service(web::resource("/player/move").route(web::post().to(player_controller::move_player))) alternative cfg
             })
-                .bind("localhost:8080")?;
+                .bind(config.address)?;
             server.run()
                 .await
         };

@@ -2,15 +2,15 @@ use std::path::Path;
 use std::sync::Arc;
 
 use env_logger::Env;
-use adapter::persistence::in_memory_bout_repository::InMemoryBoutRepository;
 
+use adapter::persistence::in_memory_bout_repository::InMemoryBoutRepository;
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
 use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
-use adapter::web::option_02_openapi::api_impl::HyperServer;
+use adapter::web::option_02_hyper::hyper_server::HyperServer;
 use application::domain_story_impl::move_player_domain_story_impl::MovePlayerDomainStoryImpl;
-use port::adapters_inbound::web_server::WebServer;
+use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
 
 mod data_loader;
@@ -68,7 +68,7 @@ async fn main() -> std::io::Result<()> {
         location_repo.clone(),
         passage_repo.clone(),
         bout_repo.clone(),
-        player_state_repo.clone()
+        player_state_repo.clone(),
     ));
 
     let service_container = ServiceContainer::new(move_player_ds);
@@ -77,11 +77,28 @@ async fn main() -> std::io::Result<()> {
 
     let service_container_hyper = service_container.clone();
 
-    let _adapter = HyperServer::new(service_container_hyper);
+    let hyper = HyperServer::new(service_container_hyper);
+
+    let hyper_future = hyper.start_server(ServerConfig::new
+        (
+            "localhost:8080".to_string(),
+            false,
+            None,
+            None,
+        ));
 
     // actix adapter
 
     let actix = ActixWebServer::new(service_container);
 
-    actix.start_server().await
+    let actix_future = actix.start_server(ServerConfig::new(
+        "localhost:8081".to_string(),
+        false,
+        None,
+        None,
+    ));
+
+    let (_hyper_result, _actix_result) = tokio::join!(hyper_future, actix_future);
+
+    Ok(())
 }
