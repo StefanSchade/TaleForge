@@ -2,16 +2,14 @@ use std::path::Path;
 use std::sync::Arc;
 
 use env_logger::Env;
-use log::info;
 use adapter::persistence::in_memory_bout_repository::InMemoryBoutRepository;
 
 use adapter::persistence::in_memory_location_repository::InMemoryLocationRepository;
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
 use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
+use adapter::web::option_02_openapi::api_impl::HyperServer;
 use application::domain_story_impl::move_player_domain_story_impl::MovePlayerDomainStoryImpl;
-use port::dto::player_state_dto::PlayerStateDTO;
-use port::repositories::player_state_repository::PlayerStateRepository;
 use port::adapters_inbound::web_server::WebServer;
 use port::adapters_outbound::service_container::ServiceContainer;
 
@@ -79,7 +77,7 @@ async fn main() -> std::io::Result<()> {
 
     let service_container_hyper = service_container.clone();
 
-    //let adapter: Adapter = Adapter::new(service_container_hyper);
+    let _adapter = HyperServer::new(service_container_hyper);
 
     // actix adapter
 
