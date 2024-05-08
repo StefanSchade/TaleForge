@@ -32,7 +32,6 @@ use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
 pub async fn create(addr: &str, https: bool, container: ServiceContainer) {
-
     let addr = addr.parse().expect("Failed to parse bind address");
     let server = HyperServer::new(container);
     let service = MakeService::new(server);
@@ -111,29 +110,27 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
         context: &C,
     ) -> Result<MovePlayerResponseCodesAndBody, ApiError>
     {
-
-
         let domain_story = self.service_container.move_player().clone();
         let _context_clone = context.clone();
         info!("move_player({:?}) - X-Span-ID: {:?}", move_player_request, context.get().0.clone());
 
         match PlayerMoveRequestMapper::from_api(move_player_request) {
             Ok(request) => {
-
                 info!("request({:?}) - X-Span-ID: {:?}", request, context.get().0.clone());
 
-                match domain_story.execute(request).await {
-                    Ok(response) => {
-                        Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
-                    }
-                    Err(e) => {
-                        Err(ApiError(format!("Error processing domain story: {}", e)))
-                    }
-                }
+                let domain_response_result = domain_story.execute(request).await;
+                print!("got here 3");
+                let response = domain_response_result.map_err(|e| {
+                    print!("got here 1!!!! THIS IS THE PROBEM");
+                    ApiError(format!("Error processing domain story: {}", e))
+                })?;
+                print!("got here 2");
+                Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
             }
             Err(e) => {
-                Err(ApiError(format!("Error processing move player request: {}", e)))
+                Err(ApiError(format!("Error processing domain story: {}", e)))
             }
         }
     }
+    //Err(e) => {   Err(ApiError(format ! ("Error processing move player request: {}", e)))   }
 }
