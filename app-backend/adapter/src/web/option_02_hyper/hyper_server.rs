@@ -1,5 +1,6 @@
 use std::future::Future;
 use std::io::Error;
+use std::marker::PhantomData;
 use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -22,21 +23,23 @@ use port::adapters_outbound::service_container::ServiceContainer;
 use crate::web::option_02_hyper::app_state_hyper::AppStateHyper;
 
 #[derive(Clone, Debug)]
-pub struct HyperServer {
+pub struct HyperServer<C> {
     service_container: ServiceContainer,
     config: Arc<ServerConfig>,
+    marker: PhantomData<C>,
 }
 
-impl HyperServer {
+impl<C> HyperServer<C> {
     pub fn new(container: ServiceContainer, config: ServerConfig) -> Self {
         HyperServer {
             service_container: container,
             config: Arc::new(config),
+            marker: PhantomData
         }
     }
 }
 
-impl WebServer for HyperServer {
+impl WebServer for HyperServer<C> {
     fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
         let config_clone = self.config.clone();
         let app_state_hyper = AppStateHyper::new(self.service_container.move_player());
