@@ -21,21 +21,20 @@ use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
 #[derive(Clone, Debug)]
-pub struct AppState {
+pub struct AppStateHyper {
     pub move_player_domain_story: Arc<dyn MovePlayerDomainStory>,
 }
 
-impl AppState {
-    pub fn new(service_container: ServiceContainer) -> Self {
-        let move_player_domain_story = service_container.move_player();
-        AppState {
-            move_player_domain_story: move_player_domain_story,
+impl AppStateHyper {
+    pub fn new(move_player_domain_story: Arc<dyn MovePlayerDomainStory>) -> Self {
+        AppStateHyper {
+            move_player_domain_story,
         }
     }
 }
 
 #[async_trait]
-impl Api<crate::web::option_02_hyper::hyper_server::DummyContext> for AppState {
+impl Api<crate::web::option_02_hyper::hyper_server::DummyContext> for AppStateHyper {
     async fn move_player
     (
         &self,
