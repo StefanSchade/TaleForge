@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::sync::Arc;
+use clap::{App, Arg};
 
 use env_logger::Env;
 
@@ -77,17 +78,15 @@ async fn main() -> std::io::Result<()> {
 
     let service_container_hyper = service_container.clone();
 
-    let hyper = HyperServer::new(service_container_hyper, ServerConfig::new
-        (
-            "localhost:8080".to_string(),
-            false,
-            None,
-            None,
-        ));
+    let matches = App::new("server")
+        .arg(Arg::with_name("https")
+            .long("https")
+            .help("Whether to use HTTPS or not"))
+        .get_matches();
 
-    let hyper_future = hyper.start_server();
+    let addr = "127.0.0.1:8080";
 
-    // actix adapter
+    let hyper_future =  adapter::web::option_02_hyper::hyper_server::create(addr, matches.is_present("https"), service_container_hyper);
 
     let actix = ActixWebServer::new(service_container, ServerConfig::new(
         "localhost:8081".to_string(),

@@ -7,9 +7,11 @@ use std::pin::Pin;
 use std::sync::Arc;
 
 use async_trait::async_trait;
+use hyper::server::conn::Http;
 use log::info;
 use swagger::{ApiError, EmptyContext, Has, XSpanIdString};
 use swagger::auth::MakeAllowAllAuthenticator;
+use tokio::net::TcpListener;
 
 use openapi_client::Api;
 #[allow(unused_imports)]
@@ -29,18 +31,75 @@ use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::Player
 use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
+pub async fn create(addr: &str, https: bool, container: ServiceContainer) {
+    let addr = addr.parse().expect("Failed to parse bind address");
+
+    let server = HyperServer::new(container);
+
+    let service = MakeService::new(server);
+
+    let service = MakeAllowAllAuthenticator::new(service, "cosmo");
+
+    #[allow(unused_mut)]
+        let mut service =
+        openapi_client::server::context::MakeAddContext::<_, EmptyContext>::new(
+            service
+        );
+
+    if https {
+        #[cfg(any(target_os = "macos", target_os = "windows", target_os = "ios"))]
+        {
+            unimplemented!("SSL is not implemented for the examples on MacOS, Windows or iOS");
+        }
+
+        #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
+        {
+            let mut ssl = SslAcceptor::mozilla_intermediate_v5(SslMethod::tls()).expect("Failed to create SSL Acceptor");
+
+            // Server authentication
+            ssl.set_private_key_file("examples/server-key.pem", SslFiletype::PEM).expect("Failed to set private key");
+            ssl.set_certificate_chain_file("examples/server-chain.pem").expect("Failed to set certificate chain");
+            ssl.check_private_key().expect("Failed to check private key");
+
+            let tls_acceptor = ssl.build();
+            let tcp_listener = TcpListener::bind(&addr).await.unwrap();
+
+            loop {
+                if let Ok((tcp, _)) = tcp_listener.accept().await {
+                    let ssl = Ssl::new(tls_acceptor.context()).unwrap();
+                    let addr = tcp.peer_addr().expect("Unable to get remote address");
+                    let service = service.call(addr);
+
+                    tokio::spawn(async move {
+                        let tls = tokio_openssl::SslStream::new(ssl, tcp).map_err(|_| ())?;
+                        let service = service.await.map_err(|_| ())?;
+
+                        Http::new()
+                            .serve_connection(tls, service)
+                            .await
+                            .map_err(|_| ())
+                    });
+                }
+            }
+        }
+    } else {
+        // Using HTTP
+        hyper::server::Server::bind(&addr).serve(service).await.unwrap()
+    }
+}
+
+
 #[derive(Clone)]
 pub struct HyperServer<C> {
     service_container: ServiceContainer,
-    config: Arc<ServerConfig>,
     marker: PhantomData<C>,
 }
 
+
 impl<C> HyperServer<C> {
-    pub fn new(container: ServiceContainer, config: ServerConfig) -> Self {
+    pub fn new(container: ServiceContainer) -> Self {
         HyperServer {
             service_container: container,
-            config: Arc::new(config),
             marker: PhantomData,
         }
     }
@@ -74,35 +133,5 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
                 Err(ApiError(format!("Error processing move player request: {}", e)))
             }
         }
-    }
-}
-
-impl<C> Debug for HyperServer<C> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("HyperServer").finish()
-    }
-}
-
-impl<C> WebServer for HyperServer<C> {
-    fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
-        let config_clone = self.config.clone();
-        let service = MakeService::new(self);
-        let service = MakeAllowAllAuthenticator::new(service, "cosmo");
-
-        #[allow(unused_mut)]
-            let mut service =
-            openapi_client::server::context::MakeAddContext::<_, EmptyContext>::new(
-                service
-            );
-
-        Box::pin(async move {
-            let addr = match config_clone.address.parse::<SocketAddr>() {
-                Ok(addr) => addr,
-                Err(e) => return Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Failed to parse bind address: {}", e))),
-            };
-
-            // Using HTTP
-            hyper::server::Server::bind(&addr).serve(service).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
-        })
     }
 }
