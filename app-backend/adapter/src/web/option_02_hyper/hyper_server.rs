@@ -1,11 +1,15 @@
+use std::fmt::{Debug, Formatter};
 use std::future::Future;
 use std::io::Error;
 use std::marker::PhantomData;
 use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
+
+use async_trait::async_trait;
+use log::info;
+use swagger::{ApiError, EmptyContext, Has, XSpanIdString};
 use swagger::auth::MakeAllowAllAuthenticator;
-use swagger::{EmptyContext, Has, XSpanIdString};
 
 use openapi_client::Api;
 #[allow(unused_imports)]
@@ -20,9 +24,12 @@ use openapi_client::server::MakeService;
 use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
 
-use crate::web::option_02_hyper::app_state_hyper::AppStateHyper;
+use crate::web::shared::domain_story_mappers::player_move_request_mapper::PlayerMoveRequestMapper;
+use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::PlayerMoveResponseMapper;
+use crate::web::shared::request_mapper_trait::RequestMapperTrait;
+use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct HyperServer<C> {
     service_container: ServiceContainer,
     config: Arc<ServerConfig>,
@@ -34,15 +41,59 @@ impl<C> HyperServer<C> {
         HyperServer {
             service_container: container,
             config: Arc::new(config),
-            marker: PhantomData
+            marker: PhantomData,
         }
     }
 }
 
-impl WebServer for HyperServer<C> {
+#[async_trait]
+impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
+    async fn move_player
+    (
+        &self,
+        move_player_request: ModelMovePlayerRequest,
+        context: &C,
+    ) -> Result<MovePlayerResponseCodesAndBody, ApiError>
+    {
+        let domain_story = self.service_container.move_player().clone();
+        let _context_clone = context.clone();
+        info!("move_player({:?}) - X-Span-ID: {:?}", move_player_request, context.get().0.clone());
+
+        match PlayerMoveRequestMapper::from_api(move_player_request) {
+            Ok(request) => {
+                match domain_story.execute(request).await {
+                    Ok(response) => {
+                        Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
+                    }
+                    Err(e) => {
+                        Err(ApiError(format!("Error processing domain story: {}", e)))
+                    }
+                }
+            }
+            Err(e) => {
+                Err(ApiError(format!("Error processing move player request: {}", e)))
+            }
+        }
+    }
+}
+
+impl<C> Debug for HyperServer<C> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("HyperServer").finish()
+    }
+}
+
+impl<C> WebServer for HyperServer<C> {
     fn start_server(&self) -> Pin<Box<dyn Future<Output=Result<(), Error>> + Send>> {
         let config_clone = self.config.clone();
-        let app_state_hyper = AppStateHyper::new(self.service_container.move_player());
+        let service = MakeService::new(self);
+        let service = MakeAllowAllAuthenticator::new(service, "cosmo");
+
+        #[allow(unused_mut)]
+            let mut service =
+            openapi_client::server::context::MakeAddContext::<_, EmptyContext>::new(
+                service
+            );
 
         Box::pin(async move {
             let addr = match config_clone.address.parse::<SocketAddr>() {
@@ -50,63 +101,8 @@ impl WebServer for HyperServer<C> {
                 Err(e) => return Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Failed to parse bind address: {}", e))),
             };
 
-            let service = MakeService::new(app_state_hyper);
-            let service = MakeAllowAllAuthenticator::new(service, "cosmo");
-
-            #[allow(unused_mut)]
-                let mut service =
-                openapi_client::server::context::MakeAddContext::<_, EmptyContext>::new(
-                    service
-                );
-
-            if config_clone.use_https {
-                #[cfg(any(target_os = "macos", target_os = "windows", target_os = "ios"))]
-                {
-                    unimplemented!("SSL is not implemented for the examples on MacOS, Windows or iOS");
-                }
-                #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
-                {
-                    unimplemented!("For Linux see the example code in the generate");
-            } else {
-                    hyper::server::Server::bind(&addr).serve(service).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
-            }
-        }
-    })
-}
-}
-
-        // // Setup the server to use AppStateHyper for handling requests
-        // let make_svc = make_service_fn(move |_conn| {
-        //     let app_state_hyper_clone = app_state_hyper.clone(); // do we need this?
-        //     async move {
-        //         Ok::<_, hyper::Error>(service_fn(move |req| {
-        //             app_state_hyper_clone.handle_request(req)
-        //         }))
-        //     }
-        // });
-        //
-        // let server = hyper::server::Server::bind(&addr).serve(make_svc);
-        // println!("Server running on http://{}", addr);
-        // server.await.map_err(|e| Error::new(std::io::ErrorKind::Other, format!("Hyper server error: {}", e)))
-
-
-pub trait DummyContextTrait: Send + Sync {}
-
-#[derive(Debug, Clone, Copy)]
-struct DummyContext {
-    mut x_span_id: XSpanIdString
-}
-
-impl Has<XSpanIdString> for DummyContext {
-    fn get(&self) -> &XSpanIdString {
-        &self.x_span_id
-    }
-
-    fn get_mut(&mut self) -> &mut XSpanIdString {
-        return &mut self.x_span_id;
-    }
-
-    fn set(&mut self, value: XSpanIdString) {
-        &mut self.x_span_id = &mut value.clone();
+            // Using HTTP
+            hyper::server::Server::bind(&addr).serve(service).await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
+        })
     }
 }
