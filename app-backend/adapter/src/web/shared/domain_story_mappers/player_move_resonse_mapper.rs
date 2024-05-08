@@ -1,3 +1,4 @@
+use log::info;
 use crosscutting::error_management::error::Error;
 use crosscutting::error_management::error_kind::ErrorKind;
 use crosscutting::error_management::standard_errors::{ID_MUST_BE_POSITIVE_INT, MANDATORY_FIELD_MISSING};
@@ -48,6 +49,9 @@ impl ResponseMapperTrait<MovePlayerResponseCodesAndBody, MovePlayerResponseBody,
                 MovePlayerResponseCodesAndBody::PlayerMovedSuccessfully(body)
             }
             Err(error) => {
+
+                info!("move_player error ({:?}) ", error);
+
                 match error.kind {
                     ErrorKind::Functional => {
                         let error_payload = ErrorBody::new(error.code.to_string(), error.message.to_string());

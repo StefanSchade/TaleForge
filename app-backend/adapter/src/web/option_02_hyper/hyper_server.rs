@@ -32,12 +32,10 @@ use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
 pub async fn create(addr: &str, https: bool, container: ServiceContainer) {
+
     let addr = addr.parse().expect("Failed to parse bind address");
-
     let server = HyperServer::new(container);
-
     let service = MakeService::new(server);
-
     let service = MakeAllowAllAuthenticator::new(service, "cosmo");
 
     #[allow(unused_mut)]
@@ -88,7 +86,6 @@ pub async fn create(addr: &str, https: bool, container: ServiceContainer) {
     }
 }
 
-
 #[derive(Clone)]
 pub struct HyperServer<C> {
     service_container: ServiceContainer,
@@ -114,12 +111,17 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
         context: &C,
     ) -> Result<MovePlayerResponseCodesAndBody, ApiError>
     {
+
+
         let domain_story = self.service_container.move_player().clone();
         let _context_clone = context.clone();
         info!("move_player({:?}) - X-Span-ID: {:?}", move_player_request, context.get().0.clone());
 
         match PlayerMoveRequestMapper::from_api(move_player_request) {
             Ok(request) => {
+
+                info!("request({:?}) - X-Span-ID: {:?}", request, context.get().0.clone());
+
                 match domain_story.execute(request).await {
                     Ok(response) => {
                         Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
