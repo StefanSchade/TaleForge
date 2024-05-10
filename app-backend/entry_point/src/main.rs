@@ -9,7 +9,6 @@ use adapter::persistence::in_memory_location_repository::InMemoryLocationReposit
 use adapter::persistence::in_memory_passage_repository::InMemoryPassageRepository;
 use adapter::persistence::in_memory_player_state_repository::InMemoryPlayerStateRepository;
 use adapter::web::option_01_actixweb::actix_web_server::ActixWebServer;
-use adapter::web::option_02_hyper::hyper_server::HyperServer;
 use application::domain_story_impl::move_player_domain_story_impl::MovePlayerDomainStoryImpl;
 use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;

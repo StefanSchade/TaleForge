@@ -1,15 +1,10 @@
-use std::io::Error;
 use std::marker::PhantomData;
 use std::net::{SocketAddr, ToSocketAddrs};
-use std::pin::Pin;
-use std::sync::Arc;
 
 use async_trait::async_trait;
-use hyper::server::conn::Http;
 use log::info;
 use swagger::{ApiError, EmptyContext, Has, XSpanIdString};
 use swagger::auth::MakeAllowAllAuthenticator;
-use tokio::net::TcpListener;
 
 use openapi_client::Api;
 #[allow(unused_imports)]
@@ -21,7 +16,6 @@ use openapi_client::models::MovePlayerResponse as MovePlayerResponseBody;
 #[allow(unused_imports)]
 use openapi_client::MovePlayerResponse as MovePlayerResponseCodesAndBody;
 use openapi_client::server::MakeService;
-use port::adapters_inbound::web_server::{ServerConfig, WebServer};
 use port::adapters_outbound::service_container::ServiceContainer;
 
 use crate::web::shared::domain_story_mappers::player_move_request_mapper::PlayerMoveRequestMapper;
@@ -154,7 +148,7 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
     ) -> Result<MovePlayerResponseCodesAndBody, ApiError>
     {
         let domain_story = self.service_container.move_player().clone();
-        let _context_clone = context.clone();
+        //let _context_clone = context.clone();
         info!("move_player({:?}) - X-Span-ID: {:?}", move_player_request, context.get().0.clone());
 
         match PlayerMoveRequestMapper::from_api(move_player_request) {
