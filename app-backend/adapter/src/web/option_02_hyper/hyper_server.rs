@@ -88,41 +88,41 @@ pub async fn create(addr_str: &str, https: bool, container: ServiceContainer) {
         );
 
     if https {
-        #[cfg(any(target_os = "macos", target_os = "windows", target_os = "ios"))]
-        {
-            unimplemented!("SSL is not implemented for the examples on MacOS, Windows or iOS");
-        }
-
-        #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
-        {
-            let mut ssl = SslAcceptor::mozilla_intermediate_v5(SslMethod::tls()).expect("Failed to create SSL Acceptor");
-
-            // Server authentication
-            ssl.set_private_key_file("examples/server-key.pem", SslFiletype::PEM).expect("Failed to set private key");
-            ssl.set_certificate_chain_file("examples/server-chain.pem").expect("Failed to set certificate chain");
-            ssl.check_private_key().expect("Failed to check private key");
-
-            let tls_acceptor = ssl.build();
-            let tcp_listener = TcpListener::bind(&addr).await.unwrap();
-
-            loop {
-                if let Ok((tcp, _)) = tcp_listener.accept().await {
-                    let ssl = Ssl::new(tls_acceptor.context()).unwrap();
-                    let addr = tcp.peer_addr().expect("Unable to get remote address");
-                    let service = service.call(addr);
-
-                    tokio::spawn(async move {
-                        let tls = tokio_openssl::SslStream::new(ssl, tcp).map_err(|_| ())?;
-                        let service = service.await.map_err(|_| ())?;
-
-                        Http::new()
-                            .serve_connection(tls, service)
-                            .await
-                            .map_err(|_| ())
-                    });
-                }
-            }
-        }
+    //     #[cfg(any(target_os = "macos", target_os = "windows", target_os = "ios"))]
+    //     {
+    //         unimplemented!("SSL is not implemented for the examples on MacOS, Windows or iOS");
+    //     }
+    //
+    //     #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
+    //     {
+    //         let mut ssl = SslAcceptor::mozilla_intermediate_v5(SslMethod::tls()).expect("Failed to create SSL Acceptor");
+    //
+    //         // Server authentication
+    //         ssl.set_private_key_file("examples/server-key.pem", SslFiletype::PEM).expect("Failed to set private key");
+    //         ssl.set_certificate_chain_file("examples/server-chain.pem").expect("Failed to set certificate chain");
+    //         ssl.check_private_key().expect("Failed to check private key");
+    //
+    //         let tls_acceptor = ssl.build();
+    //         let tcp_listener = TcpListener::bind(&addr).await.unwrap();
+    //
+    //         loop {
+    //             if let Ok((tcp, _)) = tcp_listener.accept().await {
+    //                 let ssl = Ssl::new(tls_acceptor.context()).unwrap();
+    //                 let addr = tcp.peer_addr().expect("Unable to get remote address");
+    //                 let service = service.call(addr);
+    //
+    //                 tokio::spawn(async move {
+    //                     let tls = tokio_openssl::SslStream::new(ssl, tcp).map_err(|_| ())?;
+    //                     let service = service.await.map_err(|_| ())?;
+    //
+    //                     Http::new()
+    //                         .serve_connection(tls, service)
+    //                         .await
+    //                         .map_err(|_| ())
+    //                 });
+    //             }
+    //         }
+    //     }
     } else {
         // Using HTTP
         if let Some(addr) = addr {
