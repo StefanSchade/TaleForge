@@ -84,7 +84,7 @@ async fn main() -> std::io::Result<()> {
             .help("Whether to use HTTPS or not"))
         .get_matches();
 
-    let addr = "127.0.0.1:8080";
+    let addr = "localhost:8080";
 
     let hyper_future =  adapter::web::option_02_hyper::hyper_server::create(addr, matches.is_present("https"), service_container_hyper);
 

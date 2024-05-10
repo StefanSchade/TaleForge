@@ -39,7 +39,7 @@ impl ResponseMapperTrait<MovePlayerResponseCodesAndBody, MovePlayerResponseBody,
         })
     }
 
-    fn to_api_response_codes(port_model: MovePlayerDomainStoryResponse) -> MovePlayerResponseCodesAndBody {
+    fn to_api_200(port_model: MovePlayerDomainStoryResponse) -> MovePlayerResponseCodesAndBody {
         info!("to_api_response 1");
         match Self::to_api_body(port_model) {
             Ok(body) => { info!("to_api_response 2"); MovePlayerResponseCodesAndBody::PlayerMovedSuccessfully(body) },
@@ -66,4 +66,34 @@ impl ResponseMapperTrait<MovePlayerResponseCodesAndBody, MovePlayerResponseBody,
             }
         }
     }
+
+    fn to_api_error_codes(port_model: MovePlayerDomainStoryResponse) -> MovePlayerResponseCodesAndBody {
+        info!("to_api_response 1");
+        match Self::to_api_body(port_model) {
+            Ok(body) => { info!("to_api_response 2"); MovePlayerResponseCodesAndBody::PlayerMovedSuccessfully(body) },
+            Err(error) => {
+                info!("move_player error ({:?}) ", error);
+
+                let error_payload = ErrorBody::new(error.code.to_string(), error.message.to_string());
+                match error.kind {
+                    ErrorKind::Functional => {
+                        match error.code.as_str() {
+                            "mandatory_field_missing" | "id_must_be_positive_int" => MovePlayerResponseCodesAndBody::InvalidInput(error_payload),
+                            "player_not_registered" | "bout_not_running" => MovePlayerResponseCodesAndBody::PlayerOrBoutNotFound(error_payload),
+                            _ => MovePlayerResponseCodesAndBody::InvalidInput(error_payload), // Default functional error mapping
+                        }
+                    },
+                    ErrorKind::Technical => {
+                        println!("Technical Error Occurred: {}", error); // Logging the error
+                        MovePlayerResponseCodesAndBody::InternalServerError(ErrorBody::new(
+                            "internal_server_error".to_string(),
+                            "An unexpected internal server error occurred.".to_string(),
+                        ))
+                    }
+                }
+            }
+        }
+    }
+
+
 }

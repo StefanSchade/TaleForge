@@ -31,11 +31,20 @@ use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::Player
 use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
-pub async fn create(addr: &str, https: bool, container: ServiceContainer) {
-    let addr = addr.parse().expect("Failed to parse bind address");
+pub async fn create(addrstr: &str, https: bool, container: ServiceContainer) {
+
+    match addrstr.parse::<SocketAddr>() {
+        Ok(addr) => println!("Parsed SocketAddr: {:?}", addr),
+        Err(e) => println!("Failed to parse address from String: {} / Error: {} - {:?}", addrstr, e,e),
+    };
+
+    let addr = addrstr.parse().expect("Failed to parse bind address");
+
     let server = HyperServer::new(container);
     let service = MakeService::new(server);
     let service = MakeAllowAllAuthenticator::new(service, "cosmo");
+
+    info!("starting hyper server...");
 
     #[allow(unused_mut)]
         let mut service =
@@ -116,18 +125,20 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
 
         match PlayerMoveRequestMapper::from_api(move_player_request) {
             Ok(request) => {
-                info!("request({:?}) - X-Span-ID: {:?}", request, context.get().0.clone());
+                info!("sucessful mapping of api model from request({:?}) - X-Span-ID: {:?}", request, context.get().0.clone());
 
                 let domain_response_result = domain_story.execute(request).await;
                 print!("got here 3");
-                let response = domain_response_result.map_err(|e| {
+                let response = domain_response_result
+                    .map_err(|e| {
                     print!("got here 1!!!! THIS IS THE PROBEM");
                     ApiError(format!("Error processing domain story: {}", e))
                 })?;
                 print!("got here 2");
-                Ok(PlayerMoveResponseMapper::to_api_response_codes(response))
+                Ok(PlayerMoveResponseMapper::to_api_200(response))
             }
             Err(e) => {
+
                 Err(ApiError(format!("Error processing domain story: {}", e)))
             }
         }
