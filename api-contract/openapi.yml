@@ -3,7 +3,7 @@ info:
   title: Game API
   version: "1.0.0"
 paths:
-  /move/player:
+  /player/move:
     post:
       summary: Move player in a given direction
       operationId: movePlayer
