@@ -19,13 +19,13 @@ env_logger = "0.11"
 log = "0.4"
 swagger = { version = "6.1", features = ["serdejson", "server", "client", "tls", "tcp"] }
 hyper = "0.14.28"
+openssl = "0.10.64"
 tower = "0.4.13"
 
-# Conditionally include OpenSSL only for Unix systems
-[target.'cfg(unix)'.dependencies]
-openssl = "0.10.64"
-tokio-openssl = "0.6.4"
-hyper-tls = "0.6.0"
+#[target.'cfg(unix)'.dependencies]
+#openssl = { version = "0.10", features = ["vendored"] }
+#tokio-openssl = { version = "0.6.4" }
+#hyper-tls = "0.6.0"
 
 [dev-dependencies]
 actix-web = "4"

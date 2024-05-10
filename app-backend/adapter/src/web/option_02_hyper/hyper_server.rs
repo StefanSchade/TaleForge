@@ -23,6 +23,19 @@ use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::Player
 use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
+
+// SSL-related imports for Unix-based systems only
+#[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
+use openssl::ssl::{SslAcceptor, SslMethod, SslFiletype, Ssl};
+
+// Networking and HTTP handling imports for Unix-based systems
+#[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "ios")))]
+use {
+    tokio::net::TcpListener,
+    hyper::server::conn::Http,
+    tower::Service,
+};
+
 pub async fn create(addr_str: &str, https: bool, container: ServiceContainer) {
 
     // First, try to resolve the address as a hostname with port.
