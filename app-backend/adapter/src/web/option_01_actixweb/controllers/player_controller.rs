@@ -110,6 +110,8 @@ mod tests {
         // Create an instance of WebMovePlayerInput and serialize it
         let test_input = WebMovePlayerInput {
             direction: "north".to_string(),
+            bout_id: 1,
+            player_id: 1,
         };
         let request_body = serde_json::to_string(&test_input).expect("Failed to serialize test input");
 
