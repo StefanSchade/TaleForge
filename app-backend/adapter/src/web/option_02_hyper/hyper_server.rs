@@ -1,8 +1,6 @@
-use std::fmt::{Debug, Formatter};
-use std::future::Future;
 use std::io::Error;
 use std::marker::PhantomData;
-use std::net::SocketAddr;
+use std::net::{SocketAddr, ToSocketAddrs};
 use std::pin::Pin;
 use std::sync::Arc;
 
@@ -31,14 +29,44 @@ use crate::web::shared::domain_story_mappers::player_move_resonse_mapper::Player
 use crate::web::shared::request_mapper_trait::RequestMapperTrait;
 use crate::web::shared::response_mapper_trait::ResponseMapperTrait;
 
-pub async fn create(addrstr: &str, https: bool, container: ServiceContainer) {
+pub async fn create(addr_str: &str, https: bool, container: ServiceContainer) {
 
-    match addrstr.parse::<SocketAddr>() {
-        Ok(addr) => println!("Parsed SocketAddr: {:?}", addr),
-        Err(e) => println!("Failed to parse address from String: {} / Error: {} - {:?}", addrstr, e,e),
+    // First, try to resolve the address as a hostname with port.
+    let addr = match addr_str.to_socket_addrs() {
+        Ok(mut addrs) => addrs.next(), // Attempt to get the first resolved address.
+        Err(_) => None, // If resolution fails, set to None.
     };
 
-    let addr = addrstr.parse().expect("Failed to parse bind address");
+    // Check if we got a valid address from resolution or not.
+    let addr = match addr {
+        Some(addr) => {
+            println!("Resolved SocketAddr: {:?}", addr);
+            Some(addr) // Use the resolved address.
+        }
+        None => {
+            // Fallback to direct parsing as a SocketAddr (assuming it's an IP:port format).
+            match addr_str.parse::<SocketAddr>() {
+                Ok(addr) => {
+                    println!("Parsed SocketAddr: {:?}", addr);
+                    Some(addr) // Use the parsed address.
+                }
+                Err(e) => {
+                    // Handle errors if parsing also fails.
+                    println!("Failed to parse address: {}", e);
+                    None
+                }
+            }
+        }
+    };
+
+    if let Some(addr) = addr {
+        // Proceed with using the valid SocketAddr as needed in your application.
+        println!("Using SocketAddr: {:?}", addr);
+    } else {
+        // Handle the case where no valid SocketAddr was found.
+        println!("No valid SocketAddr provided.");
+    }
+
 
     let server = HyperServer::new(container);
     let service = MakeService::new(server);
@@ -90,7 +118,13 @@ pub async fn create(addrstr: &str, https: bool, container: ServiceContainer) {
         }
     } else {
         // Using HTTP
-        hyper::server::Server::bind(&addr).serve(service).await.unwrap()
+        if let Some(addr) = addr {
+            println!("Using SocketAddr: {:?} to start hyper server", addr);
+            hyper::server::Server::bind(&addr).serve(service).await.unwrap()
+        } else {
+            // Handle the case where no valid SocketAddr was found.
+            println!("No valid SocketAddr provided.");
+        }
     }
 }
 
@@ -131,14 +165,13 @@ impl<C> Api<C> for HyperServer<C> where C: Has<XSpanIdString> + Send + Sync {
                 print!("got here 3");
                 let response = domain_response_result
                     .map_err(|e| {
-                    print!("got here 1!!!! THIS IS THE PROBEM");
-                    ApiError(format!("Error processing domain story: {}", e))
-                })?;
+                        print!("got here 1!!!! THIS IS THE PROBEM");
+                        ApiError(format!("Error processing domain story: {}", e))
+                    })?;
                 print!("got here 2");
                 Ok(PlayerMoveResponseMapper::to_api_200(response))
             }
             Err(e) => {
-
                 Err(ApiError(format!("Error processing domain story: {}", e)))
             }
         }
