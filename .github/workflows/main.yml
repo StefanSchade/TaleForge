@@ -51,6 +51,12 @@ jobs:
         run: openapi-generator-cli generate -i api-contract/openapi.yml -g rust-server -o app-backend/openapi/
         working-directory: ./
 
+      - name: Print Rust version and environment info
+        run: |
+          rustc --version
+          cargo --version
+          echo "Features: $FEATURES"
+
       - name: Build
         run: cargo build
         working-directory: ./app-backend
