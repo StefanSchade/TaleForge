@@ -47,6 +47,10 @@ jobs:
             profile: minimal
             override: true
 
+      - name: Generate Open API Server
+        run: openapi-generator-cli generate -i api-contract/openapi.yml -g rust-server -o app-backend/openapi/
+        working-directory: ./
+
       - name: Build
         run: cargo build
         working-directory: ./app-backend
